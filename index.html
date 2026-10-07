@@ -25,7 +25,7 @@ applyTheme();
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230E6B50'/><path d='M9 21V11h3.2c2.6 0 4.2 1.9 4.2 5s-1.6 5-4.2 5H9z' fill='white'/></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23101310'/><path d='M6 21a10 10 0 0 1 20 0z' fill='%233FE081'/><rect x='4' y='21' width='24' height='3' rx='1.5' fill='%233FE081'/></svg>">
 <style>
 /* ---------- 主题：05:00–18:00 晨光（浅），18:00–05:00 暗夜荧光（深）----------
    同一套荧光绿调性，只是底与字的明暗互换。变量化后切主题只改这里。 */
@@ -1040,12 +1040,16 @@ function viewToday(){
   if(ph==='plan'){ name=t('ph_plan'); hint=t('left_pre')+fmtLeft(PLAN_MIN-nowMin()); }
   else if(ph==='exec'){ name=t('ph_exec'); hint=t('left_pre2')+fmtLeft(CHECK_MIN-nowMin()); }
   else if(ph==='check'){ name=t('ph_check'); dot=' w'; hint=t('check_now'); }
-  else { name=t('ph_sealed'); dot=' g'; hint=t('sealed_hint'); }
+  else {
+    name=t('ph_sealed'); dot=' g';
+    /* 夜间顶部已有「今天收好了，明天见」，副标题也已写明收尾时刻 —— 这里再写一遍就是噪音，直接留白 */
+    hint = (timeSlot()==='night') ? '' : t('sealed_hint');
+  }
 
   var h = '<section class="card">'+ nightLine(r) +
     '<div class="phase"><span class="pdot'+dot+'"></span>'+
       '<span class="pname'+(dot===' w'?' w':dot===' g'?' g':'')+'">'+name+'</span>'+
-      '<span class="phint">'+esc(hint)+'</span>'+
+      (hint ? '<span class="phint">'+esc(hint)+'</span>' : '')+
     '</div>'+
     '<h1 class="h1">'+t('t_title')+'</h1>';
 
