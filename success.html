@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<meta name="theme-color" content="#101310">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="成功日记">
+<meta name="application-name" content="成功日记">
+<meta name="description" content="睡前记下今天推进了什么。一件就够。没推进的日子也算数。">
+<title>成功日记 · Success Diary</title>
+<script>
+/* 主题在样式前定好，避免先闪一下浅色再跳深色 */
+window.applyTheme = function(){
+  var h = new Date().getHours();
+  var night = (h >= 18 || h < 5);
+  document.documentElement.classList.toggle('night', night);
+  var m = document.querySelector('meta[name="theme-color"]');
+  if(m) m.setAttribute('content', night ? '#101310' : '#F2F2F7');
+};
+applyTheme();
+</script>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23FF9500'/><path d='M10 22V10h3v3.6h5.4V10H21v12h-3v-4.1h-5.4V22z' fill='white'/></svg>">
+<style>
+/* ---------- 主题：05:00–18:00 晨光（浅），18:00–05:00 暗夜荧光（深）---------- */
+:root{
+  --bg:#F2F2F7; --card:#FFFFFF;
+  --ink:#000000; --ink2:rgba(60,60,67,.6); --ink3:rgba(60,60,67,.3);
+  --sep:rgba(60,60,67,.2); --sep2:rgba(60,60,67,.12);
+  --fill:rgba(120,120,128,.12); --fill2:rgba(120,120,128,.16);
+  --brand:#3FE081; --brand-txt:#0E6B50; --brand-soft:rgba(14,107,80,.12);
+  --on:#0B120D; --on-dim:rgba(11,18,13,.5); --gold:#C26600;
+  --nav:rgba(242,242,247,.92); --nav2:rgba(242,242,247,.8);
+  --blue:#007AFF; --green:#34C759; --orange:#FF9500; --pink:#FF2D55;
+  --purple:#AF52DE; --yellow:#FFCC00; --teal:#30B0C7; --red:#FF3B30;
+  --safe-b:env(safe-area-inset-bottom,0px);
+}
+html.night{
+  --bg:#101310; --card:#191D19;
+  --ink:#F1F4F0; --ink2:#A8B0A8; --ink3:#6E7670;
+  --sep:#2A2F2A; --sep2:#232823;
+  --fill:#262B26; --fill2:rgba(120,130,120,.22);
+  --brand:#3FE081; --brand-txt:#3FE081; --brand-soft:rgba(63,224,129,.16);
+  --on:#0B120D; --on-dim:rgba(255,255,255,.45); --gold:#FFB84D;
+  --nav:rgba(12,15,12,.92); --nav2:rgba(12,15,12,.8);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;
+  letter-spacing:-.01em;min-height:100vh;
+}
+button{font-family:inherit;font-size:inherit;border:0;background:none;cursor:pointer;color:inherit;padding:0}
+input,textarea{font-family:inherit;font-size:17px;color:inherit;border:0;background:none;outline:none;width:100%;border-radius:0}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+
+/* ---------- iOS navigation bar ---------- */
+.nav{
+  position:sticky;top:0;z-index:30;
+  padding:calc(env(safe-area-inset-top,0px) + 8px) 16px calc(env(safe-area-inset-top,0px) + 8px);
+  background:var(--nav2);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:.5px solid rgba(0,0,0,.35);
+}
+.nav-row{display:flex;align-items:center;gap:10px;max-width:520px;margin:0 auto 8px}
+.nav-title{font-size:17px;font-weight:600;letter-spacing:-.02em;flex:1;min-width:0;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav-r{display:flex;align-items:center;gap:6px;flex:none}
+.iconbtn{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:var(--fill);color:#000}
+.iconbtn svg{width:16px;height:16px;display:block}
+.nav-r .iconbtn.wide{width:auto;padding:0 9px;font-size:11.5px;font-weight:600;gap:4px;letter-spacing:.02em}
+
+/* iOS segmented control */
+.seg{display:flex;gap:2px;background:var(--brand-soft);border-radius:9px;padding:2px;max-width:520px;margin:0 auto}
+.seg-i{flex:1;height:32px;border-radius:7px;font-size:13px;font-weight:600;color:var(--ink2);letter-spacing:-.01em;transition:.15s}
+.seg-i.on{background:var(--brand);color:var(--on);box-shadow:0 2px 6px rgba(0,0,0,.18)}
+
+.wrap{max-width:520px;margin:0 auto;padding:4px 16px calc(40px + var(--safe-b))}
+
+/* iOS large title */
+.lt{font-size:34px;font-weight:700;letter-spacing:-.024em;line-height:1.15;margin:18px 0 0}
+.lt-s{font-size:15px;color:var(--ink2);font-weight:400;letter-spacing:-.01em;margin-top:3px}
+.lt-row{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:18px}
+
+/* iOS grouped list */
+.grp{background:var(--card);border-radius:12px;margin:18px 0;overflow:hidden}
+.grp-h{font-size:13px;color:var(--ink2);font-weight:400;padding:0 2px 7px;letter-spacing:0}
+.row{display:flex;align-items:center;gap:11px;padding:12px 16px;border-bottom:.5px solid var(--sep2)}
+.row:last-child{border-bottom:0}
+.row-l{font-size:17px;flex:none;letter-spacing:-.02em}
+.row-c{flex:1;min-width:0;font-size:17px}
+.row-d{font-size:13px;color:var(--ink2);margin-top:1px;letter-spacing:0}
+.row-wrap{flex:1}
+textarea.row-wrap{min-height:96px;padding:2px 0;line-height:1.45;font-size:17px;resize:none}
+.grp.pad{padding:0}
+.grp.pad .row{padding:0 16px}
+.inp{padding:13px 16px;border-bottom:.5px solid var(--sep2);display:flex;align-items:center;gap:11px}
+.inp:last-child{border-bottom:0}
+.inp.ghost{display:none}
+.none-row{padding:0 16px 13px}
+.none-btn{font-size:13px;color:var(--ink3);background:none;border:0;padding:0;font-family:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.none-d{font-size:15px;color:var(--ink3)}
+.low{padding:2px 16px 12px}
+.low textarea{width:100%;border:0;background:none;font-family:inherit;font-size:16px;color:var(--ink);
+  line-height:1.55;resize:none;min-height:54px;outline:none;letter-spacing:-.01em}
+.idx{font-size:15px;font-weight:700;color:var(--ink3);width:20px;flex:none;letter-spacing:0}
+.caret{width:9px;flex:none;color:var(--ink3)}
+.ph{color:var(--ink3)}
+
+/* energy chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding:14px 16px}
+.chip{height:32px;padding:0 14px;border-radius:16px;background:var(--brand-soft);font-size:14px;font-weight:600;
+  color:var(--ink);letter-spacing:-.01em;transition:.15s;border:1.5px solid transparent}
+.chip.on{color:#fff}
+.chip[data-v="calm"].on{background:var(--teal);border-color:var(--teal)}
+.chip[data-v="full"].on{background:var(--green);border-color:var(--green)}
+.chip[data-v="flow"].on{background:var(--blue);border-color:var(--blue)}
+.chip[data-v="tired"].on{background:var(--purple);border-color:var(--purple)}
+.chip[data-v="tense"].on{background:var(--orange);border-color:var(--orange)}
+.chip[data-v="bright"].on{background:var(--pink);border-color:var(--pink)}
+
+/* iOS buttons —— 主按钮用品牌深绿（与晨间清单一致），次级按钮保持 iOS 蓝 */
+.btn-i{display:block;width:100%;background:var(--brand);color:var(--on);font-size:17px;font-weight:600;
+  border-radius:12px;padding:14px;letter-spacing:-.02em;margin-top:18px;transition:.15s}
+.btn-i:active{opacity:.75}
+.btn-i:disabled{background:#3A413B}
+.btn-s{display:block;width:100%;background:var(--brand-soft);color:var(--brand-txt);font-size:17px;font-weight:600;
+  border-radius:12px;padding:14px;letter-spacing:-.02em;margin-top:10px}
+.btn-s:active{background:var(--sep)}
+.linkbtn{color:var(--blue);font-size:15px;font-weight:400;margin-top:12px;display:inline-block}
+
+/* ---------- gate / lock screen ---------- */
+.gate{text-align:center;padding:26px 0 8px}
+.ring-wrap{position:relative;width:168px;height:168px;margin:0 auto 6px}
+.ring{width:168px;height:168px;transform:rotate(-90deg);display:block}
+.ring-hub{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-v{font-size:38px;font-weight:700;letter-spacing:-.03em;line-height:1}
+.ring-l{font-size:13px;color:var(--ink2);margin-top:4px;letter-spacing:0}
+.lock-ico{width:54px;height:54px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;
+  background:var(--fill);border-radius:50%}
+.status{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 15px;border-radius:16px;
+  font-size:14px;font-weight:600;margin-top:14px;letter-spacing:-.01em}
+.status.ok{background:var(--brand-soft);color:var(--brand-txt)}
+.status.warn{background:rgba(255,149,0,.16);color:#FF9500}
+.status.mut{background:var(--fill);color:var(--ink2)}
+.status.info{background:rgba(0,122,255,.22);color:var(--blue)}
+
+/* week strip */
+.wk{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:6px 0 2px}
+.wk-c{border-radius:10px;padding:9px 2px 8px;background:var(--card);border:1px solid transparent;transition:.15s}
+.wk-c.ok{background:#EAFBEF;border-color:#34C759}
+.wk-c.mid{background:#3A331D;border-color:#FFCC00}
+.wk-c.miss{background:var(--card);border-color:var(--sep2)}
+.wk-c.today{box-shadow:0 0 0 2.5px var(--blue)}
+.wk-d{font-size:11px;color:var(--ink2);text-align:center;letter-spacing:0;display:block}
+.wk-c.ok .wk-d{color:var(--brand-txt);font-weight:700}
+.wk-v{font-size:12.5px;font-weight:700;text-align:center;margin-top:4px;display:block;letter-spacing:-.01em}
+.wk-c.ok .wk-v{color:var(--brand-txt)}
+.wk-c.mid .wk-v{color:var(--gold)}
+.wk-c.miss .wk-v{color:var(--ink3);font-weight:500}
+
+/* rule block */
+.rule{display:flex;gap:11px;padding:13px 16px;border-bottom:.5px solid var(--sep2)}
+.rule:last-child{border-bottom:0}
+.rule-i{width:20px;height:20px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;margin-top:1px}
+.rule-t{font-size:15px;line-height:1.45;letter-spacing:-.01em}
+.rule-t b{font-weight:700}
+.rule-t .m{color:var(--ink2)}
+
+/* ---------- Instagram grid ---------- */
+.filmstrip{display:flex;align-items:center;gap:0;margin:20px 0 10px;padding:0 2px;justify-content:center}
+.perf{width:11px;height:14px;background:#F5F6F4;border-radius:2px;opacity:.9}
+.perf-s{display:flex;flex-direction:column;gap:3px;margin-right:9px}
+.perf-s2{display:flex;flex-direction:column;gap:3px;margin-left:9px}
+.perf-d{width:5px;height:5px;border-radius:50%;background:var(--bg);opacity:.85}
+.ig-title{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);
+  padding:0 10px;white-space:nowrap}
+.ig{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.cell{text-align:left}
+.ig-img{position:relative;display:block;width:100%;aspect-ratio:1/1;border-radius:6px;overflow:hidden;
+  box-shadow:0 1px 3px rgba(0,0,0,.35)}
+.ig-shape{position:absolute;border-radius:50%;opacity:.5}
+.ig-shape.s1{width:58%;padding-top:58%;left:-14%;top:-16%;background:var(--on-dim)}
+.ig-shape.s2{width:36%;padding-top:36%;right:-8%;bottom:-10%;background:var(--on-dim)}
+.ig-shape.s3{width:44%;padding-top:44%;left:44%;top:46%;background:var(--on-dim)}
+.ig-day{position:absolute;left:8px;top:7px;font-size:10.5px;font-weight:700;color:rgba(0,0,0,.6);
+  letter-spacing:.04em;font-variant-numeric:tabular-nums}
+.ig-cap{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  font-size:12.5px;line-height:1.36;margin-top:6px;color:var(--ink);letter-spacing:-.01em}
+.ig-cap.mut{color:var(--ink2)}
+.ig-cap em{font-style:normal;font-weight:700}
+.ig-more{font-size:14px;color:var(--ink2);letter-spacing:-.01em;padding:22px 0 6px;text-align:center}
+
+/* stat strip */
+.stat3{display:grid;grid-template-columns:repeat(3,1fr);background:var(--card);border-radius:12px;overflow:hidden;margin:18px 0}
+.stat{padding:15px 6px;text-align:center;border-right:.5px solid var(--sep2)}
+.stat:last-child{border-right:0}
+.stat-v{font-size:26px;font-weight:700;letter-spacing:-.03em;line-height:1.1}
+.stat-l{font-size:11.5px;color:var(--ink2);margin-top:3px;letter-spacing:0}
+
+/* ---------- iOS sheet ---------- */
+.ov{position:fixed;inset:0;z-index:60;display:none}
+.ov.on{display:block}
+.ov-bg{position:absolute;inset:0;background:rgba(0,0,0,.55);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--bg);
+  border-radius:14px 14px 0 0;max-height:88vh;overflow:auto;
+  -webkit-transform:translateY(101%);transform:translateY(101%);
+  transition:transform .34s cubic-bezier(.32,.72,0,1);padding-bottom:var(--safe-b)}
+.ov.on .sheet{-webkit-transform:translateY(0);transform:translateY(0)}
+.grab{width:36px;height:5px;border-radius:3px;background:var(--sep2);margin:8px auto 4px}
+.sh-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 18px 12px;
+  position:sticky;top:0;background:var(--nav);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
+  border-bottom:.5px solid var(--sep2);z-index:2}
+.sh-t{font-size:17px;font-weight:600;letter-spacing:-.02em}
+.sh-c{color:var(--blue);font-size:17px;font-weight:400}
+.sh-b{padding:6px 16px 26px}
+.sh-item{display:flex;gap:12px;padding:13px 0;border-bottom:.5px solid var(--sep2);align-items:flex-start}
+.sh-item:last-child{border-bottom:0}
+.sh-n{width:24px;height:24px;flex:none;border-radius:50%;color:var(--on);font-size:12px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;margin-top:1px}
+.sh-x{font-size:16.5px;line-height:1.4;letter-spacing:-.01em;flex:1}
+.sh-x.mut{color:var(--ink2)}
+.sh-meta{display:flex;align-items:center;gap:8px;margin-top:14px;flex-wrap:wrap}
+.tag{height:26px;padding:0 11px;border-radius:13px;font-size:12.5px;font-weight:600;
+  display:inline-flex;align-items:center;letter-spacing:-.01em}
+.tag.t, .tag.f, .tag.r, .tag.p, .tag.o, .tag.b{color:#fff}
+.tag.t{background:var(--teal)} .tag.f{background:var(--green)} .tag.r{background:var(--purple)}
+.tag.p{background:var(--pink)} .tag.o{background:var(--orange)} .tag.b{background:var(--blue)}
+.stamp{margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--ink3);text-transform:uppercase}
+
+/* ---------- toast ---------- */
+#toast{position:fixed;left:50%;bottom:calc(30px + var(--safe-b));transform:translate(-50%,16px);
+  background:var(--ink);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);color:var(--bg);
+  font-size:14px;font-weight:500;padding:11px 18px;border-radius:22px;opacity:0;pointer-events:none;
+  transition:opacity .2s,transform .28s cubic-bezier(.32,.72,0,1);z-index:90;letter-spacing:-.01em;
+  max-width:80vw;text-align:center}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* empty */
+.empty{text-align:center;padding:44px 22px}
+.empty-t{font-size:20px;font-weight:700;letter-spacing:-.02em}
+.empty-d{font-size:15px;color:var(--ink2);line-height:1.5;margin-top:8px}
+
+/* banner */
+.banner{display:flex;align-items:center;gap:11px;background:#3A2F1D;padding:12px 14px;border-radius:12px;
+  margin:14px 0 0}
+.banner .bi{width:26px;height:26px;flex:none;border-radius:50%;background:#FF9500;color:var(--bg);
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.banner .bt{flex:1;font-size:14px;line-height:1.4;letter-spacing:-.01em}
+.banner .bt b{font-weight:700}
+.banner .bx{width:22px;height:22px;flex:none;border-radius:50%;background:var(--fill2);
+  display:flex;align-items:center;justify-content:center;color:var(--ink2);font-size:13px}
+.night{font-size:15px;color:var(--ink2);text-align:center;padding:16px 0 0;letter-spacing:-.01em}
+.vcard{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:12px;padding:13px 15px;margin-top:18px}
+.vcard .vdot{width:34px;height:34px;flex:none;border-radius:9px;background:var(--orange);
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:700}
+.vcard .vt{flex:1;min-width:0}
+.vcard .vt b{display:block;font-size:15px;font-weight:600;letter-spacing:-.01em}
+.vcard .vt span{font-size:12.5px;color:var(--ink2)}
+.vcard .vg{flex:none;color:var(--blue);font-size:13px;font-weight:600}
+@media (min-width:560px){ .wrap{padding-left:20px;padding-right:20px} }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-row">
+    <div class="nav-title" id="navT">成功日记</div>
+    <div class="nav-r">
+      <button class="iconbtn wide" data-act="lang" id="langBtn">EN</button>
+      <button class="iconbtn" data-act="home" aria-label="home">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 11.2 12 4l8 7.2V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="seg" id="seg">
+    <button class="seg-i on" data-act="view" data-v="today" id="segToday"></button>
+    <button class="seg-i" data-act="view" data-v="wall" id="segWall"></button>
+    <button class="seg-i" data-act="view" data-v="data" id="segData"></button>
+  </div>
+</header>
+
+<div class="wrap" id="app"></div>
+<div class="ov" id="ov"><div class="ov-bg" data-act="close"></div><div class="sheet" id="sheet"></div></div>
+<div id="toast"></div>
+
+<script>
+/* =========================================================
+   成功日记 · Success Diary
+   与「晨间清单」同源部署，直接读晨间清单的归档数据判定解锁
+   ========================================================= */
+var MKEY = 'morning-three.v1';   // 晨间清单
+var KEY  = 'success-diary.v1';   // 本应用
+var LKEY = 'success-lang';
+var SLOTS = 3;                   // 每晚最多三行：写完一行才露下一行，一件就够
+var MIN_DAYS = 30;               // 门槛 A：先跑满一个月
+var WINDOW = 7;                  // 门槛 B：最近一周 100%
+
+var LANG = 'zh';
+var S = { view:'today', energy:null, sheetKey:null, bannerOff:false, sheetOpen:false };
+var DB = { days:{}, unlock:{ at:null, defer:0 }, demo:false };
+
+/* ---------- 工具 ---------- */
+function pad(n){ return n<10? '0'+n : ''+n; }
+function ymd(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function parseYmd(k){ var p=String(k).split('-'); return new Date(+p[0], +p[1]-1, +p[2]); }
+function todayKey(){ return ymd(new Date()); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function addDays(d,n){ var x=new Date(d.getTime()); x.setDate(x.getDate()+n); return x; }
+function diffDays(kA,kB){ return Math.round((parseYmd(kB)-parseYmd(kA))/86400000); }
+function fmtDate(k){ var d=parseYmd(k); return (d.getMonth()+1)+'/'+d.getDate(); }
+function fmtFull(k){ var d=parseYmd(k); return d.getFullYear()+' 年 '+(d.getMonth()+1)+' 月 '+d.getDate()+' 日'; }
+function wdFull(k){ var d=parseYmd(k);
+  if(LANG==='en') return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()];
+  return ['周日','周一','周二','周三','周四','周五','周六'][d.getDay()];
+}
+function wdShort(k){ var d=parseYmd(k);
+  if(LANG==='en') return ['S','M','T','W','T','F','S'][d.getDay()];
+  return ['日','一','二','三','四','五','六'][d.getDay()];
+}
+function hhmm(iso){ if(!iso) return ''; var d=new Date(iso); return pad(d.getHours())+':'+pad(d.getMinutes()); }
+function hashOf(k){ var h=0; for(var i=0;i<k.length;i++){ h=(h*31+k.charCodeAt(i))>>>0; } return h; }
+
+/* ---------- 晨间清单数据 ---------- */
+function mLoad(){
+  try{
+    var o = JSON.parse(localStorage.getItem(MKEY) || '{}');
+    return (o && o.days) ? o.days : {};
+  }catch(e){ return {}; }
+}
+function mSince(days){
+  var ks = Object.keys(days).filter(function(k){
+    var r = days[k]; return (r && (r.tasks || r.checkin));
+  }).sort();
+  return ks.length ? ks[0] : null;
+}
+/* 某一天晨间清单的完成条数（仅用于展示，不参与解锁判定） */
+function mDayDone(k, days){
+  var r = days[k];
+  if(!r || !r.checkin || !r.checkin.results) return 0;
+  var n = r.checkin.results.length, c = 0;
+  for(var i=0;i<n;i++){ if(r.checkin.results[i]) c++; }
+  return Math.min(c, SLOTS);
+}
+/* 某一天是否如实归档了（漏打卡 = false；当天没写要事但点了「确认今日空缺」= true）
+   —— 这是解锁的唯一判据：诚实归档，而不是三件事全做完 */
+function mDaySealed(k, days){
+  var r = days[k];
+  return !!(r && r.checkin && r.checkin.at);
+}
+/* 过去 WINDOW 个自然日（不含今天 —— 今天还没到 18:00，永远不可能"满分"） */
+function mWindow(days){
+  var out = [], sealed = 0, doneCount = 0;
+  for(var i=WINDOW;i>=1;i--){                       /* 昨天起往前 7 天 */
+    var k = ymd(addDays(new Date(), -i));
+    var ok = mDaySealed(k, days);
+    var d  = mDayDone(k, days);
+    if(ok) sealed++;
+    doneCount += d;
+    out.push({ k:k, done:d, sealed:ok });
+  }
+  return { list:out, doneSum:doneCount, slotSum:WINDOW*SLOTS,
+           sealed:sealed, days:WINDOW, rate:(sealed/WINDOW) };
+}
+
+/* ---------- 解锁判定 ----------
+   state: open | waiting | deferred | nodata
+   waiting   : 还没跑满 MIN_DAYS 天
+   deferred  : 已满一个月，但最近一周没到 100% → 顺延一周，重新评估
+   open      : 满一个月 且 最近一周 100%
+--------------------------------------- */
+function unlock(){
+  /* 已解锁优先于一切 —— 哪怕晨间数据被清了，门也不该重新关上 */
+  var meta0 = DB.unlock || {};
+  if(!DB.demo && meta0.at) return { state:'open', at:meta0.at, since:mSince(DB.demoDays || mLoad()), win:mWindow(DB.demoDays || mLoad()) };
+
+  var days = DB.demoDays || mLoad();          // 预览模式用自己的假数据，绝不碰真实数据
+  var since = mSince(days);
+  if(!since) return { state:'nodata' };
+
+  var today = todayKey(), win = mWindow(days), ran = diffDays(since, today);
+
+  if(DB.demo)                                  // 预览：只看样子，永不解锁
+    return { state:'preview', since:since, ran:ran, target:MIN_DAYS, left:Math.max(0,MIN_DAYS-ran), win:win };
+
+  var meta = DB.unlock || (DB.unlock = { at:null, defer:0, lastEval:null });
+  if(!meta.defer) meta.defer = 0;
+  if(meta.at) return { state:'open', at:meta.at, since:since, win:win };
+
+  /* 门槛 A：先跑满一个月 */
+  if(ran < MIN_DAYS)
+    return { state:'waiting', since:since, ran:ran, target:MIN_DAYS, left:MIN_DAYS-ran, win:win };
+
+  /* 满月之后每天都评估 —— 凑满 7 个干净的过去日就开门，不必等到某个整周节点。
+     等这个是纯粹的摩擦，对习惯没有任何额外价值。 */
+  if(meta.lastEval !== today){
+    meta.lastEval = today;
+    if(win.rate < 1) meta.defer = (meta.defer||0) + 1;
+    save();
+  }
+
+  if(win.rate < 1){
+    return { state:'deferred', since:since, ran:ran, defer:meta.defer, win:win,
+             miss: WINDOW - win.sealed };
+  }
+  meta.at = today;                             // 过去 7 天全归档 → 解锁
+  save();
+  return { state:'open', at:today, since:since, win:win, firstTime:true };
+}
+
+/* ---------- 存储 ---------- */
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify({ days:DB.days, unlock:DB.unlock, demo:DB.demo })); }catch(e){}
+}
+function load(){
+  try{
+    var raw = localStorage.getItem(KEY);
+    if(raw){
+      var o = JSON.parse(raw);
+      DB.days   = o.days || {};
+      DB.unlock = o.unlock || { at:null, defer:0 };
+      DB.demo   = !!o.demo;
+    }
+  }catch(e){ DB = { days:{}, unlock:{at:null,defer:0}, demo:false }; }
+}
+
+/* ---------- 文案 ---------- */
+var T = {
+  zh:{
+    nav:'成功日记', seg1:'今日', seg2:'成就墙', seg3:'数据',
+    lt:'今晚',
+    lt_sub:'今天推进了什么 · 一件就够',
+    night:'夜深了。睡前留三分钟给自己。',
+    night2:'睡前把今天收个尾。',
+    b_t:'今天还没记', b_d:'睡前花三分钟，记下今天推进了什么。', b_x:'不再提醒',
+    ach:'今天推进了什么', ach_p:'一件就够。可以很小。',
+    ach_none:'今天没有', ach_none_d:'今天没有 · 也算记下了', ach_undo:'还是想写点',
+    low_t:'那时候你在做什么？', low_p:'不用评价，写当时在做什么就好。刷短视频也算。',
+    low_ph:'比如：刷短视频、发呆、跟人聊了一会儿',
+    low_tag:'不在状态时',
+    fin:'一句话（可不写）', fin_p:'今天整体怎么样，一句话带过。',
+    e_t:'今天的状态', e_p:'随便选一个，之后还能改。',
+    save:'记下今晚', saved:'已记下今天', saved_blank:'今天空白，也记下了',
+    save_hint:'空着也能保存 · 空白也是一天',
+    ph:['今天做到了什么？一件就够','还有一件？可以不写','最后一件？可以不写'],
+    wall_t:'成就墙', wall_sub:'解锁之后，每一天都是一张相片',
+    empty_w:'还没有相片',
+    empty_wd:'解锁之后，每天会在这里生成一张。<br>过去 7 天每天都如实归档，门就开了。',
+    go_morning:'去写晨间清单',
+    data_t:'数据', data_sub:'导出、导入，都在这一页',
+    d_export:'导出为 JSON', d_import:'导入 JSON', d_clear:'清空全部记录',
+    d_note:'数据只存在这台设备的浏览器里。换设备或清缓存会丢，建议定期导出。',
+    s_days:'记录天数', s_total:'累计成就', s_open:'已解锁',
+    unit:'天', pcs:'件',
+    /* 门禁 */
+    g_lt:'成功日记', g_sub:'它要等晨间清单先跑稳，再开门。',
+    g_lock:'先过一道门',
+    g_ring_v:'还差', g_ring_u:'天', g_ring_full:'归档率',
+    s_wait:'还差 {n} 天满一个月',
+    s_wait2:'已运行 {r} 天 · 目标 {t} 天',
+    s_def:'还没凑满七天', s_def2:'过去 7 天里漏记了 {p} 天。凑满连续的 7 天，门立刻就开。',
+    s_open_now:'已解锁', s_opened:'解锁于 ', s_preview:'预览中',
+    g_cond:'解锁条件', g_cond_d:'两条都满足，门就开',
+    c1_t:'晨间清单跑满 30 天', c1_d:'从你写下第一件要事那天算起。',
+    c2_t:'过去 7 天每日如实归档', c2_d:'不看三件事做没做完，只看有没有在 18:00 诚实封存。凑满连续 7 天，门立刻就开。',
+    g_now:'过去七天', g_now_d:'绿 = 已归档（无论做完几件）· 灰 = 那天没记录',
+    g_now_note:'过去 7 天里有 {n} 天如实归档了。做得少不算错，没记才算。',
+    g_preview:'用示例数据看效果', g_preview_d:'只是预览门禁长相，不会解锁',
+    g_demo_clear:'清除示例数据',
+    back_morning:'返回晨间清单'
+  },
+  en:{
+    nav:'Success Diary', seg1:'Tonight', seg2:'Wall', seg3:'Data',
+    lt:'Tonight',
+    lt_sub:'What moved today · one is enough',
+    night:'Late night. Three minutes for yourself first.',
+    night2:'Close out today before you sleep.',
+    b_t:'Not written yet', b_d:'Three minutes before bed. Note what moved.',
+    ach:'What moved today', ach_p:'One is enough. It can be tiny.',
+    ach_none:'Nothing today', ach_none_d:'Nothing today · that counts too', ach_undo:'Actually, let me write',
+    low_t:'What were you doing then?', low_p:'No judgement. Just what you were doing. Scrolling counts.',
+    low_ph:'e.g. scrolling, staring out, talking to someone',
+    low_tag:'When it slipped',
+    fin:'One line (optional)', fin_p:'One line on how the day actually went.',
+    e_t:'How it felt', e_p:'Pick one. You can change it later.',
+    save:'Save tonight', saved:'Tonight saved', saved_blank:'A blank day — recorded anyway',
+    save_hint:'You can save this empty · a blank day is still a day',
+    ph:['What did you get done? One is enough','Another one? optional','One more? optional'],
+    wall_t:'The Wall', wall_sub:'After unlocking, every day becomes a frame',
+    empty_w:'No frames yet',
+    empty_wd:'Once unlocked, one frame per day appears here.<br>Log all 7 days honestly and the door opens.',
+    go_morning:'Open Morning Three',
+    data_t:'Data', data_sub:'Export and import live here',
+    d_export:'Export JSON', d_import:'Import JSON', d_clear:'Delete all records',
+    d_note:'Everything lives in this browser only. Export regularly if you switch devices.',
+    s_days:'Days', s_total:'Total wins', s_open:'Unlocked',
+    unit:'days', pcs:'wins',
+    g_lt:'Success Diary', g_sub:'It opens only after Morning Three runs steady.',
+    g_lock:'Behind a door',
+    g_ring_v:'left', g_ring_u:'d', g_ring_full:'logged',
+    s_wait:'{n} days to one month',
+    s_wait2:'Running {r} of {t} days',
+    s_def:'Still short', s_def2:'{p} of the last 7 days went unlogged. Seven in a row opens it.',
+    s_open_now:'Unlocked', s_opened:'Unlocked ', s_preview:'Preview',
+    g_cond:'Requirements', g_cond_d:'Both must be true',
+    c1_t:'Morning Three for 30 days', c1_d:'Counting from the first thing you wrote down.',
+    c2_t:'Logged honestly 7 days straight', c2_d:'Not about finishing all three. About sealing the day at 18:00. Seven in a row opens it.',
+    g_now:'Last 7 days', g_now_d:'Green = logged · Grey = no record',
+    g_now_note:'{n} of the last 7 days sealed. Doing less is fine. Not logging is what counts.',
+    g_preview:'Preview with sample data', g_preview_d:'Shows the door, does not unlock it',
+    g_demo_clear:'Clear sample data',
+    back_morning:'Back to Morning Three'
+  }
+};
+function t(k){ return (T[LANG] && T[LANG][k] !== undefined) ? T[LANG][k] : (T.zh[k] !== undefined ? T.zh[k] : k); }
+function pct(x){ return Math.round(x*100); }
+
+var ENERGY = [
+  { k:'calm',  zh:'平静', en:'Calm'   },
+  { k:'full',  zh:'充实', en:'Fulfil' },
+  { k:'flow',  zh:'顺畅', en:'In flow'},
+  { k:'tired', zh:'疲惫', en:'Tired'  },
+  { k:'tense', zh:'焦灼', en:'Restless'},
+  { k:'bright',zh:'雀跃', en:'Bright' }
+];
+/* 哪些状态算「不在状态」—— 只有这时才追问一句，平时不出现 */
+var LOWK = { tired:1, tense:1 };
+function blankDay(){ return { items:['','',''], done:'', low:'', energy:null, none:false, at:null }; }
+function eName(k){
+  for(var i=0;i<ENERGY.length;i++){ if(ENERGY[i].k===k) return LANG==='en'? ENERGY[i].en : ENERGY[i].zh; }
+  return '';
+}
+function eClass(k){
+  return { calm:'t', full:'f', flow:'b', tired:'r', tense:'o', bright:'p' }[k] || 't';
+}
+/* INS 胶片色 */
+var FILM = [
+  ['#28241E','#D6BE93','#6B5636'],
+  ['#E6EFE8','#B4CDC0','#456955'],
+  ['#F3E3E0','#D6B0A9','#7A514A'],
+  ['#E3EBEF','#B0C7D2','#48626D'],
+  ['#EEE7F1','#C3B0D1','#58466A'],
+  ['#2A2620','#DFC594','#785F35']
+];
+function filmOf(k){ return FILM[hashOf(k) % FILM.length]; }
+
+/* =========================================================
+   渲染
+   ========================================================= */
+function render(){
+  document.getElementById('app').innerHTML = view();
+  document.getElementById('navT').textContent = t('nav');
+  document.getElementById('langBtn').textContent = (LANG==='zh'? 'EN' : '中文');
+  document.getElementById('segToday').textContent = t('seg1');
+  document.getElementById('segWall').textContent  = t('wall_t');
+  document.getElementById('segData').textContent  = t('data_t');
+  var v = S.view;
+  document.getElementById('segToday').className = 'seg-i' + (v==='today'?' on':'');
+  document.getElementById('segWall').className  = 'seg-i' + (v==='wall' ?' on':'');
+  document.getElementById('segData').className  = 'seg-i' + (v==='data' ?' on':'');
+  /* 没解锁就只有一页，别给看得到点不动的标签 */
+  document.getElementById('seg').style.display = (LASTU && LASTU.state==='open')? '' : 'none';
+  if(S.sheetKey) renderSheet();
+}
+
+var LASTU = null;
+function view(){
+  var u = unlock();
+  LASTU = u;
+  if(u.state !== 'open') return viewGate(u);
+  if(S.view === 'wall') return viewWall();
+  if(S.view === 'data') return viewData();
+  return viewToday();
+}
+
+/* ---------- 门禁 ---------- */
+function viewGate(u){
+  var h = '';
+
+  if(u.state === 'nodata'){
+    h += '<div class="lt">'+esc(t('g_lt'))+'</div><div class="lt-s">'+esc(t('g_sub'))+'</div>';
+    h += '<div class="grp"><div class="empty" style="padding:34px 20px">'+
+         '<div class="empty-t">'+esc(t('empty_w'))+'</div>'+
+         '<div class="empty-d">'+esc(t('g_sub'))+'</div></div></div>';
+    h += '<button class="btn-i" data-act="go">'+esc(t('go_morning'))+'</button>';
+    return h;
+  }
+
+  var win = u.win || mWindow(mLoad());
+  var ringPct, ringVal, ringLab, status, statusCls;
+
+  if(u.state === 'open'){
+    ringPct = 1; ringVal = '100%'; ringLab = t('g_ring_full');
+    status = t('s_open_now'); statusCls = 'ok';
+  } else if(u.state === 'deferred' || u.state === 'preview'){
+    ringPct = 0; ringVal = pct(win.rate)+'%'; ringLab = t('g_ring_full');
+    status = (u.state==='preview'? t('s_preview') : t('s_def')); statusCls = 'warn';
+  } else {
+    ringPct = Math.min(1, u.ran / u.target);
+    ringVal = u.left; ringLab = (LANG==='en'? t('g_ring_v')+' '+t('g_ring_u') : t('g_ring_v'));
+    status = (LANG==='en'? t('s_wait').replace('{n}',u.left) : t('s_wait').replace('{n}',u.left));
+    statusCls = 'info';
+  }
+
+  var C = 2*Math.PI*70;
+  var off = C * (1 - ringPct);
+
+  h += '<div class="gate">';
+  h += '<div class="lock-ico">'+
+       '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.9" stroke-linecap="round">'+
+       '<rect x="4" y="10.5" width="16" height="10.5" rx="3"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg></div>';
+  h += '<div class="lt" style="margin-top:0">'+esc(t('g_lt'))+'</div>';
+  h += '<div class="lt-s">'+esc(t('g_sub'))+'</div>';
+
+  h += '<div class="ring-wrap">'+
+    '<svg class="ring" viewBox="0 0 168 168">'+
+      '<circle cx="84" cy="84" r="70" fill="none" style="stroke:var(--sep)" stroke-width="11"/>'+
+      '<circle cx="84" cy="84" r="70" fill="none" stroke="'+(u.state==='open'?'#34C759':(u.state==='deferred'?'#FF9500':'#007AFF'))+
+        '" stroke-width="11" stroke-linecap="round" stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'"/>'+
+    '</svg>'+
+    '<div class="ring-hub"><div class="ring-v num">'+esc(ringVal)+'</div><div class="ring-l">'+esc(ringLab)+'</div></div>'+
+  '</div>';
+
+  h += '<div class="status '+statusCls+'"><span class="caret" style="color:inherit">'+
+       (u.state==='open'? '●' : (u.state==='deferred'? '↻' : (u.state==='preview'? '◇' : '◷')))+'</span>'+esc(status)+'</div>';
+  if(u.state==='deferred' || u.state==='preview'){
+    h += '<div class="lt-s" style="margin-top:8px">'+esc(t('s_def2').replace('{p}', (u.miss || WINDOW-win.sealed)))+'</div>';
+  } else if(u.state==='waiting'){
+    h += '<div class="lt-s" style="margin-top:8px">'+esc(t('s_wait2').replace('{r}',u.ran).replace('{t}',u.target))+'</div>';
+  }
+  h += '</div>';
+
+  /* 最近一周 */
+  h += '<div class="lt-row"><div><div class="lt" style="font-size:22px;margin:22px 0 0">'+esc(t('g_now'))+'</div>'+
+       '<div class="lt-s">'+esc(t('g_now_d'))+'</div></div>'+
+       '<div class="lt-s num" style="font-size:20px;font-weight:700;color:#000;flex:none">'+pct(win.rate)+'%</div></div>';
+  h += '<div class="wk">';
+  win.list.forEach(function(x){
+    /* 是否归档，不看完成条数 —— 做完 3 件和做完 1 件，只要如实封存就是绿 */
+    var cls = x.sealed? 'ok' : 'miss';
+    h += '<div class="wk-c '+cls+'">'+
+         '<span class="wk-d">'+wdShort(x.k)+'</span>'+
+         '<span class="wk-v num">'+(x.sealed? '✓' : '·')+'</span></div>';
+  });
+  h += '</div>';
+  h += '<div class="lt-s" style="margin-top:8px">'+esc(t('g_now_note').replace('{n}', win.sealed))+'</div>';
+
+  /* 条件 */
+  h += '<div class="grp"><div class="grp-h">'+esc(t('g_cond'))+'</div>'+
+       rule(1, t('c1_t'), t('c1_d'), u.state==='open' || u.ran>=MIN_DAYS) +
+       rule(2, t('c2_t'), t('c2_d'), u.state==='open' || win.rate>=1) +
+       '</div>';
+
+  h += '<button class="btn-s" data-act="go">'+esc(t('back_morning'))+'</button>';
+  if(DB.demo){
+    h += '<button class="btn-s" data-act="demooff">'+esc(t('g_demo_clear'))+'</button>';
+  } else {
+    h += '<button class="btn-s" data-act="demo">'+esc(t('g_preview'))+'</button>'+
+         '<div class="lt-s" style="text-align:center;margin-top:8px">'+esc(t('g_preview_d'))+'</div>';
+  }
+  return h;
+}
+function rule(n, title, desc, passed){
+  var col = passed? 'var(--brand)' : '#FF9500';
+  return '<div class="rule"><div class="rule-i" style="background:'+col+';color:#fff">'+n+'</div>'+
+         '<div class="rule-t"><b>'+esc(title)+'</b> <span class="m">'+esc(desc)+'</span></div></div>';
+}
+
+/* ---------- 今日 ---------- */
+function viewToday(){
+  var k = todayKey(), r = rec(k);
+  var h = '';
+
+  /* 夜间提示 */
+  if(!DB.days[k] && !S.bannerOff){
+    var hr = new Date().getHours();
+    if(hr >= 21){
+      h += '<div class="banner"><div class="bi">'+esc(wdShort(k))+'</div>'+
+        '<div class="bt"><b>'+esc(t('b_t'))+'</b><br>'+esc(t('b_d'))+'</div>'+
+        '<button class="bx" data-act="banner">×</button></div>';
+    }
+  }
+
+  h += '<div class="lt-row"><div><div class="lt">'+esc(t('lt'))+'</div>'+
+       '<div class="lt-s">'+esc(fmtFull(k))+' · '+esc(wdFull(k))+'</div></div>'+
+       '<div class="lt-s" style="flex:none;font-weight:600;color:#000">'+esc(fmtDate(k))+'</div></div>';
+
+  if(r.at){
+    h += '<div class="night">'+esc(anyItem(r)? t('saved') : t('saved_blank'))+' · '+esc(hhmm(r.at))+'</div>';
+  }
+
+  /* 今天推进了什么 —— 写完一行才露出下一行，不预先摆三个空位 */
+  h += '<div class="grp"><div class="grp-h">'+esc(t('ach'))+'</div>';
+  if(r.none){
+    h += '<div class="inp"><span class="idx num">—</span><span class="none-d">'+esc(t('ach_none_d'))+'</span></div>';
+  } else {
+    for(var i=0;i<SLOTS;i++){
+      var prev = i===0 ? true : !!(r.items[i-1] && String(r.items[i-1]).trim());
+      var self = !!(r.items[i] && String(r.items[i]).trim());
+      h += '<div class="inp'+(prev||self?'':' ghost')+'" data-row="'+i+'"><span class="idx num">'+pad(i+1)+'</span>'+
+           '<input class="rc" type="text" maxlength="60" data-i="'+i+'" placeholder="'+esc(t('ph')[i])+
+           '" value="'+esc(r.items[i]||'')+'"></div>';
+    }
+  }
+  h += '<div class="lt-s" style="padding:9px 16px 11px">'+esc(t('ach_p'))+'</div>';
+  /* 「今天没有」是一键出口：不用思考，也不用编 */
+  h += '<div class="none-row"><button class="none-btn" data-act="'+(r.none?'unoneday':'noneday')+'">'+
+    esc(r.none? t('ach_undo') : t('ach_none'))+'</button></div>';
+  h += '</div>';
+
+  /* 状态：只有选到「不在状态」才追问一句，平时不出现 */
+  h += '<div class="grp"><div class="grp-h">'+esc(t('e_t'))+'</div><div class="chips">';
+  ENERGY.forEach(function(e){
+    var on = (r.energy===e.k || (S.energy===e.k && !r.energy));
+    h += '<button class="chip'+(on?' on':'')+'" data-act="energy" data-v="'+e.k+'">'+esc(LANG==='en'? e.en : e.zh)+'</button>';
+  });
+  h += '</div><div class="lt-s" style="padding:0 16px 12px">'+esc(t('e_p'))+'</div></div>';
+
+  var ek = r.energy || S.energy;
+  if(ek && LOWK[ek]){
+    h += '<div class="grp"><div class="grp-h">'+esc(t('low_t'))+'</div>'+
+      '<div class="low"><textarea data-f="low" maxlength="120" placeholder="'+esc(t('low_ph'))+'">'+esc(r.low||'')+'</textarea></div>'+
+      '<div class="lt-s" style="padding:0 16px 13px">'+esc(t('low_p'))+'</div></div>';
+  }
+
+  /* 一句话：不写也行 */
+  h += '<div class="grp-h">'+esc(t('fin'))+'</div>';
+  h += '<div class="grp pad"><textarea class="row-wrap" maxlength="300" data-f="done" placeholder="'+esc(t('fin_p'))+
+       '">'+esc(r.done||'')+'</textarea></div>';
+
+  /* 不再拦着不让人保存：空白也是一天 */
+  h += '<button class="btn-i" data-act="save">'+esc(t('save'))+'</button>';
+  h += '<div class="lt-s" style="text-align:center;margin-top:10px">'+esc(t('save_hint'))+'</div>';
+  return h;
+}
+
+/* ---------- 成就墙（INS） ---------- */
+function viewWall(){
+  var ks = Object.keys(DB.days).filter(function(k){
+    var r = DB.days[k]; return r && (r.items && r.items.some(function(x){ return x && String(x).trim(); }));
+  }).sort().reverse();
+
+  var h = '<div class="lt-row"><div><div class="lt" style="font-size:30px">'+esc(t('wall_t'))+'</div>'+
+          '<div class="lt-s">'+esc(t('wall_sub'))+'</div></div></div>';
+
+  if(!ks.length){
+    h += '<div class="grp"><div class="empty" style="padding:40px 22px">'+
+         '<div class="empty-t">'+esc(t('empty_w'))+'</div>'+
+         '<div class="empty-d">'+t('empty_wd')+'</div></div></div>';
+    return h;
+  }
+
+  h += '<div class="filmstrip"><div class="perf-s">';
+  for(var a=0;a<3;a++) h += '<div class="perf-d"></div>';
+  h += '</div><div class="ig-title">'+esc(t('wall_t'))+'</div><div class="perf-s2">';
+  for(var b=0;b<3;b++) h += '<div class="perf-d"></div>';
+  h += '</div></div>';
+
+  h += '<div class="ig">';
+  ks.forEach(function(k){
+    var r = DB.days[k], f = filmOf(k);
+    var c1 = r.items.filter(function(x){ return x && String(x).trim(); });
+    var head = c1[0] || t('ach');
+    h += '<button class="cell" data-act="open" data-k="'+k+'">'+
+      '<span class="ig-img" style="background:linear-gradient(155deg,'+f[0]+' 0%,'+f[1]+' 100%)">'+
+        '<span class="ig-shape s1"></span><span class="ig-shape s2"></span><span class="ig-shape s3"></span>'+
+        '<span class="ig-day">'+esc(fmtDate(k))+'</span>'+
+      '</span>'+
+      '<span class="ig-cap'+(c1.length?'':' mut')+'"><em>'+esc(head)+'</em>'+
+        (c1.length>1? '<br>'+esc(c1.slice(1).join(' · ')) : '')+'</span>'+
+    '</button>';
+  });
+  h += '</div>';
+  if(ks.length > 3) h += '<div class="ig-more">'+ks.length+' '+esc(t('wall_t'))+'</div>';
+  return h;
+}
+
+/* ---------- 数据 ---------- */
+function viewData(){
+  var ks = Object.keys(DB.days);
+  var wins = 0;
+  ks.forEach(function(k){ var r=DB.days[k]; if(r && r.items) r.items.forEach(function(x){ if(x && String(x).trim()) wins++; }); });
+  var unlocked = !!(DB.unlock && DB.unlock.at);
+
+  var h = '<div class="lt">'+esc(t('data_t'))+'</div><div class="lt-s">'+esc(t('data_sub'))+'</div>';
+
+  h += '<div class="stat3">'+
+    '<div class="stat"><div class="stat-v num">'+ks.length+'</div><div class="stat-l">'+esc(t('s_days'))+'</div></div>'+
+    '<div class="stat"><div class="stat-v num">'+wins+'</div><div class="stat-l">'+esc(t('s_total'))+'</div></div>'+
+    '<div class="stat"><div class="stat-v" style="font-size:20px">'+(unlocked? '✓' : '—')+'</div><div class="stat-l">'+esc(t('s_open'))+'</div></div>'+
+  '</div>';
+
+  h += '<div class="grp">'+
+    '<div class="row" data-act="export"><div class="row-c">'+esc(t('d_export'))+'<div class="row-d num">'+ks+' '+esc(t('wall_t'))+' · '+wins+' '+esc(t('pcs'))+'</div></div>'+
+      '<span class="caret">›</span></div>'+
+    '<div class="row" data-act="import"><div class="row-c">'+esc(t('d_import'))+'<div class="row-d">恢复设备备份</div></div><span class="caret">›</span></div>'+
+    '<div class="row" data-act="clear"><div class="row-c" style="color:#FF3B30">'+esc(t('d_clear'))+'</div><span class="caret">›</span></div>'+
+  '</div>';
+  h += '<div class="lt-s" style="padding:0 2px">'+esc(t('d_note'))+'</div>';
+  h += '<input type="file" id="fileIn" accept="application/json,.json" style="display:none">';
+  h += '<button class="btn-s" data-act="go">'+esc(t('back_morning'))+'</button>';
+  return h;
+}
+
+/* ---------- sheet ---------- */
+function renderSheet(){
+  var k = S.sheetKey, r = DB.days[k];
+  if(!r){ closeSheet(); return; }
+  var f = filmOf(k);
+  var h = '<div class="grab"></div>';
+  h += '<div class="sh-h"><div class="sh-t">'+esc(fmtFull(k))+'</div>'+
+       '<button class="sh-c" data-act="close">'+esc(LANG==='en'?'Done':'完成')+'</button></div>';
+  h += '<div class="sh-b">';
+
+  h += '<div class="ig-img" style="width:100%;max-width:190px;border-radius:10px;margin-bottom:16px;background:linear-gradient(155deg,'+f[0]+' 0%,'+f[1]+' 100%)">'+
+       '<span class="ig-shape s1"></span><span class="ig-shape s2"></span><span class="ig-shape s3"></span>'+
+       '<span class="ig-day">'+esc(fmtDate(k))+' '+esc(wdFull(k))+'</span></div>';
+
+  var n = 0;
+  r.items.forEach(function(x){
+    if(!x || !String(x).trim()) return;
+    n++;
+    h += '<div class="sh-item"><div class="sh-n" style="background:'+f[2]+'">'+pad(n)+'</div>'+
+         '<div class="sh-x">'+esc(x)+'</div></div>';
+  });
+
+  if(r.done && String(r.done).trim()){
+    h += '<div class="sh-item"><div class="sh-n" style="background:#4A524B">·</div>'+
+         '<div class="sh-x mut">'+esc(r.done)+'</div></div>';
+  }
+  /* 记了就得看得到 —— 否则「不在状态时在做什么」白记 */
+  if(r.low && String(r.low).trim()){
+    h += '<div class="sh-item"><div class="sh-n" style="background:#D8DCE6">·</div>'+
+         '<div class="sh-x mut">'+esc(t('low_tag'))+'：'+esc(r.low)+'</div></div>';
+  }
+
+  h += '<div class="sh-meta">';
+  if(r.energy) h += '<span class="tag '+eClass(r.energy)+'">'+esc(eName(r.energy))+'</span>';
+  if(r.at)     h += '<span class="stamp">'+esc(hhmm(r.at))+'</span>';
+  h += '</div>';
+
+  h += '<button class="btn-s" data-act="delday" data-k="'+k+'" style="margin-top:20px;color:#FF6B5E;background:transparent;border:1px solid #3A2A28">'+
+       esc(LANG==='en'?'Delete this day':'删除这一天')+'</button>';
+  h += '</div>';
+  document.getElementById('sheet').innerHTML = h;
+}
+function openSheet(k){ S.sheetKey = k; S.sheetOpen = true; renderSheet();
+  document.getElementById('ov').classList.add('on'); document.body.style.overflow='hidden'; }
+function closeSheet(){ S.sheetKey = null; S.sheetOpen = false;
+  document.getElementById('ov').classList.remove('on'); document.body.style.overflow=''; }
+
+/* ---------- toast ---------- */
+var toastTimer = null;
+function toast(msg){
+  var el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ el.classList.remove('on'); }, 1900);
+}
+
+/* =========================================================
+   交互
+   ========================================================= */
+function rec(k){
+  if(!DB.days[k]) DB.days[k] = blankDay();
+  var r = DB.days[k];
+  if(!r.items) r.items = ['','',''];        /* 老记录兼容 */
+  if(r.low === undefined) r.low = '';
+  if(r.none === undefined) r.none = false;
+  return r;
+}
+function anyItem(r){ return !!(r.items && r.items.some(function(x){ return x && String(x).trim(); })); }
+
+/* 不再拦着不让人保存：空白也是一天，也是数据 */
+function saveTonight(){
+  var k = todayKey(), r = rec(k);
+  if(r.none){
+    r.items = ['','',''];
+  } else {
+    var ins = document.querySelectorAll('.rc'), arr = [];
+    for(var i=0;i<SLOTS;i++){ arr.push(ins[i]? ins[i].value.trim() : (r.items[i]||'')); }
+    r.items = arr;
+  }
+  var ta = document.querySelector('textarea[data-f="done"]');
+  if(ta) r.done = ta.value.trim();
+  var lw = document.querySelector('textarea[data-f="low"]');
+  if(lw) r.low = lw.value.trim();
+  var chip = document.querySelector('.chip.on');
+  if(chip) r.energy = chip.getAttribute('data-v');
+  r.at = new Date().toISOString();
+  S.energy = null;
+  save(); toast(anyItem(r)? t('saved') : t('saved_blank')); render();
+}
+
+function bind(){
+  var app = document.getElementById('app');
+
+  /* 分段导航和语言按钮都在 #app 之外（常驻不重绘），必须单独绑 */
+  document.getElementById('seg').addEventListener('click', function(e){
+    var el = e.target.closest('[data-act="view"]');
+    if(!el) return;
+    S.view = el.getAttribute('data-v');
+    S.sheetKey = null;
+    try{ window.scrollTo(0,0); }catch(err){}
+    render();
+  });
+  const homeBtn = document.querySelector('[data-act="home"]');
+  if(homeBtn) homeBtn.addEventListener('click', function(){ location.href = 'index.html'; });
+
+  document.getElementById('langBtn').addEventListener('click', function(){
+    LANG = (LANG==='zh'? 'en':'zh');
+    try{ localStorage.setItem(LKEY, LANG); }catch(err){}
+    render();
+  });
+
+  app.addEventListener('click', function(e){
+    var el = e.target.closest('[data-act]');
+    if(!el) return;
+    var a = el.getAttribute('data-act');
+
+    if(a==='view'){ S.view = el.getAttribute('data-v'); window.scrollTo(0,0); render(); return; }
+    if(a==='lang'){ LANG = (LANG==='zh'? 'en':'zh');
+      try{ localStorage.setItem(LKEY, LANG); }catch(err){} render(); return; }
+    if(a==='go'){ location.href = 'index.html'; return; }
+    if(a==='banner'){ S.bannerOff = true; render(); return; }
+    if(a==='save'){ saveTonight(); return; }
+    if(a==='noneday'){ var rn = rec(todayKey()); rn.none = true; rn.items = ['','','']; save(); render(); return; }
+    if(a==='unoneday'){ var ru = rec(todayKey()); ru.none = false; save(); render(); return; }
+    if(a==='energy'){
+      var v = el.getAttribute('data-v');
+      S.energy = (S.energy===v? null : v);
+      var r = DB.days[todayKey()];
+      if(r && r.energy === v) r.energy = null;
+      render();
+      return;
+    }
+    if(a==='open'){ openSheet(el.getAttribute('data-k')); return; }
+    if(a==='demo'){ loadDemo(); return; }
+    if(a==='demooff'){ clearDemo(); return; }
+    if(a==='export'){ exportJSON(); return; }
+    if(a==='import'){ document.getElementById('fileIn').click(); return; }
+    if(a==='clear'){
+      if(confirm(LANG==='en'? 'Delete every record? This cannot be undone.' : '删除全部记录？无法恢复。')){
+        DB.days = {}; save(); render(); toast(LANG==='en'?'Cleared':'已清空');
+      }
+      return;
+    }
+  });
+
+  /* 输入：只写内存 + localStorage，不重绘（避免丢焦点） */
+  app.addEventListener('input', function(e){
+    var el = e.target;
+    var k = todayKey(), r = rec(k);
+    if(el.classList.contains('rc')){
+      var i = +el.getAttribute('data-i');
+      r.items[i] = el.value.trim();
+      /* 写下这一行，就露出下一行 —— 不重绘，不打断输入 */
+      if(el.value.trim()){
+        var box = el.parentNode.parentNode;
+        var nxt = box ? box.querySelector('.inp[data-row="'+(i+1)+'"]') : null;
+        if(nxt) nxt.classList.remove('ghost');
+      }
+      save();
+    }
+    else if(el.tagName === 'TEXTAREA'){
+      if(el.getAttribute('data-f') === 'low') r.low = el.value;
+      else r.done = el.value;
+      save();
+    }
+  });
+
+  document.getElementById('ov').addEventListener('click', function(e){
+    var el = e.target.closest('[data-act]');
+    if(!el) return;
+    var a = el.getAttribute('data-act');
+    if(a==='close'){ closeSheet(); return; }
+    if(a==='delday'){
+      var kk = el.getAttribute('data-k');
+      if(confirm(LANG==='en'? 'Delete this day?' : '删除这一天的记录？')){
+        delete DB.days[kk]; save(); closeSheet(); render(); toast(LANG==='en'?'Deleted':'已删除');
+      }
+    }
+  });
+
+  /* 导入 */
+  document.addEventListener('change', function(e){
+    if(e.target && e.target.id === 'fileIn'){
+      var f = e.target.files && e.target.files[0];
+      if(!f) return;
+      var fr = new FileReader();
+      fr.onload = function(){
+        try{
+          var o = JSON.parse(fr.result);
+          if(o && o.days){
+            DB.days = o.days; save(); render(); toast(LANG==='en'?'Imported':'已导入');
+          } else toast(LANG==='en'?'Bad file':'文件格式不对');
+        }catch(err){ toast(LANG==='en'?'Bad file':'解析失败'); }
+      };
+      fr.readAsText(f);
+      e.target.value = '';
+    }
+  });
+}
+
+/* ---------- 示例数据（只喂给门禁页预览，绝不解锁） ---------- */
+function loadDemo(){
+  var today = new Date(), made = {};
+  var titles = ['写完方案初稿','晨间清单全归档','读完 20 页','跑 3 公里','回完关键消息','把桌面清干净'];
+  for(var i=48;i>=0;i--){
+    var k = ymd(addDays(today,-i));
+    if(i===0) continue;                       /* 今天留空，保持真实 */
+    var full = (i>2);                          /* 最近一周留一天缺席、一天差一件 */
+    var cnt  = full? 3 : 2;
+    var r = { tasks:[], writtenAt:k+'T06:30:00', checkin:null };
+    for(var j=0;j<cnt;j++){
+      r.tasks.push({ text: titles[(i+j)%titles.length], done: (full || j<1) });
+    }
+    /* i===3 那天写了要事但没在 18:00 封存 —— 演示「漏记」在周视图里的样子 */
+    if(i !== 3) r.checkin = { at:k+'T18:35:00', results: r.tasks.map(function(x){ return x.done; }), note:'' };
+    made[k] = r;
+  }
+  DB.demoDays = made;                          /* 只进内存，真实晨间数据一个字节都不动 */
+  DB.demo = true; save();
+  render(); toast(LANG==='en'?'Sample data loaded':'已载入示例数据');
+}
+function clearDemo(){
+  DB.demoDays = null;
+  DB.demo = false; DB.unlock = { at:null, defer:0 }; save();
+  S.view = 'today'; render(); toast(LANG==='en'?'Sample data cleared':'示例数据已清除');
+}
+
+/* ---------- tick：跨天自动重绘 ---------- */
+var lastToday = null;
+function tick(){
+  applyTheme();          /* 跨过 18:00 / 05:00 就换肤，不用刷新 */
+  var k = todayKey();
+  if(k !== lastToday){ lastToday = k; render(); }
+}
+
+/* ---------- 导出 ---------- */
+function exportJSON(){
+  var blob = new Blob([JSON.stringify({ days:DB.days, unlock:DB.unlock }, null, 2)], {type:'application/json'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'success-diary-' + todayKey() + '.json';
+  a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+}
+
+/* =========================================================
+   启动
+   ========================================================= */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('sw.js').catch(function(){});
+  });
+}
+
+load();
+/* 个人测试通道：?test=unlock 直接解锁（不碰晨间清单数据，测试完删掉参数即可重锁） */
+try{
+  if(location.search.indexOf('test=unlock') >= 0){
+    DB.unlock = DB.unlock || { at:null, defer:0 };
+    if(!DB.unlock.at){ DB.unlock.at = todayKey(); save(); }
+  }
+  if(location.search.indexOf('test=reset') >= 0){
+    DB.unlock = { at:null, defer:0 }; DB.days = {}; save();
+  }
+}catch(e){}
+try{ var lg = localStorage.getItem(LKEY); if(lg==='en'||lg==='zh') LANG = lg; }catch(e){}
+bind();
+lastToday = todayKey();
+render();
+setInterval(tick, 20000);
+window.addEventListener('focus', tick);
+document.addEventListener('DOMContentLoaded', function(){
+  document.getElementById('app').addEventListener('dblclick', function(){ /* noop */ });
+});
+</script>
+</body>
+</html>

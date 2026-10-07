@@ -1,0 +1,24 @@
+{
+  "name": "晨间清单 · Morning Three",
+  "short_name": "晨间清单",
+  "description": "07:00 写下当日三件要事，18:00 如实归档。跑满一个月解锁睡前的成功日记。",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#101310",
+  "theme_color": "#101310",
+  "categories": ["productivity", "lifestyle"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "今日三件要事", "short_name": "今日", "url": "./index.html", "description": "写下今天的三件要事" },
+    { "name": "成功日记", "short_name": "成功日记", "url": "./success.html", "description": "睡前记三件小成就" }
+  ]
+}
