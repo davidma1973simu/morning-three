@@ -1,2 +1,5 @@
 morning-list-dev/
 .DS_Store
+node_modules/
+smoke-*.js
+*.log

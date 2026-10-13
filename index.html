@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="晨间清单">
 <meta name="application-name" content="晨间清单">
-<meta name="description" content="早上想清楚今天要推进什么，一件也算数；18:00 收个尾，没推进的带到明天。跑满一个月解锁睡前的成功日记。">
+<meta name="description" content="早上想清楚今天要推进什么，一件也算数；18:00 收个尾，没推进的带到明天。跑满 7 天解锁睡前的晚间收尾。">
 <title>晨间清单 · Morning Three</title>
 <script>
 /* 主题在样式前定好，避免先闪一下浅色再跳深色 */
@@ -132,7 +132,7 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .sd-p{font-size:12.5px;color:var(--ink2);margin-top:3px;line-height:1.45}
 .sd-go{flex:none;font-size:12px;font-weight:700;color:var(--brand-txt);white-space:nowrap}
 .sd-caret{flex:none;color:var(--edge2);font-size:17px}
-/* 满月但未解锁：收成一行安静的页脚，不与今日三件事抢注意力 */
+/* 满 7 天但未解锁：收成一行安静的页脚，不与今日三件事抢注意力 */
 .sd-wrap{padding:14px 18px;opacity:.78}
 .sdcard.slim .sd-ico{width:30px;height:30px;border-radius:9px}
 .sdcard.slim .sd-h{font-size:13.5px;font-weight:600;color:var(--ink2)}
@@ -186,6 +186,26 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .foot-note{font-size:12px;color:var(--ink3);text-align:center;margin-top:11px;line-height:1.6}
 .carry-note{font-size:12px;color:var(--brand-txt);background:var(--brand-soft);border-radius:10px;
   padding:8px 11px;margin:12px 0 2px;line-height:1.55}
+
+/* 晨间洞察 whisper（不是仪表盘，是一句低声的解读） */
+.whisper{display:flex;flex-direction:column;gap:9px;
+  background:linear-gradient(180deg,var(--brand-soft),var(--card))}
+.ws-mark{color:var(--brand-txt);opacity:.75;display:flex}
+.ws-line{font-size:15.5px;font-weight:600;color:var(--ink);line-height:1.55;letter-spacing:-.01em}
+.ws-go{font-size:12.5px;font-weight:700;color:var(--brand-txt);cursor:pointer;margin-top:2px}
+
+/* 坚持视图 */
+.persist{text-align:center}
+.pd-row{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin:6px 0 14px}
+.pd{width:13px;height:13px;border-radius:50%;background:var(--brand-soft);border:1.5px solid var(--edge2);transition:.2s}
+.pd.on{background:var(--brand);border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+.pd-line{font-size:15px;font-weight:600;color:var(--ink);letter-spacing:-.01em}
+.pd-line.sub{font-size:13px;font-weight:500;color:var(--brand-txt);margin-top:6px}
+
+/* 迟到补记 */
+.late-note .btn.late-save{margin-top:12px}
+.late-done{font-size:11px;color:var(--brand-txt);font-weight:700;margin-top:8px;letter-spacing:.04em}
+.late-btn{margin-top:14px}
 
 .empty-inline{text-align:center;padding:24px 6px 20px}
 .empty-inline .ei-t{font-size:15px;font-weight:600;margin-bottom:5px}
@@ -267,6 +287,28 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
   padding:8px 20px calc(28px + env(safe-area-inset-bottom));box-shadow:0 -12px 44px rgba(0,0,0,.18);
   animation:shup .26s cubic-bezier(.2,.9,.3,1)}
 @keyframes shup{from{transform:translateY(22px);opacity:.4}to{transform:none;opacity:1}}
+/* ---------- 价值卡弹窗 ---------- */
+#valRoot{position:fixed;inset:0;z-index:84;display:none}
+#valRoot.on{display:block}
+#valRoot .ov-bg{position:absolute;inset:0;background:var(--ov)}
+#valRoot .val-sheet{position:absolute;left:0;right:0;top:0;bottom:0;background:var(--card);display:flex;flex-direction:column}
+#valRoot .val-x{position:absolute;top:calc(env(safe-area-inset-top) + 12px);left:14px;z-index:3;
+  width:36px;height:36px;border:0;border-radius:50%;background:rgba(127,127,127,.14);font-size:22px;line-height:1;color:var(--ink);cursor:pointer}
+#valFrame{flex:1;width:100%;border:0;background:var(--card)}
+.val-link{text-align:center;margin:18px 0 4px}
+/* ---------- 洞察预留区 ---------- */
+.future{opacity:.62}
+.future .future-box{margin-top:14px;height:84px;border:1.5px dashed var(--line);border-radius:14px}
+/* ---------- 归档回顾 ---------- */
+.arch-back{margin:-2px 0 12px}
+.arch-go{text-align:center;margin-top:10px}
+.arc{padding:14px 0;border-top:1px solid var(--line)}
+.arc:first-of-type{border-top:0}
+.arc-d{font-size:13px;color:var(--sub);margin-bottom:8px}
+.arc-late{color:var(--brand-txt);font-weight:600;margin-left:6px}
+.arc-it{font-size:15px;line-height:1.5;padding:2px 0}
+.arc-it.muted{color:var(--ink3);font-size:13px}
+.arc-note{font-size:14px;color:var(--sub);line-height:1.55;margin-top:6px;padding-left:10px;border-left:2px solid var(--brand-soft)}
 .sh-bar{width:38px;height:5px;border-radius:3px;background:var(--line2);margin:6px auto 16px}
 /* 安装 sheet 按钮：主操作深绿，次级安静 */
 .btn-i{display:block;width:100%;background:var(--brand);color:var(--on);font-size:16px;font-weight:700;
@@ -303,6 +345,33 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .empty-stats .es-d{font-size:13px;color:var(--ink3);line-height:1.7;margin-bottom:20px}
 .linkbtn{font-size:12.5px;font-weight:600;color:var(--brand-txt);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--brand-line)}
 
+/* ---------- 状态的镜子 / 长期对照（读晚间收尾数据） ---------- */
+.mi-sub{font-size:12.5px;color:var(--ink3);margin:-6px 0 16px;line-height:1.55}
+.mi-emo{display:flex;flex-wrap:wrap;gap:11px 18px}
+.mi-e{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--ink2)}
+.mi-dot{width:11px;height:11px;border-radius:50%;flex:none}
+.mi-c{font-variant-numeric:tabular-nums;color:var(--ink3);font-weight:700}
+.mi-blank{margin-top:17px;padding-top:16px;border-top:1px solid var(--line)}
+.mi-blank-t{font-size:13px;font-weight:700;color:var(--ink2);margin-bottom:6px}
+.mi-blank-d{font-size:13px;color:var(--ink3);line-height:1.7}
+.mi-blank-d b{color:var(--brand-txt);font-weight:700}
+.mi-none{font-size:13px;color:var(--ink3);line-height:1.65}
+/* 状态色（双主题） */
+.emo-calm{background:#0E6B50}.emo-full{background:#2F6FED}.emo-flow{background:#1FA97A}
+.emo-tired{background:#C26600}.emo-tense{background:#C0392B}.emo-bright{background:#C9881E}
+.night .emo-calm{background:#5FE3A1}.night .emo-full{background:#6FA8FF}.night .emo-flow{background:#5FDDB0}
+.night .emo-tired{background:#E59A4E}.night .emo-tense{background:#FF7A6B}.night .emo-bright{background:#F0B85E}
+/* 长期对照 */
+.dr-cols{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:2px}
+.dr-col-h{font-size:13px;font-weight:700;color:var(--ink2);margin-bottom:11px;display:flex;align-items:center;gap:8px}
+.dr-col-h .mi-dot{width:9px;height:9px}
+.dr-row{display:flex;align-items:center;gap:8px;margin:8px 0;font-size:12.5px}
+.dr-name{width:32px;flex:none;color:var(--ink2);font-weight:600}
+.dr-track{flex:1;height:7px;background:var(--fill);border-radius:4px;overflow:hidden}
+.dr-fill{height:100%;border-radius:4px}
+.dr-pct{width:34px;flex:none;text-align:right;color:var(--ink3);font-weight:700;font-variant-numeric:tabular-nums;font-size:11.5px}
+.dr-foot{margin-top:15px;font-size:12px;color:var(--ink3);text-align:center;line-height:1.65}
+
 /* ---------- recent ---------- */
 .sec-t{font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--ink3);text-transform:uppercase;margin:0 0 12px}
 .rec{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--line);font-size:13.5px}
@@ -316,6 +385,9 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .rec-s{width:52px;flex:none;text-align:right;font-size:11px;font-weight:700;letter-spacing:.03em}
 .rec-s.ok{color:var(--brand-txt)}
 .rec-s.no{color:var(--warn)}
+.rec-late{display:flex;align-items:baseline;gap:8px;margin:-3px 0 11px;padding-left:88px;font-size:12.5px;color:var(--ink3);line-height:1.5}
+.rec-late-tag{flex:none;font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--brand-txt);background:var(--brand-soft);border-radius:6px;padding:2px 6px;white-space:nowrap}
+.rec-late-tx{word-break:break-word}
 
 /* ---------- overlay ---------- */
 .ov{position:fixed;inset:0;background:var(--ov);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:50;display:flex;align-items:center;justify-content:center;padding:18px;overflow-y:auto}
@@ -363,7 +435,7 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .br-foot{margin-top:16px;font-size:12px;color:var(--ink3);line-height:1.6;text-align:center}
 
 /* ---------- 非工作时段的一句话：不评价，只接住 ---------- */
-.night{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--ink2);
+.nightbar{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--ink2);
   background:var(--fill3);border-radius:12px;padding:10px 12px;margin-bottom:14px;line-height:1.5}
 
 /* ---------- toast ---------- */
@@ -384,6 +456,7 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 <div id="ovRoot"></div>
 <div id="briefRoot"></div>
 <div id="instRoot"></div>
+<div id="valRoot"></div>
 <div id="rmRoot"></div>
 <div id="celebRoot"></div>
 <div class="toast" id="toast"></div>
@@ -395,8 +468,10 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 /* =========================================================
    常量
    ========================================================= */
-var PLAN_MIN  = 7 * 60;    // 07:00 之后不可再写/改当日要事
-var CHECK_MIN = 18 * 60;   // 18:00 起进入强制归档
+var PLAN_MIN     = 7 * 60;   // 07:00 前写下 = 晨间标记（仅用于正向标签，不再限制编辑）
+var EVE_MIN      = 18 * 60;  // 18:00 起晚间收尾显示 / 可开门
+var DAY_EDIT_MAX = 19 * 60;  // 晨间清单可编辑到 19:00（与晚间收尾有 1 小时交叠）
+var CHECK_MIN    = EVE_MIN;  // 兼容旧引用
 var SLOTS     = 3;         // 每日三件要事
 var KEY       = 'morning-three.v1';
 
@@ -406,14 +481,17 @@ var KEY       = 'morning-three.v1';
 var T = {
   zh:{
     brand:'晨间清单',
-    today:'今日', stats:'统计',
+    today:'今日', stats:'洞察',
     ph_plan:'早上', ph_exec:'白天', ph_check:'收尾时间', ph_sealed:'已收尾',
+    ph_edit:'白天', late_open_hint:'晚间收尾已开 · 要事可改到 19:00',
+    ph_late:'待收尾', ph_late_hint:'19:00 后只读', ph_late_sub:'要事已锁定 · 去收个尾',
+    go_close:'去收个尾',
     left_pre:'距 07:00 还有 ', left_pre2:'距 18:00 收尾还有 ',
     check_now:'18:00 已过，收个尾',
     sealed_hint:'今天收好了，明天见',
     t_title:'今天想推进什么',
     t_sub:'想清楚一件就算数 · 18:00 收个尾',
-    t_sub_exec:'白天随时可改可勾，18:00 收尾',
+    t_sub_exec:'白天随时可写可勾，18:00 收尾。',
     lock_hint:'要事 = 今天结束时会让你觉得没白过的那件事。<br>早上想最理想，想到了随时写。',
     sealed_at:'收尾 ·',
     ph:['今天想推进什么？一件就够','还有一件？可以不写','最后一件？可以不写'],
@@ -436,10 +514,10 @@ var T = {
     ov_need:'',
     carry_note:'昨天没推进的 {n} 件带来了 · 不想做就删掉',
     carry_tag:'顺延',
-    fin_ok:'完成率', fin_chk:'收尾率', fin_streak:'连续收尾',
+    ps_t:'坚持', ps_sub:'这 14 天，哪天来了，哪天没来 —— 都算数',
+    ps_used:'这 14 天，你来了 {n} 天', ps_cfm:'你一共确认了 {n} 次「推进」',
     p_day:'日', p_week:'周', p_month:'月',
     p_day_t:'最近 14 天', p_week_t:'最近 8 周', p_month_t:'最近 6 个月',
-    lg_done:'完成率', lg_chk:'归档率',
     es_t:'还没有数据',
     es_d:'早上想清楚今天要推进什么，18:00 收个尾。<br>曲线会一天天长出来。',
     es_demo:'载入示例数据看看效果',
@@ -447,16 +525,24 @@ var T = {
     demo_tag:'示例',
     rec_t:'最近记录',
     rec_ok:'已收尾', rec_no:'空白', rec_empty:'—',
-    sd_title:'成功日记', sd_sub:'睡前记下今天推进了什么 · 一件就够',
-    sd_lock:'未解锁 · 满一个月 + 过去 7 天每天收尾',
-    sd_left:'还差 {n} 天满一个月', sd_seal:'过去 7 天有 {n} 天收了尾，差一点',
+    sd_title:'晚间收尾', sd_sub:'睡前记下今天推进了什么 · 一件就够',
+    sd_lock:'未解锁 · 满 7 天 + 过去 7 天每天收尾',
+    sd_left:'还差 {n} 天满 7 天', sd_seal:'过去 7 天有 {n} 天收了尾，差一点',
     sd_go:'进入',
     day_unit:'天',
     toast_saved:'已保存',
+    tick_on:'推进确认 · 又往前一步',
     toast_sealed:'今天收好了',
     toast_demo:'已载入示例数据',
     toast_demo_off:'示例数据已清除',
     tasks:'件',
+    val_link:'价值主张 · 为什么是三件事',
+    future_t:'接下来这里',
+    future_sub:'会根据你每天的记录，给你总结、鼓励，或一句贴心的提醒',
+    arch_t:'回顾全部记录',
+    arch_sub:'你写下的每一笔都在这里 · 随时回看',
+    arch_empty:'还没有记录可回看',
+    arch_blank:'这一天没写什么，也算记下了',
     /* 装桌面（唯一保留的提醒路径） */
     rm_inst:'装到手机桌面',
     /* 安装引导 */
@@ -476,10 +562,9 @@ var T = {
     br_g_m:'早上好', br_s_m:'先把今天想清楚，剩下的慢慢来',
     br_g_d:'你好',   br_s_d:'想到就写一笔，什么时候都不晚',
     br_g_n:'晚上好', br_s_n:'今天空白也没关系，明天来写第一笔',
-    br_f1:'早上想清楚今天要推进什么 · 一件也算数',
-    br_f2:'白天随手勾掉推进了的',
-    br_f3:'18:00 收个尾 · 没推进的带到明天',
-    br_f4:'坚持满一个月，成功日记会解锁',
+    br_f1:'你不书写，世界就会替你书写',
+    br_f2:'这里不催你完成 —— 只帮你留下痕迹',
+    br_f3:'空白也算数，记忆由你的记录创造',
     br_fm:'不用做到完美，来就算数',
     br_go:'开始吧',
     /* 非工作时段的一句话 */
@@ -510,18 +595,43 @@ var T = {
     sum_word:'「{w}」出现了 {n} 次，是这段时间最常挂在心上的事。',
     /* 词云 */
     cw_t:'反复出现的事',
-    cw_sub:'写过的都会留在这里，慢慢长成你自己的样子'
+    cw_sub:'写过的都会留在这里，慢慢长成你自己的样子',
+    /* 状态的镜子 + 长期对照（读晚间收尾的数据） */
+    mi_t:'状态的镜子', mi_sub:'你留给自己的样子',
+    mi_blank_head:'留白的日子',
+    mi_blank:'这 {n} 天里，有 {b} 天留了白。空白不是没记录——是那天你决定不写。它也是数据。',
+    mi_blank_more:'它们多在周{w}。',
+    mi_no_blank:'你还没有留白的日子。',
+    dr_t:'最初 · 最近', dr_sub:'不比较，只是安静并排',
+    dr_first:'最初', dr_last:'最近',
+    dr_foot:'最初的你和最近的你，都安静地留在这里。',
+    /* 首次打开的激活锚点 */
+    first_ph:'写今天第一笔',
+    /* 错过早上的安抚 + 迟到补记（不改动当日封存） */
+    late_warm:'今晚来晚了也没关系。<br>想现在写一句吗？它会收在「补记」，不替今天谎报。',
+    late_ph:'写一句（补记）',
+    late_btn:'补记一句',
+    late_save:'留下',
+    late_saved:'已留下补记',
+    late_tag:'补记',
+    /* 晨间洞察：一句 whisper（不是仪表盘） */
+    ws_word:'你反复写下的，是「{w}」—— 它这段时间一直跟着你。',
+    ws_trace:'你已经在 {n} 天留下了痕迹。',
+    ws_to_eve:'晚间收尾已经敞开，去看看它们长成了什么'
   },
   en:{
     brand:'Morning Three',
     today:'Today', stats:'Insights',
     ph_plan:'Morning', ph_exec:'Daytime', ph_check:'Time to close', ph_sealed:'Closed',
+    ph_edit:'Daytime', late_open_hint:'Evening close is open · edit until 19:00',
+    ph_late:'Awaiting close', ph_late_hint:'read-only after 19:00', ph_late_sub:'Tasks locked · go close the day',
+    go_close:'Close the day',
     left_pre:'Until 07:00 · ', left_pre2:'Close by 18:00 · ',
     check_now:'Past 18:00 — close the day',
     sealed_hint:'Today is closed. See you tomorrow.',
     t_title:'What to move today',
     t_sub:'One clear thing counts · close at 18:00',
-    t_sub_exec:'Edit and check freely, close at 18:00',
+    t_sub_exec:'Write and check anytime — the day closes at 18:00.',
     lock_hint:'A priority is the thing that makes today not feel wasted.<br>Morning is ideal. Whenever it comes to you, write it.',
     sealed_at:'Closed ·',
     ph:['What do you want to move? One is enough','Another one? optional','One more? optional'],
@@ -544,10 +654,10 @@ var T = {
     ov_need:'',
     carry_note:'{n} carried over from yesterday · delete what you no longer want',
     carry_tag:'carried',
-    fin_ok:'Completion', fin_chk:'Closed', fin_streak:'Streak',
+    ps_t:'Showing up', ps_sub:'These 14 days — each day you showed up counts',
+    ps_used:'You showed up {n} days', ps_cfm:'You confirmed “advanced” {n} times',
     p_day:'Day', p_week:'Week', p_month:'Month',
     p_day_t:'Last 14 days', p_week_t:'Last 8 weeks', p_month_t:'Last 6 months',
-    lg_done:'Completion', lg_chk:'Logged',
     es_t:'No data yet',
     es_d:'Start today: clear one thing in the morning, close the day at 18:00.<br>The curve grows one day at a time.',
     es_demo:'Load sample data to preview',
@@ -557,14 +667,15 @@ var T = {
     rec_ok:'closed', rec_no:'blank', rec_empty:'—',
     day_unit:'d',
     toast_saved:'Saved',
+    tick_on:'Advanced — one step forward',
     toast_sealed:'Today closed',
     toast_demo:'Sample data loaded',
     toast_demo_off:'Sample data cleared',
     tasks:'',
-    sd_title:'Success Diary',
+    sd_title:'Evening Close',
     sd_sub:'Before bed, note what moved today · one is enough',
-    sd_lock:'Locked · 30 days plus a honest week',
-    sd_left:'{n} days to one month', sd_seal:'{n} of 7 days closed',
+    sd_lock:'Locked · 7 days plus a honest week',
+    sd_left:'{n} days to unlock', sd_seal:'{n} of 7 days closed',
     sd_go:'Open',
     rm_inst:'Install to your home screen',
     in_d:'Once installed it gets its own icon, no address bar, and opens without network.',
@@ -582,10 +693,9 @@ var T = {
     br_g_m:'Good morning', br_s_m:'Clear your day first. The rest can wait',
     br_g_d:'Hello',        br_s_d:'Write one line whenever it comes to you',
     br_g_n:'Good evening', br_s_n:'A blank day is fine — tomorrow write your first line',
-    br_f1:'In the morning, clear what you want to move · one counts',
-    br_f2:'Check off what moved during the day',
-    br_f3:'Close the day at 18:00 · the rest carries over',
-    br_f4:'Keep it up a month and the Success Diary unlocks',
+    br_f1:'If you don\u2019t write, the world writes for you',
+    br_f2:'It doesn\u2019t push you to finish \u2014 only to leave a trace',
+    br_f3:'A blank day counts. Memory is made by your records',
     br_fm:'No need to be perfect. Showing up counts',
     br_go:'Let\u2019s go',
     ng_sealed:'Today is logged. See you tomorrow',
@@ -610,7 +720,35 @@ var T = {
     sum_line:'Closed <b>{c}</b> days, moved <b>{d}</b> of {p} things you wrote down.',
     sum_word:'\u201c{w}\u201d came up {n} times — the thing on your mind most.',
     cw_t:'What keeps coming back',
-    cw_sub:'Everything you write stays here, slowly becoming a picture of you'
+    cw_sub:'Everything you write stays here, slowly becoming a picture of you',
+    mi_t:'Mirror of state', mi_sub:'The face you leave yourself',
+    mi_blank_head:'The blank days',
+    mi_blank:'Of these {n} days, {b} were left blank. A blank is not missing — it is the day you chose not to write. It is data too.',
+    mi_blank_more:'They tend to land on {w}s.',
+    mi_no_blank:'You have no blank days yet.',
+    dr_t:'First · Latest', dr_sub:'No comparison, just side by side',
+    dr_first:'First', dr_last:'Latest',
+    dr_foot:'The first you and the latest you, both resting here quietly.',
+    /* first-open anchor */
+    first_ph:'Write your first line',
+    /* late arrival + late note */
+    late_warm:'Running late tonight? No worries.<br>Want to write one line now? It goes under “Late” — without pretending it was today.',
+    late_ph:'One line (late note)',
+    late_btn:'Add a late note',
+    late_save:'Keep it',
+    late_saved:'Late note saved',
+    late_tag:'late',
+    /* morning insight whisper */
+    ws_word:'The word you keep writing is “{w}” — it has followed you the whole time.',
+    ws_trace:'You have left a trace on {n} days so far.',
+    ws_to_eve:'Evening Close is open — go see what your traces have become',
+    val_link:'Why three things',
+    future_t:'Coming here next',
+    future_sub:'As you keep writing, this is where your summary, encouragement, or a quiet nudge will appear',
+    arch_t:'All your records',
+    arch_sub:'Every line you wrote stays here · look back anytime',
+    arch_empty:'No records to look back on yet',
+    arch_blank:'Nothing written that day — still counted'
   }
 };
 var LANG = 'zh';
@@ -626,6 +764,7 @@ function parseYmd(k){ var p=k.split('-'); return new Date(+p[0],+p[1]-1,+p[2]); 
 function todayKey(){ return ymd(new Date()); }
 function nowMin(){ var d=new Date(); return d.getHours()*60+d.getMinutes(); }
 function esc(s){ return String(s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function trunc(s,n){ s=String(s||'').trim(); return s.length>n ? s.slice(0,n)+'…' : s; }
 function fmtLeft(mins){
   if(mins<0) mins=0;
   var h=Math.floor(mins/60), m=mins%60;
@@ -694,16 +833,15 @@ function taskList(r){
 }
 function isChecked(k){ var r=peek(k); return !!(r && r.checkin); }
 
-/* 当天处于哪个阶段 */
+/* 当天处于哪个阶段：edit（可写可改到 19:00）/ late（19:00 后只读，等收尾）/ sealed（已收尾） */
 function phaseOf(k){
   var today = todayKey();
   if(isChecked(k)) return 'sealed';
   if(k > today) return 'future';
   if(k < today) return 'missed';
   var m = nowMin();
-  if(m < PLAN_MIN) return 'plan';
-  if(m < CHECK_MIN) return 'exec';
-  return 'check';
+  if(m < DAY_EDIT_MAX) return 'edit';
+  return 'late';
 }
 
 /* 某天统计：planned / done / completion(0-1|null) / checked */
@@ -742,16 +880,21 @@ function streak(){
 /* =========================================================
    状态
    ========================================================= */
-var S = { view:'today', period:'day', picks:[], note:'' };
+var S = { view:'today', period:'day', picks:[], note:'', lateOpen:false };
+var ONBOARD = false;   /* 首次关闭 briefing 后触发：帮全新用户直接落到「写第一笔」 */
 
 /* =========================================================
    渲染：主壳
    ========================================================= */
 function render(){
-  var html = header() + seg() + (S.view==='today' ? viewToday()+otdCard()+sdCard() : viewStats());
+  var html = header() + seg() + (S.view==='today' ? viewToday()+otdCard()+sdCard()+valueLink() : (S.view==='archive' ? viewArchive() : viewStats()));
   document.getElementById('shell').innerHTML = html;
   bindShell();
   renderOverlay();
+  /* 首次打开：把全新用户直接落到输入框，别让他对着空卡发愣 */
+  if(ONBOARD && !firstKey() && S.view==='today'){
+    setTimeout(function(){ var f=document.querySelector('#shell .inp'); if(f) f.focus(); }, 90);
+  }
 }
 
 function header(){
@@ -1010,13 +1153,15 @@ function summaryCard(){
 }
 
 function sdCard(){
-  /* 门槛没到 30 天：主页面完全不出现 —— 不占注意力，也不制造「还差很多」的压迫感 */
+  /* 晚间收尾 18:00 前完全不出现、不开 —— 主页更干净，也符合「白天先过好」 */
+  if(nowMin() < EVE_MIN) return '';
+  /* 门槛没到 7 天：主页面完全不出现 —— 不占注意力，也不制造「还差很多」的压迫感 */
   var open = sdOpen(), p = sdProgress();
-  if(!open && (!p || p.ran < 30)) return '';
+  if(!open && (!p || p.ran < 7)) return '';
 
   var note = '';
   if(!open){
-    note = t('sd_seal').replace('{n}', p.sealed);   /* 满月后唯一剩下的条件就是 7 天归档 */
+    note = t('sd_seal').replace('{n}', p.sealed);   /* 满 7 天后唯一剩下的条件就是 7 天归档 */
   }
   var cls = open? 'sdcard' : 'sdcard locked slim';
   return '<section class="card sd-wrap"><div class="'+cls+'" data-act="sdgo">'+
@@ -1035,42 +1180,57 @@ function viewToday(){
   var carried = takeCarry();          /* 昨天没推进的，今天空白时自动带过来 */
   var r = peek(k);
   var early = isMorning(r);
+  /* 当日是否有真实内容：决定「封存日」是展示已收好的内容，还是救场补记 */
+  var hasContent = r && ((r.tasks && taskList(r).length) || (r.checkin && r.checkin.note));
+  var m = nowMin();
 
   var dot='', name, hint;
-  if(ph==='plan'){ name=t('ph_plan'); hint=t('left_pre')+fmtLeft(PLAN_MIN-nowMin()); }
-  else if(ph==='exec'){ name=t('ph_exec'); hint=t('left_pre2')+fmtLeft(CHECK_MIN-nowMin()); }
-  else if(ph==='check'){ name=t('ph_check'); dot=' w'; hint=t('check_now'); }
-  else {
+  if(ph==='edit'){
+    name = t('ph_edit');
+    hint = (m < EVE_MIN) ? (t('left_pre2')+fmtLeft(EVE_MIN-m)) : t('late_open_hint');
+  }
+  else if(ph==='late'){ name=t('ph_late'); dot=' w'; hint=t('ph_late_hint'); }
+  else { /* sealed */
     name=t('ph_sealed'); dot=' g';
     /* 夜间顶部已有「今天收好了，明天见」，副标题也已写明收尾时刻 —— 这里再写一遍就是噪音，直接留白 */
     hint = (timeSlot()==='night') ? '' : t('sealed_hint');
   }
 
-  var h = '<section class="card">'+ nightLine(r) +
+  /* 空白封存日：不重复叠一句"明天来写"，把位置留给补记通道 */
+  var h = '<section class="card">'+ ((ph==='sealed' && !hasContent) ? '' : nightLine(r)) +
     '<div class="phase"><span class="pdot'+dot+'"></span>'+
       '<span class="pname'+(dot===' w'?' w':dot===' g'?' g':'')+'">'+name+'</span>'+
       (hint ? '<span class="phint">'+esc(hint)+'</span>' : '')+
     '</div>'+
     '<h1 class="h1">'+t('t_title')+'</h1>';
 
+  /* 封存日 —— 同盟者不是审判者：看见意图，再给一条不失尊严的补记路 */
   if(ph==='sealed'){
+    if(!hasContent){
+      h += '<p class="h1-sub">'+esc(t('late_warm'))+'</p>' + lateBox(r);
+      return h+'</section>';
+    }
     h += '<p class="h1-sub">'+t('sealed_at')+' '+fmtStamp(r.checkin.at)+'</p>'+ sealedList(r);
+    if(r.late || S.lateOpen){ h += lateBox(r); }
+    else { h += '<button class="btn ghost late-btn" data-act="latetoggle">'+esc(t('late_btn'))+'</button>'; }
     return h+'</section>';
   }
-  if(ph==='check'){
-    h += '<p class="h1-sub">'+t('ov_d_note')+'</p>'+ readList(r);
+  /* 19:00 后：晨间清单只读，导流晚间收尾（不审判，只指路） */
+  if(ph==='late'){
+    h += '<p class="h1-sub">'+t('ph_late_sub')+'</p>'+ readList(r) +
+         '<button class="btn ghost" data-act="sdgo">'+esc(t('go_close'))+'</button>';
     return h+'</section>';
   }
 
   /* 早上想清楚最理想，但全天都能写、能改、能勾 —— 想到了就写 */
   var tag = early ? ' <span class="tag ok">'+esc(t('tag_am'))+'</span>' : '';
-  h += '<p class="h1-sub">'+(ph==='plan'? t('t_sub') : t('t_sub_exec'))+tag+'</p>';
+  h += '<p class="h1-sub">'+t('t_sub_exec')+tag+'</p>';
 
   var cn = carryCount(r);
   if(cn) h += '<div class="carry-note">'+esc(t('carry_note').replace('{n}', cn))+'</div>';
 
-  h += editRows(r, ph!=='plan') +
-       (ph==='plan' ? '<div class="foot-note">'+t('lock_hint')+'</div>' : '');
+  h += editRows(r, true, ONBOARD && !firstKey()) +
+       (m < EVE_MIN ? '<div class="foot-note">'+t('lock_hint')+'</div>' : '');
   return h+'</section>';
 }
 
@@ -1083,8 +1243,10 @@ function isMorning(r){
 /* 可编辑行：输入框 + （07:00 后）完成勾选 */
 /* 不预先画三个空位：写完一行才露出下一行。
    上限仍是 3（超过三件就没有优先级了），下限 1 —— 一件也收 */
-function editRows(r, showCheck){
+function editRows(r, showCheck, firstRun){
   var tasks = (r && r.tasks) ? r.tasks : [];
+  var phArr = t('ph');
+  var p0 = firstRun ? t('first_ph') : phArr[0];
   var filled = 0;
   for(var q=0;q<SLOTS;q++){
     if(tasks[q] && tasks[q].text && String(tasks[q].text).trim()) filled = q+1;
@@ -1094,9 +1256,10 @@ function editRows(r, showCheck){
     var it = tasks[i] || { text:'', done:false };
     var txt = it.text || '';
     var ghost = (i > filled) ? ' ghost' : '';
+    var phTxt = (firstRun && i===0) ? p0 : phArr[i];
     h += '<div class="item'+ghost+'" data-row="'+i+'"><span class="idx num">'+pad(i+1)+'</span>'+
       '<input class="inp" data-i="'+i+'" type="text" maxlength="60" autocomplete="off" '+
-      'placeholder="'+esc(t('ph')[i])+'" value="'+esc(txt)+'">'+
+      'placeholder="'+esc(phTxt)+'" value="'+esc(txt)+'">'+
       (it.carried && txt.trim() ? '<span class="tag">'+esc(t('carry_tag'))+'</span>' : '');
     if(showCheck){
       h += '<button class="check'+(it.done?' on':'')+(txt.trim()?'':' dis')+'" data-act="tick" data-i="'+i+'" aria-label="toggle">'+
@@ -1134,15 +1297,100 @@ function sealedList(r){
   }
   return h+'</div>';
 }
+/* 迟到补记：收在 r.late，明确标注、绝不改动当日封存（checkin 不动，晚间墙 integrity 守住） */
+function lateBox(r){
+  var txt = (r && r.late && r.late.text) ? r.late.text : '';
+  var h = '<div class="note late-note">'+
+    '<textarea id="lateNote" maxlength="120" placeholder="'+esc(t('late_ph'))+'">'+esc(txt)+'</textarea>'+
+    '<button class="btn late-save" data-act="savelate">'+esc(t('late_save'))+'</button>';
+  if(r && r.late){
+    h += '<div class="late-done">'+esc(t('late_tag'))+' · '+esc(fmtStamp(r.late.at))+'</div>';
+  }
+  return h+'</div>';
+}
 
 /* =========================================================
    渲染：统计
    ========================================================= */
+/* =========================================================
+   状态的镜子 + 长期对照 —— 读「晚间收尾」的状态/空白数据
+   静默原则：数据不够就隐藏，绝不说「你变了」
+   ========================================================= */
+var ENERGY = {
+  calm:{zh:'平静',en:'Calm'}, full:{zh:'充实',en:'Fulfil'}, flow:{zh:'顺畅',en:'In flow'},
+  tired:{zh:'疲惫',en:'Tired'}, tense:{zh:'焦灼',en:'Restless'}, bright:{zh:'雀跃',en:'Bright'}
+};
+var WD_ZH = ['日','一','二','三','四','五','六'];
+var WD_EN = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+function loadEvening(){
+  try{ var o = JSON.parse(localStorage.getItem('success-diary.v1')||'{}'); return o.days || {}; }catch(e){ return {}; }
+}
+function eveningRecords(){
+  var days = loadEvening();
+  return Object.keys(days).sort().map(function(k){
+    var r = days[k] || {};
+    var blank = (r.none===true) || !(r.items && r.items.some(function(x){ return x && String(x).trim(); }));
+    return { k:k, energy:r.energy||null, blank:blank };
+  });
+}
+/* =========================================================
+   晨间洞察 —— 一句 whisper，不是仪表盘
+   把已有的解读能力推到面前：反复出现的词，或累计留下的痕迹天数。
+   不造第二面墙；晚间收尾解锁后温柔导流，让那面墙成为唯一成就。
+   ========================================================= */
+function whisperCard(){
+  var ks = Object.keys(DB.days).filter(function(k){
+    var r = DB.days[k]; return !!(r && ((r.tasks && taskList(r).length) || r.checkin));
+  });
+  if(ks.length < 3) return '';           /* 痕迹还太薄，沉默比硬说好 */
+  var ws = wordsIn(ks);
+  var line = ws.length
+    ? t('ws_word').replace('{w}', esc(ws[0].w)).replace('{n}', ws[0].n)
+    : t('ws_trace').replace('{n}', ks.length);
+  var h = '<section class="card whisper"><div class="ws-mark">'+svgMoon()+'</div>'+
+    '<div class="ws-line">'+line+'</div>';
+  if(sdOpen() && nowMin() >= EVE_MIN){
+    h += '<div class="ws-go" data-act="sdgo">'+esc(t('ws_to_eve'))+' ›</div>';
+  }
+  return h+'</section>';
+}
+
+/* 坚持视图：只回答「你是否天天来」—— 用了几天 vs 没用几天 + 推进确认累计。
+   不出现任何百分比、不掉「完成/收尾率」，正向且不说教。 */
+function persistCard(){
+  var tk = todayKey();
+  /* 近 14 天点点：有痕迹 = 来了 */
+  var dots = [], used = 0;
+  for(var i=13;i>=0;i--){
+    var k = ymd(addDays(new Date(), -i));
+    var r = DB.days[k];
+    var has = !!(r && ((r.tasks && taskList(r).length) || r.checkin || r.late));
+    if(has) used++;
+    dots.push(has);
+  }
+  if(!used) return '';   /* 还没有任何一天，保持沉默 */
+  var dotHtml = dots.map(function(h){ return '<span class="pd'+(h?' on':'')+'"></span>'; }).join('');
+  /* 推进确认累计：所有已收尾日里勾选「推进」的次数之和 —— 这是你实打实往前走的证据 */
+  var cfm = 0;
+  Object.keys(DB.days).forEach(function(k){
+    var r = DB.days[k];
+    if(r && r.checkin && r.checkin.results){
+      r.checkin.results.forEach(function(x){ if(x) cfm++; });
+    }
+  });
+  var h = '<section class="card persist">'+
+    '<div class="sec-t">'+esc(t('ps_t'))+'</div>'+
+    '<div class="sec-t2">'+esc(t('ps_sub'))+'</div>'+
+    '<div class="pd-row">'+dotHtml+'</div>'+
+    '<div class="pd-line">'+esc(t('ps_used').replace('{n}', used))+'</div>';
+  if(cfm > 0) h += '<div class="pd-line sub">'+esc(t('ps_cfm').replace('{n}', cfm))+'</div>';
+  return h+'</section>';
+}
+
 function viewStats(){
   var first = firstKey();
-  var tk = todayKey();
 
-  if(!first){
+  if(!first && !eveningRecords().length){
     return '<section class="card"><div class="empty-stats">'+
       '<div class="es-t">'+t('es_t')+'</div>'+
       '<div class="es-d">'+t('es_d')+'</div>'+
@@ -1151,168 +1399,18 @@ function viewStats(){
       '</section>';
   }
 
-  /* 指标 */
-  var allDone=0, allPlan=0;
-  Object.keys(DB.days).forEach(function(k){
-    var s = dayStat(k);
-    if(s.checked && s.planned){ allDone+=s.done; allPlan+=s.planned; }
-  });
-  var completion = allPlan? Math.round(allDone/allPlan*100) : null;
-
-  var exp = [], d;
-  for(d=parseYmd(first); ymd(d) < tk; d=addDays(d,1)) exp.push(ymd(d));
-  var checkedN = exp.filter(isChecked).length;
-  var logRate = exp.length? Math.round(checkedN/exp.length*100) : (isChecked(tk)?100:null);
-
-  var st = streak();
-
-  var h = '<div class="sc-row">'+
-    scCard(completion===null?'—':completion+'%', t('fin_ok'), completion===null)+
-    scCard(logRate===null?'—':logRate+'%', t('fin_chk'), logRate===null)+
-    scCard(st, t('fin_streak'), false)+
-  '</div>';
-
-  h += '<section class="card chart-card">'+
-    '<div class="seg2">'+
-      periodBtn('day', t('p_day')) + periodBtn('week', t('p_week')) + periodBtn('month', t('p_month')) +
-    '</div>'+
-    '<div class="chart-wrap" id="cw">'+chartHTML()+'</div>'+
-    '<div class="legend">'+
-      '<span class="lg"><span class="lg-s" style="background:var(--brand)"></span>'+t('lg_done')+'</span>'+
-      '<span class="lg"><span class="lg-s" style="background:var(--edge)"></span>'+t('lg_chk')+'</span>'+
-    '</div>'+
-  '</section>';
-
+  var h = '';
+  h += whisperCard();
+  h += persistCard();           /* 坚持：用了几天 vs 没用几天 + 推进确认累计 —— 只看你是否天天来 */
+  h += futureCard();            /* 预留：未来根据录入数据做总结 / 鼓励 / 语义提醒 */
   h += summaryCard();
   h += cloudCard();
   h += recentCard();
+  h += '<div class="arch-go"><button class="linkbtn" data-act="view" data-v="archive">'+esc(t('arch_t'))+' ›</button></div>';
   if(DB.demoKeys.length){
     h += '<div style="text-align:center;margin-top:4px"><button class="linkbtn" data-act="demooff">'+t('es_demo_clear')+'</button></div>';
   }
   return h;
-}
-function scCard(v,k,na){
-  return '<div class="sc"><div class="sc-v num'+(na?' na':'')+'">'+v+'</div><div class="sc-k">'+k+'</div></div>';
-}
-function periodBtn(p,label){
-  return '<button class="seg2-i'+(S.period===p?' on':'')+'" data-act="period" data-p="'+p+'">'+label+'</button>';
-}
-
-/* --- 汇总 --- */
-function aggDaily(){
-  var labels=[], comp=[], chk=[];
-  var first = firstKey(), tk = todayKey();
-  for(var i=13;i>=0;i--){
-    var d = addDays(new Date(), -i), k = ymd(d);
-    if(first && k < first){ labels.push(fmtDate(d)); comp.push(null); chk.push(null); continue; }
-    var s = dayStat(k);
-    labels.push(fmtDate(d));
-    comp.push(s.completion);
-    if(s.checked) chk.push(1);
-    else chk.push(k===tk ? null : 0);
-  }
-  return { labels:labels, comp:comp, chk:chk, title:t('p_day_t') };
-}
-function aggWeekly(){
-  var labels=[], comp=[], chk=[];
-  var first = firstKey(), tk = todayKey();
-  var cs = weekStart(new Date());
-  for(var i=7;i>=0;i--){
-    var ws = addDays(cs, -7*i), we = addDays(ws, 6);
-    labels.push(fmtDate(ws));
-    var dSum=0,pSum=0,cN=0,any=false;
-    for(var j=0;j<7;j++){
-      var d = addDays(ws,j), k = ymd(d);
-      if(k > tk) break;
-      if(first && k < first) continue;
-      any = true;
-      if(isChecked(k)){ cN++; var s=dayStat(k); dSum+=s.done; pSum+=s.planned; }
-    }
-    comp.push(pSum? dSum/pSum : null);
-    chk.push(any? cN/7 : null);
-  }
-  return { labels:labels, comp:comp, chk:chk, title:t('p_week_t') };
-}
-function aggMonthly(){
-  var labels=[], comp=[], chk=[];
-  var first = firstKey(), tk = todayKey();
-  var now = new Date();
-  for(var i=5;i>=0;i--){
-    var ms = new Date(now.getFullYear(), now.getMonth()-i, 1);
-    labels.push(fmtMonth(ms));
-    var dSum=0,pSum=0,cN=0,days=0,any=false;
-    var dim = new Date(ms.getFullYear(), ms.getMonth()+1, 0).getDate();
-    for(var j=1;j<=dim;j++){
-      var d = new Date(ms.getFullYear(), ms.getMonth(), j), k = ymd(d);
-      if(k > tk) break;
-      if(first && k < first) continue;
-      any = true; days++;
-      if(isChecked(k)){ cN++; var s=dayStat(k); dSum+=s.done; pSum+=s.planned; }
-    }
-    comp.push(pSum? dSum/pSum : null);
-    chk.push(any&&days? cN/days : null);
-  }
-  return { labels:labels, comp:comp, chk:chk, title:t('p_month_t') };
-}
-
-/* --- SVG 折线 --- */
-var geom = null;
-function segments(vals){
-  var out=[], cur=[];
-  for(var i=0;i<vals.length;i++){
-    var v=vals[i];
-    if(v===null||v===undefined||isNaN(v)){ if(cur.length) out.push(cur); cur=[]; }
-    else cur.push([i,v]);
-  }
-  if(cur.length) out.push(cur);
-  return out;
-}
-function chartHTML(){
-  var data = S.period==='day'? aggDaily() : S.period==='week'? aggWeekly() : aggMonthly();
-  var W=680,H=300,PL=48,PR=22,PT=24,PB=42;
-  var iw=W-PL-PR, ih=H-PT-PB, n=data.labels.length;
-  var X=function(i){ return n<=1? PL+iw/2 : PL+iw*i/(n-1); };
-  var Y=function(v){ return PT+ih*(1-v); };
-  geom = { X:X, n:n, W:W, labels:data.labels, comp:data.comp, chk:data.chk };
-
-  var s='<defs><linearGradient id="gfill" x1="0" y1="0" x2="0" y2="1">'+
-    '<stop offset="0%" style="stop-color:var(--brand-txt)" stop-opacity="0.16"/>'+
-    '<stop offset="100%" style="stop-color:var(--brand-txt)" stop-opacity="0"/></linearGradient></defs>';
-
-  /* 网格 */
-  [0,.25,.5,.75,1].forEach(function(v){
-    var yy=Y(v);
-    s+='<line x1="'+PL+'" y1="'+yy.toFixed(1)+'" x2="'+(W-PR)+'" y2="'+yy.toFixed(1)+'" stroke="#242924" stroke-width="1"/>';
-    s+='<text x="'+(PL-11)+'" y="'+(yy+4).toFixed(1)+'" text-anchor="end" style="fill:var(--ink3)" font-size="11" font-weight="600">'+Math.round(v*100)+'%</text>';
-  });
-
-  /* x 轴标签 */
-  data.labels.forEach(function(lb,i){
-    s+='<text x="'+X(i).toFixed(1)+'" y="'+(H-16)+'" text-anchor="middle" style="fill:var(--ink3)" font-size="11" font-weight="600">'+esc(lb)+'</text>';
-  });
-
-  /* 归档率（虚线，先画在底层） */
-  segments(data.chk).forEach(function(sg){
-    var d='';
-    sg.forEach(function(p,idx){ d += (idx?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)+' '; });
-    s+='<path d="'+d+'" fill="none" style="stroke:var(--edge)" stroke-width="2" stroke-dasharray="5 5" stroke-linecap="round"/>';
-  });
-
-  /* 完成率（实线 + 面积） */
-  segments(data.comp).forEach(function(sg){
-    var d='';
-    sg.forEach(function(p,idx){ d += (idx?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)+' '; });
-    if(sg.length>1){
-      s+='<path d="'+d+'L '+X(sg[sg.length-1][0]).toFixed(1)+' '+Y(0).toFixed(1)+' L '+X(sg[0][0]).toFixed(1)+' '+Y(0).toFixed(1)+' Z" fill="url(#gfill)" stroke="none"/>';
-    }
-    s+='<path d="'+d+'" fill="none" style="stroke:var(--brand-txt)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>';
-    sg.forEach(function(p){
-      s+='<circle cx="'+X(p[0]).toFixed(1)+'" cy="'+Y(p[1]).toFixed(1)+'" r="3.6" style="fill:var(--brand-txt);stroke:var(--bg)" stroke-width="2.4"/>';
-    });
-  });
-
-  return '<div class="chart-read"><span class="cr-t">'+esc(data.title)+'</span><span class="cr-v" id="crv"></span></div>'+
-    '<svg class="chart-svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet">'+s+'</svg>';
 }
 
 /* =========================================================
@@ -1320,7 +1418,7 @@ function chartHTML(){
    ========================================================= */
 function recentCard(){
   var ks = Object.keys(DB.days).filter(function(k){
-    var r=DB.days[k]; return (r.tasks&&taskList(r).length)||r.checkin;
+    var r=DB.days[k]; return (r.tasks&&taskList(r).length)||r.checkin||r.late;
   }).sort().reverse().slice(0,10);
   if(!ks.length) return '';
   var h = '<section class="card"><div class="sec-t">'+t('rec_t')+'</div>';
@@ -1339,6 +1437,53 @@ function recentCard(){
     h += '<span class="rec-n num">'+(s.checked? s.done+'/'+s.planned : '—')+'</span>';
     h += '<span class="rec-s '+(s.checked?'ok':'no')+'">'+(s.checked? t('rec_ok') : t('rec_no'))+'</span>';
     h += '</div>';
+    if(r.late){
+      h += '<div class="rec-late"><span class="rec-late-tag">'+esc(t('late_tag'))+'</span>'+
+           '<span class="rec-late-tx">'+esc(trunc(r.late.text,40))+'</span></div>';
+    }
+  });
+  return h+'</section>';
+}
+
+/* ---------- 价值卡入口（弹窗） ---------- */
+function valueLink(){
+  return '<div class="val-link"><button class="linkbtn" data-act="value">'+esc(t('val_link'))+' ›</button></div>';
+}
+function openValue(){
+  var el = document.getElementById('valRoot');
+  el.innerHTML = '<div class="ov-bg" data-act="valclose"></div>'+
+    '<div class="val-sheet"><button class="val-x" data-act="valclose" aria-label="Close">×</button>'+
+    '<iframe id="valFrame" src="value.html" frameborder="0"></iframe></div>';
+  el.classList.add('on');
+}
+function closeValue(){
+  var el = document.getElementById('valRoot');
+  el.classList.remove('on');
+  el.innerHTML = '';
+}
+/* 预留区：未来根据录入数据做总结 / 鼓励 / 语义提醒 */
+function futureCard(){
+  return '<section class="card future"><div class="sec-t">'+esc(t('future_t'))+'</div>'+
+    '<div class="sec-t2">'+esc(t('future_sub'))+'</div>'+
+    '<div class="future-box"></div></section>';
+}
+/* 归档回顾：把写过的日子完整呈现，随时回看 —— 录入的东西必须能被 review，否则毁掉信任 */
+function viewArchive(){
+  var ks = Object.keys(DB.days).filter(function(k){
+    var r=DB.days[k]; return (r.tasks&&taskList(r).length)||r.checkin||r.late;
+  }).sort().reverse();
+  var back = '<div class="arch-back"><button class="linkbtn" data-act="view" data-v="stats">‹ '+esc(t('stats'))+'</button></div>';
+  if(!ks.length) return '<section class="card">'+back+'<div class="empty-stats"><div class="es-t">'+t('arch_empty')+'</div></div></section>';
+  var h = '<section class="card">'+back+'<div class="sec-t">'+esc(t('arch_t'))+'</div><div class="sec-t2">'+esc(t('arch_sub'))+'</div>';
+  ks.forEach(function(k){
+    var r=DB.days[k], d=parseYmd(k);
+    var items=(r.tasks||[]).filter(function(x){return x && x.text && x.text.trim();});
+    var note=(r.checkin && r.checkin.note) ? String(r.checkin.note).trim() : '';
+    h += '<div class="arc"><div class="arc-d num">'+fmtDate(d)+' · '+wdShort(d)+(r.late?' <span class="arc-late">'+esc(t('late_tag'))+'</span>':'')+'</div>';
+    if(items.length){ items.forEach(function(x){ h += '<div class="arc-it">'+esc(x.text)+'</div>'; }); }
+    if(note){ h += '<div class="arc-note">'+esc(note)+'</div>'; }
+    if(!items.length && !note){ h += '<div class="arc-it muted">'+esc(t('arch_blank'))+'</div>'; }
+    h += '</div>';
   });
   return h+'</section>';
 }
@@ -1349,7 +1494,7 @@ function recentCard(){
    ========================================================= */
 function mustCheck(){
   var ph = phaseOf(todayKey());
-  return ph==='check';
+  return ph==='late';
 }
 function renderOverlay(){
   var root = document.getElementById('ovRoot');
@@ -1398,21 +1543,32 @@ function bindShell(){
     var a = el.getAttribute('data-act');
     if(a==='view'){ S.view = el.getAttribute('data-v'); render(); }
     else if(a==='lang'){ LANG = LANG==='zh'?'en':'zh'; try{localStorage.setItem('mt.lang',LANG);}catch(err){} render(); }
-    else if(a==='period'){ S.period = el.getAttribute('data-p'); render(); }
     else if(a==='tick'){ toggleDone(+el.getAttribute('data-i')); }
     else if(a==='demo'){ loadDemo(); }
     else if(a==='demooff'){ clearDemo(); }
+    else if(a==='latetoggle'){ S.lateOpen = !S.lateOpen; render(); }
+    else if(a==='savelate'){
+      var ta = document.getElementById('lateNote');
+      var v = (ta ? ta.value : '').trim();
+      var lr = rec(todayKey());            /* 补记只写 r.late，不碰 checkin，守住封存 integrity */
+      if(v){ lr.late = { at:new Date().toISOString(), text:v }; }
+      else { lr.late = null; }
+      save(); render(); toast(t('late_saved'));
+    }
     else if(a==='sdgo'){ location.href = 'success.html'; }
     else if(a==='remind'){ showRemind(); }
     else if(a==='install'){ showInstall(); }
     else if(a==='nativeinstall'){ nativeInstall(); }
     else if(a==='closesheet'){ hideInstall(); }
+    else if(a==='value'){ openValue(); }
+    else if(a==='valclose'){ closeValue(); }
   };
   sh.oninput = function(e){
     var el = e.target;
     if(!el.classList || !el.classList.contains('inp')) return;
     var i = +el.getAttribute('data-i');
     setTask(i, el.value);
+    savedHint();                       /* 录入即存，停下即给「已保存」反馈 */
     var item = el.parentNode, ck = item ? item.querySelector('.check') : null;
     if(ck) ck.classList.toggle('dis', !el.value.trim());
     /* 写下这一行，就露出下一行 —— 不重绘，不打断输入 */
@@ -1422,18 +1578,19 @@ function bindShell(){
       if(nxt) nxt.classList.remove('ghost');
     }
   };
-  var cw = document.getElementById('cw');
-  if(cw) attachTip(cw);
 }
 
-/* 勾选完成状态（仅 07:00 后） */
+/* 勾选完成状态（全天可勾，直到 19:00）—— 勾上即给「推进确认」的小奖励 */
 function toggleDone(i){
   var r = rec(todayKey());
   while(r.tasks.length < SLOTS) r.tasks.push({text:'',done:false});
   var it = r.tasks[i];
   if(!it || !it.text || !it.text.trim()) return;
+  var was = it.done;
   it.done = !it.done;
-  save(); render();
+  save();
+  if(it.done && !was) toast(t('tick_on'));   /* 推进确认 = 你又往前走了一步 */
+  render();
 }
 
 function setTask(i, text){
@@ -1501,7 +1658,7 @@ function svgRise(){
 }
 function briefSheet(){
   var g = briefGreet();
-  var fs = [t('br_f1'), t('br_f2'), t('br_f3'), t('br_f4')];
+  var fs = [t('br_f1'), t('br_f2'), t('br_f3')];
   var h = '<div class="br">'+svgRise()+'<div class="br-top"><div>'+
       '<div class="br-g">'+esc(g[0])+'</div>'+
       '<div class="br-s">'+esc(g[1])+'</div></div>'+
@@ -1524,9 +1681,12 @@ function showBrief(){
 function hideBrief(){
   var el = document.getElementById('briefRoot');
   if(!el) return;
+  var wasFirst = !briefDone();
   el.classList.remove('on');
   el.innerHTML = '';
   try{ localStorage.setItem('mt.brief.v1', 'off'); }catch(e){}
+  if(wasFirst) ONBOARD = true;        /* 新朋友：讲完规则后，把人直接推到写下第一笔 */
+  render();                           /* 重绘今日卡，让锚点 + 聚焦生效 */
   setTimeout(maybeAskInstall, 500);    /* 读完 briefing 才问装桌面，一屏一件事 */
 }
 /* 首屏被 18:00 归档层占着时不弹 —— 归档完再补上，不会漏 */
@@ -1540,7 +1700,7 @@ function maybeBrief(delay){
 function nightLine(r){
   if(timeSlot() !== 'night') return '';
   var msg = (r && r.checkin && r.checkin.at) ? t('ng_sealed') : t('ng_empty');
-  return '<div class="night">'+svgMoon()+'<span>'+esc(msg)+'</span></div>';
+  return '<div class="nightbar">'+svgMoon()+'<span>'+esc(msg)+'</span></div>';
 }
 
 /* 打开网页直接问一次要不要装：已装 / 已拒绝过就永远不打扰。
@@ -1694,32 +1854,6 @@ function consecutiveSealed(){
 }
 
 /* --- 图表读数（悬停/触摸时更新右上角数字，不做浮层，避免遮挡） --- */
-function attachTip(wrap){
-  if(!wrap || wrap.__tip) return;
-  wrap.__tip = true;
-  var svg = wrap.querySelector('.chart-svg');
-  var out = wrap.querySelector('#crv');
-  if(!svg || !out || !geom) return;
-  var move = function(ev){
-    var rect = svg.getBoundingClientRect();
-    var cx = (ev.touches && ev.touches[0]) ? ev.touches[0].clientX : ev.clientX;
-    var px = (cx - rect.left) / rect.width * geom.W;
-    var best=0, bd=1e9;
-    for(var i=0;i<geom.n;i++){ var dd=Math.abs(geom.X(i)-px); if(dd<bd){ bd=dd; best=i; } }
-    var cv = geom.comp[best], hv = geom.chk[best];
-    out.textContent = geom.labels[best] + ' · ' + t('lg_done') + ' ' +
-      (cv===null||cv===undefined? '—' : Math.round(cv*100)+'%') + ' · ' + t('lg_chk') + ' ' +
-      (hv===null||hv===undefined? '—' : Math.round(hv*100)+'%');
-  };
-  var leave = function(){ out.textContent = ''; };
-  svg.addEventListener('pointermove', move);
-  svg.addEventListener('pointerdown', move);
-  svg.addEventListener('pointerleave', leave);
-  svg.addEventListener('touchstart', move, {passive:true});
-  svg.addEventListener('touchend', leave);
-}
-
-/* --- 示例数据 --- */
 function loadDemo(){
   var today = new Date();
   var keys=[];
@@ -1762,6 +1896,12 @@ function toast(msg){
   el.textContent = msg; el.classList.add('on');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(function(){ el.classList.remove('on'); }, 1900);
+}
+/* 输入防抖提示：打字停下约 0.6s 才轻提示「已保存」，不打断输入 */
+var savedHintTimer=null;
+function savedHint(){
+  clearTimeout(savedHintTimer);
+  savedHintTimer = setTimeout(function(){ toast(t('toast_saved')); }, 650);
 }
 
 /* --- tick --- */

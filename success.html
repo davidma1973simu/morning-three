@@ -6,10 +6,10 @@
 <meta name="theme-color" content="#101310">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="成功日记">
-<meta name="application-name" content="成功日记">
-<meta name="description" content="睡前记下今天推进了什么。一件就够。没推进的日子也算数。">
-<title>成功日记 · Success Diary</title>
+<meta name="apple-mobile-web-app-title" content="晚间收尾">
+<meta name="application-name" content="晚间收尾">
+<meta name="description" content="睡前留三分钟，记下你今天注意到的、想到的、感觉到的。空白也算数。">
+<title>晚间收尾 · Evening Close</title>
 <script>
 /* 主题在样式前定好，避免先闪一下浅色再跳深色 */
 window.applyTheme = function(){
@@ -73,6 +73,11 @@ input,textarea{font-family:inherit;font-size:17px;color:inherit;border:0;backgro
 .nav-title{font-size:17px;font-weight:600;letter-spacing:-.02em;flex:1;min-width:0;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .nav-r{display:flex;align-items:center;gap:6px;flex:none}
+.lockbadge{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;
+  padding:4px 9px;border-radius:999px;letter-spacing:.02em;white-space:nowrap}
+.lockbadge.ok{background:var(--brand-soft);color:var(--brand-txt)}
+.lockbadge.lock{background:var(--fill);color:var(--ink2);border:1px solid var(--line)}
+.lockbadge svg{display:block}
 .iconbtn{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;
   background:var(--fill);color:#000}
 .iconbtn svg{width:16px;height:16px;display:block}
@@ -83,7 +88,20 @@ input,textarea{font-family:inherit;font-size:17px;color:inherit;border:0;backgro
 .seg-i{flex:1;height:32px;border-radius:7px;font-size:13px;font-weight:600;color:var(--ink2);letter-spacing:-.01em;transition:.15s}
 .seg-i.on{background:var(--brand);color:var(--on);box-shadow:0 2px 6px rgba(0,0,0,.18)}
 
-.wrap{max-width:520px;margin:0 auto;padding:4px 16px calc(40px + var(--safe-b))}
+.wrap{max-width:520px;margin:0 auto;padding:4px 16px calc(104px + var(--safe-b))}
+
+/* 常驻返回晨间清单 —— 任何状态都看得到，解决「卡在晚间收尾回不去」 */
+.home-foot{position:fixed;left:0;right:0;bottom:0;z-index:25;display:flex;justify-content:center;
+  padding:0 16px calc(12px + var(--safe-b));
+  background:linear-gradient(to top,var(--bg) 52%,rgba(0,0,0,0));
+  pointer-events:none}
+.home-foot a{pointer-events:auto;display:inline-flex;align-items:center;gap:4px;
+  font-size:13.5px;font-weight:600;letter-spacing:.01em;color:var(--brand-txt);text-decoration:none;
+  background:var(--brand-soft);border:1px solid var(--brand-line);
+  padding:9px 18px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.home-foot .caret{font-size:16px;line-height:1}
+.loop-cap{font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--ink3);
+  padding:0 16px 9px}
 
 /* iOS large title */
 .lt{font-size:34px;font-weight:700;letter-spacing:-.024em;line-height:1.15;margin:18px 0 0}
@@ -194,6 +212,9 @@ textarea.row-wrap{min-height:96px;padding:2px 0;line-height:1.45;font-size:17px;
 .ig-shape.s3{width:44%;padding-top:44%;left:44%;top:46%;background:var(--on-dim)}
 .ig-day{position:absolute;left:8px;top:7px;font-size:10.5px;font-weight:700;color:rgba(0,0,0,.6);
   letter-spacing:.04em;font-variant-numeric:tabular-nums}
+.ig-stamp{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  pointer-events:none}
+.ig-stamp svg{width:36%;height:36%;opacity:.85;filter:drop-shadow(0 1px 2px rgba(0,0,0,.12))}
 .ig-cap{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
   font-size:12.5px;line-height:1.36;margin-top:6px;color:var(--ink);letter-spacing:-.01em}
 .ig-cap.mut{color:var(--ink2)}
@@ -259,7 +280,7 @@ textarea.row-wrap{min-height:96px;padding:2px 0;line-height:1.45;font-size:17px;
 .banner .bt b{font-weight:700}
 .banner .bx{width:22px;height:22px;flex:none;border-radius:50%;background:var(--fill2);
   display:flex;align-items:center;justify-content:center;color:var(--ink2);font-size:13px}
-.night{font-size:15px;color:var(--ink2);text-align:center;padding:16px 0 0;letter-spacing:-.01em}
+.nightbar{font-size:15px;color:var(--ink2);text-align:center;padding:16px 0 0;letter-spacing:-.01em}
 .vcard{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:12px;padding:13px 15px;margin-top:18px}
 .vcard .vdot{width:34px;height:34px;flex:none;border-radius:9px;background:var(--orange);
   display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:700}
@@ -267,6 +288,35 @@ textarea.row-wrap{min-height:96px;padding:2px 0;line-height:1.45;font-size:17px;
 .vcard .vt b{display:block;font-size:15px;font-weight:600;letter-spacing:-.01em}
 .vcard .vt span{font-size:12.5px;color:var(--ink2)}
 .vcard .vg{flex:none;color:var(--blue);font-size:13px;font-weight:600}
+/* echo · 偶发回声（安静，不刷屏） */
+.echo{background:var(--brand-soft);border-radius:14px;padding:14px 16px;margin:14px 0 0;border:1px solid var(--sep2)}
+.echo .el{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--brand-txt)}
+.echo .eq{font-size:16px;line-height:1.45;letter-spacing:-.01em;margin-top:6px;color:var(--ink)}
+
+/* whisper · 解锁低语（唯一的直说时刻） */
+.whisper{padding:8px 4px 4px}
+.whisper .wf{display:flex;gap:12px;margin:20px 0 4px}
+.whisper .fr-l{font-size:12px;font-weight:700;color:var(--ink3);letter-spacing:.04em;margin-bottom:6px}
+.whisper .fr{flex:1;background:var(--card);border-radius:14px;padding:14px;min-height:92px;border:1px solid var(--sep2)}
+.whisper .fr .fd{font-size:12px;font-weight:700;color:var(--ink3);letter-spacing:.04em}
+.whisper .fr .ft{font-size:15px;line-height:1.45;margin-top:8px;letter-spacing:-.01em}
+.whisper .wl{font-size:19px;font-weight:700;letter-spacing:-.02em;line-height:1.4;margin:14px 2px 0;text-align:center}
+.whisper .ws{font-size:14.5px;color:var(--ink2);line-height:1.55;margin:12px 4px 0;text-align:center}
+
+/* 六态雷达卡 */
+.radar-card{text-align:center}
+.radar-card .sec-t{text-align:left}
+.radar-card .sec-t2{text-align:left}
+.rd-advice{font-size:14px;font-weight:600;color:var(--ink);line-height:1.6;letter-spacing:-.01em;
+  background:var(--brand-soft);border-radius:14px;padding:13px 15px;margin:6px 2px 0}
+
+/* 未到 18:00 的关闭页 */
+.evening-closed{text-align:center;padding:60px 22px 40px}
+.evening-closed .lt{font-size:30px;font-weight:700;letter-spacing:-.02em}
+.evening-closed .lt-s{font-size:15px;color:var(--ink2);margin-top:6px}
+.evening-closed .ec-left{font-size:13px;font-weight:700;color:var(--brand-txt);margin:22px 0 4px;letter-spacing:.04em}
+.evening-closed .btn-i{margin-top:18px}
+
 @media (min-width:560px){ .wrap{padding-left:20px;padding-right:20px} }
 </style>
 </head>
@@ -274,8 +324,9 @@ textarea.row-wrap{min-height:96px;padding:2px 0;line-height:1.45;font-size:17px;
 
 <header class="nav">
   <div class="nav-row">
-    <div class="nav-title" id="navT">成功日记</div>
+    <div class="nav-title" id="navT">晚间收尾</div>
     <div class="nav-r">
+      <span class="lockbadge" id="lockBadge"></span>
       <button class="iconbtn wide" data-act="lang" id="langBtn">EN</button>
       <button class="iconbtn" data-act="home" aria-label="home">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 11.2 12 4l8 7.2V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
@@ -285,25 +336,27 @@ textarea.row-wrap{min-height:96px;padding:2px 0;line-height:1.45;font-size:17px;
   <div class="seg" id="seg">
     <button class="seg-i on" data-act="view" data-v="today" id="segToday"></button>
     <button class="seg-i" data-act="view" data-v="wall" id="segWall"></button>
-    <button class="seg-i" data-act="view" data-v="data" id="segData"></button>
   </div>
 </header>
 
 <div class="wrap" id="app"></div>
 <div class="ov" id="ov"><div class="ov-bg" data-act="close"></div><div class="sheet" id="sheet"></div></div>
 <div id="toast"></div>
+<footer class="home-foot"><a href="index.html">晨间清单 <span class="caret">›</span></a></footer>
 
 <script>
 /* =========================================================
-   成功日记 · Success Diary
+   晚间收尾 · Evening Close
    与「晨间清单」同源部署，直接读晨间清单的归档数据判定解锁
    ========================================================= */
 var MKEY = 'morning-three.v1';   // 晨间清单
 var KEY  = 'success-diary.v1';   // 本应用
 var LKEY = 'success-lang';
 var SLOTS = 3;                   // 每晚最多三行：写完一行才露下一行，一件就够
-var MIN_DAYS = 30;               // 门槛 A：先跑满一个月
+var MIN_DAYS = 7;                // 门槛 A：先用满 7 天
 var WINDOW = 7;                  // 门槛 B：最近一周 100%
+var EVE_MIN = 18 * 60;           // 18:00 起晚间收尾才可写
+function nowMin(){ var d = new Date(); return d.getHours()*60 + d.getMinutes(); }
 
 var LANG = 'zh';
 var S = { view:'today', energy:null, sheetKey:null, bannerOff:false, sheetOpen:false };
@@ -374,9 +427,9 @@ function mWindow(days){
 
 /* ---------- 解锁判定 ----------
    state: open | waiting | deferred | nodata
-   waiting   : 还没跑满 MIN_DAYS 天
-   deferred  : 已满一个月，但最近一周没到 100% → 顺延一周，重新评估
-   open      : 满一个月 且 最近一周 100%
+   waiting   : 还没跑满 7 天
+   deferred  : 已满 7 天，但最近一周没到 100% → 顺延一周，重新评估
+   open      : 满 7 天 且 最近一周 100%
 --------------------------------------- */
 function unlock(){
   /* 已解锁优先于一切 —— 哪怕晨间数据被清了，门也不该重新关上 */
@@ -396,11 +449,11 @@ function unlock(){
   if(!meta.defer) meta.defer = 0;
   if(meta.at) return { state:'open', at:meta.at, since:since, win:win };
 
-  /* 门槛 A：先跑满一个月 */
+  /* 门槛 A：先用满 7 天 */
   if(ran < MIN_DAYS)
     return { state:'waiting', since:since, ran:ran, target:MIN_DAYS, left:MIN_DAYS-ran, win:win };
 
-  /* 满月之后每天都评估 —— 凑满 7 个干净的过去日就开门，不必等到某个整周节点。
+  /* 满 7 天后每天都评估 —— 凑满 7 个干净的过去日就开门，不必等到某个整周节点。
      等这个是纯粹的摩擦，对习惯没有任何额外价值。 */
   if(meta.lastEval !== today){
     meta.lastEval = today;
@@ -436,89 +489,116 @@ function load(){
 /* ---------- 文案 ---------- */
 var T = {
   zh:{
-    nav:'成功日记', seg1:'今日', seg2:'成就墙', seg3:'数据',
+    nav:'晚间收尾', seg1:'今日', seg2:'成就墙',
+    ec_t:'晚间收尾', ec_s:'它 18:00 才开门', ec_left:'还有 {n}', ec_sub:'现在先过好白天 · 18:00 后再来收个尾',
     lt:'今晚',
-    lt_sub:'今天推进了什么 · 一件就够',
+    lt_sub:'睡前留三分钟 · 记你注意到的、想到的、感觉到的',
     night:'夜深了。睡前留三分钟给自己。',
     night2:'睡前把今天收个尾。',
-    b_t:'今天还没记', b_d:'睡前花三分钟，记下今天推进了什么。', b_x:'不再提醒',
-    ach:'今天推进了什么', ach_p:'一件就够。可以很小。',
+    b_t:'今天还没记', b_d:'睡前花三分钟，记下你今天注意到的、想到的。', b_x:'不再提醒',
+    ach:'今天的痕迹', ach_p:'不用记流水账。一句触动的、一个念头、一个小行动，都算。',
+    ach_loop:'观察 · 分析 · 行动',
     ach_none:'今天没有', ach_none_d:'今天没有 · 也算记下了', ach_undo:'还是想写点',
     low_t:'那时候你在做什么？', low_p:'不用评价，写当时在做什么就好。刷短视频也算。',
     low_ph:'比如：刷短视频、发呆、跟人聊了一会儿',
     low_tag:'不在状态时',
-    fin:'一句话（可不写）', fin_p:'今天整体怎么样，一句话带过。',
     e_t:'今天的状态', e_p:'随便选一个，之后还能改。',
     save:'记下今晚', saved:'已记下今天', saved_blank:'今天空白，也记下了',
     save_hint:'空着也能保存 · 空白也是一天',
-    ph:['今天做到了什么？一件就够','还有一件？可以不写','最后一件？可以不写'],
-    wall_t:'成就墙', wall_sub:'解锁之后，每一天都是一张相片',
+    ph:['今天有什么事情触动了你？你做了什么？','我当时在想什么？','我接下来能做的一件小事是什么？'],
+    wall_t:'成就墙', wall_sub:'你写下的每一天，都留在这里',
+    rd_t:'这段时间的状态', rd_sub:'六种感受的累计占比',
+    rd_advice_none:'继续记录，状态会慢慢浮现',
+    rd_advice_low:'最近的疲惫 / 焦灼在提醒你：减一点，不是你的错，是安排太满',
+    rd_advice_high:'让你感到充实、顺畅的事，明天再约一次',
     empty_w:'还没有相片',
     empty_wd:'解锁之后，每天会在这里生成一张。<br>过去 7 天每天都如实归档，门就开了。',
     go_morning:'去写晨间清单',
     data_t:'数据', data_sub:'导出、导入，都在这一页',
+    data_link:'数据 · 导出 / 导入',
     d_export:'导出为 JSON', d_import:'导入 JSON', d_clear:'清空全部记录',
     d_note:'数据只存在这台设备的浏览器里。换设备或清缓存会丢，建议定期导出。',
     s_days:'记录天数', s_total:'累计成就', s_open:'已解锁',
     unit:'天', pcs:'件',
     /* 门禁 */
-    g_lt:'成功日记', g_sub:'它要等晨间清单先跑稳，再开门。',
+    g_lt:'晚间收尾', g_sub:'它要等晨间清单先跑稳，再开门。',
     g_lock:'先过一道门',
-    g_ring_v:'还差', g_ring_u:'天', g_ring_full:'归档率',
-    s_wait:'还差 {n} 天满一个月',
+    g_ring_v:'还差', g_ring_u:'天', g_ring_full:'解锁进度',
+    s_wait:'还差 {n} 天满 7 天',
     s_wait2:'已运行 {r} 天 · 目标 {t} 天',
     s_def:'还没凑满七天', s_def2:'过去 7 天里漏记了 {p} 天。凑满连续的 7 天，门立刻就开。',
     s_open_now:'已解锁', s_opened:'解锁于 ', s_preview:'预览中',
+    s_unlocking:'解锁中',
     g_cond:'解锁条件', g_cond_d:'两条都满足，门就开',
-    c1_t:'晨间清单跑满 30 天', c1_d:'从你写下第一件要事那天算起。',
+    c1_t:'晨间清单跑满 7 天', c1_d:'从你写下第一件要事那天算起。',
     c2_t:'过去 7 天每日如实归档', c2_d:'不看三件事做没做完，只看有没有在 18:00 诚实封存。凑满连续 7 天，门立刻就开。',
     g_now:'过去七天', g_now_d:'绿 = 已归档（无论做完几件）· 灰 = 那天没记录',
     g_now_note:'过去 7 天里有 {n} 天如实归档了。做得少不算错，没记才算。',
     g_preview:'用示例数据看效果', g_preview_d:'只是预览门禁长相，不会解锁',
     g_demo_clear:'清除示例数据',
-    back_morning:'返回晨间清单'
+    back_morning:'返回晨间清单',
+    /* 偶发回声 + 解锁低语 + 冷启动灵性种子 */
+    echo_l:'回声',
+    whisper_l:'这 7 天，世界没有替你写。',
+    whisper_s:'这里的每一天，都是你写的。',
+    wf_first:'第一帧', wf_last:'最近一帧',
+    enter:'进入',
+    nodata_seed:'空白不是空——是还没写下的你。从今天起，世界不再替你书写。'
   },
   en:{
-    nav:'Success Diary', seg1:'Tonight', seg2:'Wall', seg3:'Data',
+    nav:'Evening Close', seg1:'Tonight', seg2:'Wall',
+    ec_t:'Evening Close', ec_s:'Opens at 18:00', ec_left:'{n} to go', ec_sub:'Live the daytime first · come back at 18:00 to close the day',
     lt:'Tonight',
-    lt_sub:'What moved today · one is enough',
+    lt_sub:'Three minutes before sleep · what you noticed, thought, felt',
     night:'Late night. Three minutes for yourself first.',
     night2:'Close out today before you sleep.',
-    b_t:'Not written yet', b_d:'Three minutes before bed. Note what moved.',
-    ach:'What moved today', ach_p:'One is enough. It can be tiny.',
+    b_t:'Not written yet', b_d:'Three minutes before bed. Note what you noticed, what you thought.',
+    ach:'Today’s trace', ach_p:'Not a log. One stir, one thought, one small move — all count.',
+    ach_loop:'Notice · Reflect · Act',
     ach_none:'Nothing today', ach_none_d:'Nothing today · that counts too', ach_undo:'Actually, let me write',
     low_t:'What were you doing then?', low_p:'No judgement. Just what you were doing. Scrolling counts.',
     low_ph:'e.g. scrolling, staring out, talking to someone',
     low_tag:'When it slipped',
-    fin:'One line (optional)', fin_p:'One line on how the day actually went.',
     e_t:'How it felt', e_p:'Pick one. You can change it later.',
     save:'Save tonight', saved:'Tonight saved', saved_blank:'A blank day — recorded anyway',
     save_hint:'You can save this empty · a blank day is still a day',
-    ph:['What did you get done? One is enough','Another one? optional','One more? optional'],
-    wall_t:'The Wall', wall_sub:'After unlocking, every day becomes a frame',
+    ph:['What touched you today? What did you do?','What were you thinking then?','One small thing you could do next?'],
+    wall_t:'The Wall', wall_sub:'Every day you wrote stays here',
+    rd_t:'How you’ve been', rd_sub:'Six states, cumulative share',
+    rd_advice_none:'Keep logging — the picture will emerge',
+    rd_advice_low:'The tiredness / restlessness is a signal: ease off a little. Not your fault — just too much.',
+    rd_advice_high:'The things that filled you or flowed — schedule them again tomorrow.',
     empty_w:'No frames yet',
     empty_wd:'Once unlocked, one frame per day appears here.<br>Log all 7 days honestly and the door opens.',
     go_morning:'Open Morning Three',
     data_t:'Data', data_sub:'Export and import live here',
+    data_link:'Data · export / import',
     d_export:'Export JSON', d_import:'Import JSON', d_clear:'Delete all records',
     d_note:'Everything lives in this browser only. Export regularly if you switch devices.',
     s_days:'Days', s_total:'Total wins', s_open:'Unlocked',
     unit:'days', pcs:'wins',
-    g_lt:'Success Diary', g_sub:'It opens only after Morning Three runs steady.',
+    g_lt:'Evening Close', g_sub:'It opens only after Morning Three runs steady.',
     g_lock:'Behind a door',
-    g_ring_v:'left', g_ring_u:'d', g_ring_full:'logged',
-    s_wait:'{n} days to one month',
+    g_ring_v:'left', g_ring_u:'d', g_ring_full:'Progress',
+    s_wait:'{n} days left',
     s_wait2:'Running {r} of {t} days',
     s_def:'Still short', s_def2:'{p} of the last 7 days went unlogged. Seven in a row opens it.',
     s_open_now:'Unlocked', s_opened:'Unlocked ', s_preview:'Preview',
+    s_unlocking:'Unlocking',
     g_cond:'Requirements', g_cond_d:'Both must be true',
-    c1_t:'Morning Three for 30 days', c1_d:'Counting from the first thing you wrote down.',
+    c1_t:'Morning Three for 7 days', c1_d:'Counting from the first thing you wrote down.',
     c2_t:'Logged honestly 7 days straight', c2_d:'Not about finishing all three. About sealing the day at 18:00. Seven in a row opens it.',
     g_now:'Last 7 days', g_now_d:'Green = logged · Grey = no record',
     g_now_note:'{n} of the last 7 days sealed. Doing less is fine. Not logging is what counts.',
     g_preview:'Preview with sample data', g_preview_d:'Shows the door, does not unlock it',
     g_demo_clear:'Clear sample data',
-    back_morning:'Back to Morning Three'
+    back_morning:'Back to Morning Three',
+    echo_l:'Echo',
+    whisper_l:'These 7 days, the world did not write for you.',
+    whisper_s:'Every day here is one you wrote.',
+    wf_first:'First frame', wf_last:'Latest frame',
+    enter:'Enter',
+    nodata_seed:'Blank is not empty — it is the you not yet written. From today, the world stops writing for you.'
   }
 };
 function t(k){ return (T[LANG] && T[LANG][k] !== undefined) ? T[LANG][k] : (T.zh[k] !== undefined ? T.zh[k] : k); }
@@ -553,6 +633,124 @@ var FILM = [
 ];
 function filmOf(k){ return FILM[hashOf(k) % FILM.length]; }
 
+/* INS 胶片小图章 —— 感性、正向、带点手绘感的小图标（非 emoji，纯 SVG 线条）。
+   图标按日期哈希取，配合同一套胶片色，13 × 6 组合出"每天不重样"的感觉。 */
+var ICONS = [
+  /* 太阳 */
+  '<circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/>',
+  /* 新芽 */
+  '<path d="M12 21v-8"/><path d="M12 13c0-4 3-6.5 7.5-6.5C19.5 10.5 16.5 13 12 13z"/><path d="M12 13c0-3.5-2.5-5.5-6.5-5.5C5.5 11 8.5 13 12 13z"/>',
+  /* 星星 */
+  '<path fill="currentColor" stroke="none" d="M12 3l2.7 5.6 6.1.8-4.5 4.3 1.1 6-5.4-2.9-5.4 2.9 1.1-6L3.2 9.4l6.1-.8z"/>',
+  /* 月亮 */
+  '<path d="M20 14.5A8 8 0 1 1 9.5 4 6.5 6.5 0 0 0 20 14.5z"/>',
+  /* 心 */
+  '<path fill="currentColor" stroke="none" d="M12 20.2s-7.3-4.6-9.2-9.1C1.5 8.3 3.4 5 6.6 5c2 0 3.9 1.2 5.4 3 1.5-1.8 3.4-3 5.4-3 3.2 0 5.1 3.3 3.8 6.1-1.9 4.5-9.2 9.1-9.2 9.1z"/>',
+  /* 花 */
+  '<circle cx="12" cy="12" r="2.2"/><ellipse cx="12" cy="6.3" rx="2" ry="3"/><ellipse cx="12" cy="17.7" rx="2" ry="3"/><ellipse cx="6.3" cy="12" rx="3" ry="2"/><ellipse cx="17.7" cy="12" rx="3" ry="2"/>',
+  /* 波浪 */
+  '<path d="M3 9c2-2 4-2 6 0s4 2 6 0 4-2 6 0M3 15c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/>',
+  /* 云朵太阳 */
+  '<circle cx="7" cy="7" r="2.5"/><path d="M7 2.5v1.5M2.5 7H4M4.2 4.2l1 1"/><path d="M9.5 20h7.5a3.5 3.5 0 0 0 .5-7 5.5 5.5 0 0 0-10.7 1A3.8 3.8 0 0 0 9.5 20z"/>',
+  /* 闪光 */
+  '<path fill="currentColor" stroke="none" d="M11 3.5l1.7 4.8 4.8 1.7-4.8 1.7L11 16.5 9.3 11.7 4.5 10l4.8-1.7z"/><path fill="currentColor" stroke="none" d="M18 15l.9 2.4 2.4.9-2.4.9-.9 2.4-.9-2.4-2.4-.9 2.4-.9z"/>',
+  /* 热饮 */
+  '<path d="M5 10h11v5.5a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z"/><path d="M16 11h1.6a2.4 2.4 0 0 1 0 4.8H16"/><path d="M8 3.5c0 1.2 1.2 1.6 0 3.2M12 3.5c0 1.2 1.2 1.6 0 3.2"/>',
+  /* 叶子 */
+  '<path d="M5 19C5 10.5 11 5 20 5c0 9.5-5.5 15-15 14z"/><path d="M5.5 18.5c3-4.5 7-8.5 11-10.5"/>',
+  /* 彩虹 */
+  '<path d="M3 17a9 9 0 0 1 18 0"/><path d="M7.2 17a4.8 4.8 0 0 1 9.6 0"/><path d="M11.3 17c0 1.3.7 2 1.7 2s1.7-.7 1.7-2"/>',
+  /* 气球 */
+  '<circle cx="12" cy="9" r="5.5"/><path d="M12 14.5l-1 1.8h2z"/><path d="M12 16.3c1.2 1.6-1.2 2.6 0 4.2"/>'
+];
+function iconOf(k){ return ICONS[hashOf(k + '#icon') % ICONS.length]; }
+/* 一张完整的小图章：胶片底 + 中央图标 */
+function wallStamp(k, f){
+  return '<span class="ig-stamp" style="color:'+f[2]+'">'+
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+iconOf(k)+'</svg>'+
+  '</span>';
+}
+
+/* 六态专属色（雷达图 + 标签，和状态词一一对应）——浅色晨光用 */
+var RADAR_COLORS = {
+  calm:'#456955', full:'#C9A24B', flow:'#48626D',
+  tired:'#7A6E8F', tense:'#C0653E', bright:'#C76B86'
+};
+/* 暗夜荧光版：深底上要亮得起来，才看得见 */
+var RADAR_COLORS_N = {
+  calm:'#7BD9A6', full:'#FFD166', flow:'#6FC3D8',
+  tired:'#B9A8D9', tense:'#FF9E66', bright:'#FF9EB8'
+};
+function isNight(){ return document.documentElement.classList.contains('night'); }
+/* 六态累计占比：count per state + total */
+function energyDist(){
+  var cnt = {};
+  ENERGY.forEach(function(e){ cnt[e.k] = 0; });
+  var total = 0;
+  Object.keys(DB.days).forEach(function(k){
+    var r = DB.days[k];
+    if(r && r.energy && cnt[r.energy] !== undefined){ cnt[r.energy]++; total++; }
+  });
+  return { cnt:cnt, total:total };
+}
+/* 雷达 SVG：每条轴 = 该状态占比（count/total）。配色随晨光/暗夜主题切换，保证深底上也醒目 */
+function radarSVG(dist){
+  var W=300,H=300,cx=150,cy=150,R=104, n=ENERGY.length;
+  var N = isNight();
+  var gridC  = N ? 'rgba(241,244,240,.30)' : 'rgba(60,60,67,.22)';
+  var axisC  = N ? 'rgba(241,244,240,.48)' : 'rgba(60,60,67,.30)';
+  var pal    = N ? RADAR_COLORS_N : RADAR_COLORS;
+  var inkC   = N ? '#F1F4F0' : 'rgba(60,60,67,.78)';
+  var haloC  = N ? '#101310' : '#FFFFFF';
+  var polyF  = N ? 'rgba(63,224,129,.20)' : 'rgba(69,105,89,.16)';
+  var polyS  = N ? '#3FE081' : '#456955';
+  var glow   = N ? ';filter:drop-shadow(0 0 7px rgba(63,224,129,.5))' : '';
+  var ang = function(i){ return (-90 + i*(360/n)) * Math.PI/180; };
+  var grid='';
+  [0.34,0.67,1].forEach(function(lv){
+    var pts=[];
+    for(var i=0;i<n;i++){ var a=ang(i); pts.push((cx+R*lv*Math.cos(a)).toFixed(1)+','+(cy+R*lv*Math.sin(a)).toFixed(1)); }
+    grid += '<polygon points="'+pts.join(' ')+'" fill="none" stroke="'+gridC+'" stroke-width="1.5"/>';
+  });
+  var axes='', labels='';
+  for(var i=0;i<n;i++){
+    var a=ang(i), ex=cx+R*Math.cos(a), ey=cy+R*Math.sin(a);
+    axes += '<line x1="'+cx+'" y1="'+cy+'" x2="'+ex.toFixed(1)+'" y2="'+ey.toFixed(1)+'" stroke="'+axisC+'" stroke-width="1.5"/>';
+    var lx=cx+(R+21)*Math.cos(a), ly=cy+(R+21)*Math.sin(a);
+    var nm = LANG==='en'? ENERGY[i].en : ENERGY[i].zh;
+    var anchor = (Math.abs(Math.cos(a))<0.3)?'middle':(Math.cos(a)>0?'start':'end');
+    labels += '<text x="'+lx.toFixed(1)+'" y="'+(ly+4).toFixed(1)+'" text-anchor="'+anchor+'" '+
+      'style="fill:'+pal[ENERGY[i].k]+';stroke:'+haloC+';stroke-width:3.5px;paint-order:stroke;font-size:13;font-weight:700">'+esc(nm)+'</text>';
+  }
+  var dpts=[], dots='', pcts='';
+  for(var j=0;j<n;j++){
+    var v = dist.total? (dist.cnt[ENERGY[j].k]/dist.total) : 0;
+    var aj=ang(j);
+    var dx=(cx+R*v*Math.cos(aj)).toFixed(1), dy=(cy+R*v*Math.sin(aj)).toFixed(1);
+    var col = pal[ENERGY[j].k];
+    dpts.push(dx+','+dy);
+    if(dist.cnt[ENERGY[j].k] > 0){
+      dots += '<circle cx="'+dx+'" cy="'+dy+'" r="6.5" fill="'+col+'" opacity=".28"/>'+
+              '<circle cx="'+dx+'" cy="'+dy+'" r="3.8" fill="'+col+'" stroke="'+haloC+'" stroke-width="1.4"/>';
+      var px=Number(dx), py=Number(dy);
+      if(Math.abs(Math.sin(aj))<0.3) px = px + (Math.cos(aj)>0? 9 : -9);
+      else py = py + (Math.sin(aj)>0? 15 : -8);
+      pcts += '<text x="'+px.toFixed(1)+'" y="'+py.toFixed(1)+'" text-anchor="middle" '+
+        'style="fill:'+inkC+';stroke:'+haloC+';stroke-width:3px;paint-order:stroke;font-size:10.5;font-weight:800">'+
+        Math.round(v*100)+'%</text>';
+    }
+  }
+  var data = '<polygon points="'+dpts.join(' ')+'" fill="'+polyF+'" stroke="'+polyS+'" stroke-width="2.5" stroke-linejoin="round" style="'+glow+'"/>';
+  return '<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" style="display:block;margin:0 auto">'+ grid+axes+data+dots+pcts+labels +'</svg>';
+}
+function energyAdvice(dist){
+  if(dist.total < 3) return t('rd_advice_none');
+  var arr = ENERGY.map(function(e){ return { k:e.k, n:dist.cnt[e.k]||0 }; }).sort(function(a,b){ return b.n-a.n; });
+  var top = arr[0];
+  if(top.k==='tired' || top.k==='tense') return t('rd_advice_low');
+  return t('rd_advice_high');
+}
+
 /* =========================================================
    渲染
    ========================================================= */
@@ -562,24 +760,109 @@ function render(){
   document.getElementById('langBtn').textContent = (LANG==='zh'? 'EN' : '中文');
   document.getElementById('segToday').textContent = t('seg1');
   document.getElementById('segWall').textContent  = t('wall_t');
-  document.getElementById('segData').textContent  = t('data_t');
   var v = S.view;
   document.getElementById('segToday').className = 'seg-i' + (v==='today'?' on':'');
-  document.getElementById('segWall').className  = 'seg-i' + (v==='wall' ?' on':'');
-  document.getElementById('segData').className  = 'seg-i' + (v==='data' ?' on':'');
-  /* 没解锁就只有一页，别给看得到点不动的标签 */
-  document.getElementById('seg').style.display = (LASTU && LASTU.state==='open')? '' : 'none';
+  document.getElementById('segWall').className  = 'seg-i' + ((v==='wall'||v==='data') ?' on':'');
+  /* 没解锁就只有一页，别给看得到点不动的标签；解锁低语时也先藏起来 */
+  document.getElementById('seg').style.display = (LASTU && LASTU.state==='open' && !S.whisper)? '' : 'none';
   if(S.sheetKey) renderSheet();
 }
 
 var LASTU = null;
+/* 常驻解锁状态图标：始终在导航栏显示，解锁与否一眼可见 */
+function renderLockBadge(u){
+  var el = document.getElementById('lockBadge');
+  if(!el) return;
+  if(u && u.state === 'open'){
+    el.className = 'lockbadge ok';
+    el.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>'+esc(t('s_open_now'))+'</span>';
+  } else {
+    el.className = 'lockbadge lock';
+    el.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="4" y="10.5" width="16" height="10.5" rx="3"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg><span>'+esc(t('s_unlocking'))+'</span>';
+  }
+}
 function view(){
+  /* 晚间收尾 18:00 前不开门：白天先过好，到点再来收个尾 */
+  var m = nowMin(), tk = todayKey();
+  var sealedToday = !!(DB.days[tk] && DB.days[tk].checkin && DB.days[tk].checkin.at);
+  if(m < EVE_MIN && !sealedToday) return viewEveningClosed();
+
   var u = unlock();
   LASTU = u;
+  renderLockBadge(u);
+  /* 解锁那一刻：唯一的直说时刻。只出现一次 */
+  if(u.state === 'open' && u.firstTime && !(DB.unlock && DB.unlock.firstShown)){
+    DB.unlock.firstShown = true; save(); S.whisper = true; return viewWhisper(u);
+  }
   if(u.state !== 'open') return viewGate(u);
+  S.whisper = false;
   if(S.view === 'wall') return viewWall();
   if(S.view === 'data') return viewData();
   return viewToday();
+}
+
+/* ---------- 未到时间 ---------- */
+function viewEveningClosed(){
+  var leftMin = EVE_MIN - nowMin();
+  var hh = Math.floor(leftMin/60), mm = leftMin%60;
+  var left = (hh? hh+' 小时 ' : '') + mm + ' 分钟';
+  return '<div class="evening-closed">'+
+    '<div class="lt" style="font-size:30px">'+esc(t('ec_t'))+'</div>'+
+    '<div class="lt-s">'+esc(t('ec_s'))+'</div>'+
+    '<div class="ec-left">'+esc(t('ec_left').replace('{n}', left))+'</div>'+
+    '<button class="btn-i" data-act="go">'+esc(t('go_morning'))+'</button>'+
+    '<div class="lt-s" style="text-align:center;margin-top:14px">'+esc(t('ec_sub'))+'</div>'+
+  '</div>';
+}
+
+/* ---------- 解锁低语 ---------- */
+function viewWhisper(u){
+  var ks = Object.keys(DB.days).filter(function(k){
+    var r = DB.days[k]; return r && anyItem(r);
+  }).sort();
+  var first = ks[0], last = ks[ks.length-1];
+  function frame(k){
+    var r = DB.days[k];
+    var line = (r.items.filter(function(x){ return x && String(x).trim(); })[0]) || r.low || '';
+    return '<div class="fr"><div class="fd">'+esc(fmtFull(k))+'</div>'+
+           '<div class="ft">'+esc(line || '—')+'</div></div>';
+  }
+  var h = '<div class="whisper">'+
+    '<div class="lt" style="font-size:30px;margin:8px 0 0">'+esc(t('g_lt'))+'</div>'+
+    '<div class="lt-s">'+esc(t('wall_sub'))+'</div>'+
+    '<div class="wf">'+
+      '<div style="flex:1"><div class="fr-l">'+esc(t('wf_first'))+'</div>'+frame(first)+'</div>'+
+      '<div style="flex:1"><div class="fr-l">'+esc(t('wf_last'))+'</div>'+frame(last)+'</div>'+
+    '</div>'+
+    '<div class="wl">'+esc(t('whisper_l'))+'</div>'+
+    '<div class="ws">'+esc(t('whisper_s'))+'</div>'+
+    '<button class="btn-i" data-act="closewhisper" style="margin-top:22px">'+esc(t('enter'))+'</button>'+
+    '</div>';
+  return h;
+}
+
+/* ---------- 偶发回声 ---------- */
+function echoCard(){
+  if(!DB.unlock || !DB.unlock.at) return '';          // 没解锁不回声
+  var tk = todayKey();
+  var past = Object.keys(DB.days).filter(function(k){ return k < tk; });
+  if(past.length < 1) return '';
+  /* 只在整 30/90/180/365 天纪念日出现，不随机刷屏 */
+  var cand = null, cd = 0;
+  [365,180,90,30].forEach(function(d){
+    if(cand) return;
+    var target = addDays(parseYmd(tk), -d);
+    var key = ymd(target);
+    if(DB.days[key] && anyItem(DB.days[key])){ cand = key; cd = d; }
+  });
+  if(!cand) return '';
+  if(DB.unlock.lastEcho === cand) return '';           // 同一天只响一次
+  DB.unlock.lastEcho = cand; save();
+  var r = DB.days[cand];
+  var line = (r.items.filter(function(x){ return x && String(x).trim(); })[0]) || r.low || '';
+  if(!line) return '';
+  return '<div class="echo"><div class="el">'+esc(t('echo_l'))+' · '+cd+' '+esc(t('unit'))+'前 · '+esc(fmtDate(cand))+'</div>'+
+         '<div class="eq">'+esc(line)+'</div></div>';
 }
 
 /* ---------- 门禁 ---------- */
@@ -590,7 +873,7 @@ function viewGate(u){
     h += '<div class="lt">'+esc(t('g_lt'))+'</div><div class="lt-s">'+esc(t('g_sub'))+'</div>';
     h += '<div class="grp"><div class="empty" style="padding:34px 20px">'+
          '<div class="empty-t">'+esc(t('empty_w'))+'</div>'+
-         '<div class="empty-d">'+esc(t('g_sub'))+'</div></div></div>';
+         '<div class="empty-d">'+esc(t('nodata_seed'))+'</div></div></div>';
     h += '<button class="btn-i" data-act="go">'+esc(t('go_morning'))+'</button>';
     return h;
   }
@@ -690,16 +973,19 @@ function viewToday(){
     }
   }
 
+  h += echoCard();
+
   h += '<div class="lt-row"><div><div class="lt">'+esc(t('lt'))+'</div>'+
        '<div class="lt-s">'+esc(fmtFull(k))+' · '+esc(wdFull(k))+'</div></div>'+
        '<div class="lt-s" style="flex:none;font-weight:600;color:#000">'+esc(fmtDate(k))+'</div></div>';
 
   if(r.at){
-    h += '<div class="night">'+esc(anyItem(r)? t('saved') : t('saved_blank'))+' · '+esc(hhmm(r.at))+'</div>';
+    h += '<div class="nightbar">'+esc(anyItem(r)? t('saved') : t('saved_blank'))+' · '+esc(hhmm(r.at))+'</div>';
   }
 
-  /* 今天推进了什么 —— 写完一行才露出下一行，不预先摆三个空位 */
-  h += '<div class="grp"><div class="grp-h">'+esc(t('ach'))+'</div>';
+  /* 今天的痕迹（状态/观察，不是事件）—— 写完一行才露出下一行 */
+  h += '<div class="grp"><div class="grp-h">'+esc(t('ach'))+'</div>'+
+       '<div class="loop-cap">'+esc(t('ach_loop'))+'</div>';
   if(r.none){
     h += '<div class="inp"><span class="idx num">—</span><span class="none-d">'+esc(t('ach_none_d'))+'</span></div>';
   } else {
@@ -732,10 +1018,7 @@ function viewToday(){
       '<div class="lt-s" style="padding:0 16px 13px">'+esc(t('low_p'))+'</div></div>';
   }
 
-  /* 一句话：不写也行 */
-  h += '<div class="grp-h">'+esc(t('fin'))+'</div>';
-  h += '<div class="grp pad"><textarea class="row-wrap" maxlength="300" data-f="done" placeholder="'+esc(t('fin_p'))+
-       '">'+esc(r.done||'')+'</textarea></div>';
+  /* 一句话已砍掉：只记推进和状态，轻就轻到底 */
 
   /* 不再拦着不让人保存：空白也是一天 */
   h += '<button class="btn-i" data-act="save">'+esc(t('save'))+'</button>';
@@ -756,6 +1039,9 @@ function viewWall(){
     h += '<div class="grp"><div class="empty" style="padding:40px 22px">'+
          '<div class="empty-t">'+esc(t('empty_w'))+'</div>'+
          '<div class="empty-d">'+t('empty_wd')+'</div></div></div>';
+    /* 空态也留数据入口：导入备份、清空记录都用得到 */
+    h += '<div style="text-align:center;padding:2px 0 4px"><button class="none-btn" data-act="view" data-v="data">'+
+         esc(t('data_link'))+' <span class="caret">›</span></button></div>';
     return h;
   }
 
@@ -773,6 +1059,7 @@ function viewWall(){
     h += '<button class="cell" data-act="open" data-k="'+k+'">'+
       '<span class="ig-img" style="background:linear-gradient(155deg,'+f[0]+' 0%,'+f[1]+' 100%)">'+
         '<span class="ig-shape s1"></span><span class="ig-shape s2"></span><span class="ig-shape s3"></span>'+
+        wallStamp(k, f)+
         '<span class="ig-day">'+esc(fmtDate(k))+'</span>'+
       '</span>'+
       '<span class="ig-cap'+(c1.length?'':' mut')+'"><em>'+esc(head)+'</em>'+
@@ -781,6 +1068,20 @@ function viewWall(){
   });
   h += '</div>';
   if(ks.length > 3) h += '<div class="ig-more">'+ks.length+' '+esc(t('wall_t'))+'</div>';
+
+  /* 六态雷达：状态分析只住在这里（不再进晨间洞察），挣来的数据才看得到 */
+  var dist = energyDist();
+  if(dist.total >= 3){
+    h += '<div class="card radar-card">'+
+      '<div class="sec-t">'+esc(t('rd_t'))+'</div>'+
+      '<div class="sec-t2">'+esc(t('rd_sub'))+'</div>'+
+      radarSVG(dist)+
+      '<div class="rd-advice">'+esc(energyAdvice(dist))+'</div>'+
+    '</div>';
+  }
+  /* 数据不再单独占一个标签 —— 收进成就墙底部，做个小链接 */
+  h += '<div style="text-align:center;padding:14px 0 4px"><button class="none-btn" data-act="view" data-v="data">'+
+       esc(t('data_link'))+' <span class="caret">›</span></button></div>';
   return h;
 }
 
@@ -823,6 +1124,7 @@ function renderSheet(){
 
   h += '<div class="ig-img" style="width:100%;max-width:190px;border-radius:10px;margin-bottom:16px;background:linear-gradient(155deg,'+f[0]+' 0%,'+f[1]+' 100%)">'+
        '<span class="ig-shape s1"></span><span class="ig-shape s2"></span><span class="ig-shape s3"></span>'+
+       wallStamp(k, f)+
        '<span class="ig-day">'+esc(fmtDate(k))+' '+esc(wdFull(k))+'</span></div>';
 
   var n = 0;
@@ -865,6 +1167,12 @@ function toast(msg){
   el.textContent = msg; el.classList.add('on');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(function(){ el.classList.remove('on'); }, 1900);
+}
+/* 输入防抖提示：打字停下约 0.6s 才轻提示「已保存」，不打断输入 */
+var savedHintTimer = null;
+function savedHint(){
+  clearTimeout(savedHintTimer);
+  savedHintTimer = setTimeout(function(){ toast(LANG==='en'? 'Saved' : '已保存'); }, 650);
 }
 
 /* =========================================================
@@ -931,6 +1239,7 @@ function bind(){
     if(a==='lang'){ LANG = (LANG==='zh'? 'en':'zh');
       try{ localStorage.setItem(LKEY, LANG); }catch(err){} render(); return; }
     if(a==='go'){ location.href = 'index.html'; return; }
+    if(a==='closewhisper'){ S.whisper = false; render(); return; }
     if(a==='banner'){ S.bannerOff = true; render(); return; }
     if(a==='save'){ saveTonight(); return; }
     if(a==='noneday'){ var rn = rec(todayKey()); rn.none = true; rn.items = ['','','']; save(); render(); return; }
@@ -969,12 +1278,12 @@ function bind(){
         var nxt = box ? box.querySelector('.inp[data-row="'+(i+1)+'"]') : null;
         if(nxt) nxt.classList.remove('ghost');
       }
-      save();
+      save(); savedHint();           /* 录入即存，停下即给「已保存」反馈 */
     }
     else if(el.tagName === 'TEXTAREA'){
       if(el.getAttribute('data-f') === 'low') r.low = el.value;
       else r.done = el.value;
-      save();
+      save(); savedHint();
     }
   });
 
