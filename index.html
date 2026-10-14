@@ -276,9 +276,10 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .cloud{display:flex;flex-wrap:wrap;gap:9px 13px;align-items:baseline;justify-content:center;padding:8px 2px 2px}
 .cloud span{color:var(--ink);line-height:1.25}
 .cloud span.hot{color:var(--brand-txt);font-weight:700}
-.sum{font-size:13px;line-height:1.8;color:var(--ink)}
-.sum b{color:var(--brand-txt);font-weight:700}
-.sum .sub{display:block;font-size:12px;color:var(--ink3);margin-top:7px;line-height:1.7}
+/* 词云卡内：7 天统计折成淡字 + 给未来留的虚线区 */
+.cw-faint{font-size:12px;line-height:1.7;color:var(--ink3);margin-top:14px}
+.cw-faint b{color:var(--ink2);font-weight:700}
+.future-box{margin-top:14px;height:72px;border:1.5px dashed var(--line);border-radius:14px}
 .sec-t2{font-size:12px;color:var(--ink3);margin-bottom:9px}
 #instRoot{position:fixed;inset:0;z-index:80;display:none}
 #instRoot.on{display:block}
@@ -296,9 +297,6 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
   width:36px;height:36px;border:0;border-radius:50%;background:rgba(127,127,127,.14);font-size:22px;line-height:1;color:var(--ink);cursor:pointer}
 #valFrame{flex:1;width:100%;border:0;background:var(--card)}
 .val-link{text-align:center;margin:18px 0 4px}
-/* ---------- 洞察预留区 ---------- */
-.future{opacity:.62}
-.future .future-box{margin-top:14px;height:84px;border:1.5px dashed var(--line);border-radius:14px}
 /* ---------- 归档回顾 ---------- */
 .arch-back{margin:-2px 0 12px}
 .arch-go{text-align:center;margin-top:10px}
@@ -537,8 +535,6 @@ var T = {
     toast_demo_off:'示例数据已清除',
     tasks:'件',
     val_link:'价值主张 · 为什么是三件事',
-    future_t:'接下来这里',
-    future_sub:'会根据你每天的记录，给你总结、鼓励，或一句贴心的提醒',
     arch_t:'回顾全部记录',
     arch_sub:'你写下的每一笔都在这里 · 随时回看',
     arch_empty:'还没有记录可回看',
@@ -587,10 +583,7 @@ var T = {
     otd_t:'{n} 天前的今天',
     otd_sub:'你写下的是这些',
     otd_foot:'记下的东西，会一直在这里等你',
-    /* 一句话总结 */
-    sum_7:'这 7 天',
-    sum_30:'最近 30 天',
-    sum_none:'',
+    /* 一句话总结（折成词云卡内的淡字） */
     sum_line:'收了 <b>{c}</b> 次尾，写下的 {p} 件里推进了 <b>{d}</b> 件。',
     sum_word:'「{w}」出现了 {n} 次，是这段时间最常挂在心上的事。',
     /* 词云 */
@@ -715,8 +708,6 @@ var T = {
     otd_t:'{n} days ago today',
     otd_sub:'This is what you wrote',
     otd_foot:'What you wrote stays here, waiting for you',
-    sum_7:'These 7 days',
-    sum_30:'Last 30 days',
     sum_line:'Closed <b>{c}</b> days, moved <b>{d}</b> of {p} things you wrote down.',
     sum_word:'\u201c{w}\u201d came up {n} times — the thing on your mind most.',
     cw_t:'What keeps coming back',
@@ -743,8 +734,6 @@ var T = {
     ws_trace:'You have left a trace on {n} days so far.',
     ws_to_eve:'Evening Close is open — go see what your traces have become',
     val_link:'Why three things',
-    future_t:'Coming here next',
-    future_sub:'As you keep writing, this is where your summary, encouragement, or a quiet nudge will appear',
     arch_t:'All your records',
     arch_sub:'Every line you wrote stays here · look back anytime',
     arch_empty:'No records to look back on yet',
@@ -1128,6 +1117,12 @@ function cloudCard(){
     var sz = (max===min) ? 15 : Math.round(13 + (x.n-min)/(max-min)*7);
     h += '<span class="'+(i<3?'hot':'')+'" style="font-size:'+sz+'px">'+esc(x.w)+'</span>';
   });
+  h += '</div>';
+  /* 这 7 天的统计折成淡字：不占注意力，有兴趣的人自然会看 */
+  var l7 = sumLine(7);
+  if(l7) h += '<div class="cw-faint">'+l7+'</div>';
+  /* 同一张卡里给未来留个家：总结 / 鼓励 / 语义提醒以后出现在这里 */
+  h += '<div class="future-box"></div>';
   return h+'</div></section>';
 }
 function sumLine(n){
@@ -1143,15 +1138,6 @@ function sumLine(n){
   if(ws.length) line += t('sum_word').replace('{w}', esc(ws[0].w)).replace('{n}', ws[0].n);
   return line;
 }
-function summaryCard(){
-  var l7 = sumLine(7), l30 = sumLine(30);
-  if(!l7 && !l30) return '';
-  var h = '<section class="card"><div class="sec-t">'+esc(t('sum_7'))+'</div>'+
-    '<div class="sum">'+(l7 || t('sum_none'))+'</div>';
-  if(l30 && l30 !== l7) h += '<span class="sum sub">'+esc(t('sum_30'))+'：'+l30+'</span>';
-  return h+'</section>';
-}
-
 function sdCard(){
   /* 晚间收尾 18:00 前完全不出现、不开 —— 主页更干净，也符合「白天先过好」 */
   if(nowMin() < EVE_MIN) return '';
@@ -1402,9 +1388,7 @@ function viewStats(){
   var h = '';
   h += whisperCard();
   h += persistCard();           /* 坚持：用了几天 vs 没用几天 + 推进确认累计 —— 只看你是否天天来 */
-  h += futureCard();            /* 预留：未来根据录入数据做总结 / 鼓励 / 语义提醒 */
-  h += summaryCard();
-  h += cloudCard();
+  h += cloudCard();             /* 反复出现的事：一张卡就够，数据统计折成淡字贴在卡内 */
   h += recentCard();
   h += '<div class="arch-go"><button class="linkbtn" data-act="view" data-v="archive">'+esc(t('arch_t'))+' ›</button></div>';
   if(DB.demoKeys.length){
@@ -1460,12 +1444,6 @@ function closeValue(){
   var el = document.getElementById('valRoot');
   el.classList.remove('on');
   el.innerHTML = '';
-}
-/* 预留区：未来根据录入数据做总结 / 鼓励 / 语义提醒 */
-function futureCard(){
-  return '<section class="card future"><div class="sec-t">'+esc(t('future_t'))+'</div>'+
-    '<div class="sec-t2">'+esc(t('future_sub'))+'</div>'+
-    '<div class="future-box"></div></section>';
 }
 /* 归档回顾：把写过的日子完整呈现，随时回看 —— 录入的东西必须能被 review，否则毁掉信任 */
 function viewArchive(){
