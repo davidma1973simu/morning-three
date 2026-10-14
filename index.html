@@ -276,10 +276,17 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .cloud{display:flex;flex-wrap:wrap;gap:9px 13px;align-items:baseline;justify-content:center;padding:8px 2px 2px}
 .cloud span{color:var(--ink);line-height:1.25}
 .cloud span.hot{color:var(--brand-txt);font-weight:700}
-/* 词云卡内：7 天统计折成淡字 + 给未来留的虚线区 */
-.cw-faint{font-size:12px;line-height:1.7;color:var(--ink3);margin-top:14px}
-.cw-faint b{color:var(--ink2);font-weight:700}
+/* 词云卡内：给未来留的虚线区 */
 .future-box{margin-top:14px;height:72px;border:1.5px dashed var(--line);border-radius:14px}
+/* 最近记录：折叠坍缩，默认收起 */
+.rec-det{overflow:hidden}
+.rec-det>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;
+  font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--ink3);text-transform:uppercase;margin:0;padding:0}
+.rec-det>summary::-webkit-details-marker{display:none}
+.rec-h{flex:1}
+.rec-caret{font-size:18px;line-height:1;color:var(--ink3);transition:transform .2s ease;transform:rotate(0deg)}
+.rec-det[open] .rec-caret{transform:rotate(90deg)}
+.rec-body{margin-top:4px}
 .sec-t2{font-size:12px;color:var(--ink3);margin-bottom:9px}
 #instRoot{position:fixed;inset:0;z-index:80;display:none}
 #instRoot.on{display:block}
@@ -583,9 +590,6 @@ var T = {
     otd_t:'{n} 天前的今天',
     otd_sub:'你写下的是这些',
     otd_foot:'记下的东西，会一直在这里等你',
-    /* 一句话总结（折成词云卡内的淡字） */
-    sum_line:'收了 <b>{c}</b> 次尾，写下的 {p} 件里推进了 <b>{d}</b> 件。',
-    sum_word:'「{w}」出现了 {n} 次，是这段时间最常挂在心上的事。',
     /* 词云 */
     cw_t:'反复出现的事',
     cw_sub:'写过的都会留在这里，慢慢长成你自己的样子',
@@ -708,8 +712,6 @@ var T = {
     otd_t:'{n} days ago today',
     otd_sub:'This is what you wrote',
     otd_foot:'What you wrote stays here, waiting for you',
-    sum_line:'Closed <b>{c}</b> days, moved <b>{d}</b> of {p} things you wrote down.',
-    sum_word:'\u201c{w}\u201d came up {n} times — the thing on your mind most.',
     cw_t:'What keeps coming back',
     cw_sub:'Everything you write stays here, slowly becoming a picture of you',
     mi_t:'Mirror of state', mi_sub:'The face you leave yourself',
@@ -1118,25 +1120,9 @@ function cloudCard(){
     h += '<span class="'+(i<3?'hot':'')+'" style="font-size:'+sz+'px">'+esc(x.w)+'</span>';
   });
   h += '</div>';
-  /* 这 7 天的统计折成淡字：不占注意力，有兴趣的人自然会看 */
-  var l7 = sumLine(7);
-  if(l7) h += '<div class="cw-faint">'+l7+'</div>';
   /* 同一张卡里给未来留个家：总结 / 鼓励 / 语义提醒以后出现在这里 */
   h += '<div class="future-box"></div>';
   return h+'</div></section>';
-}
-function sumLine(n){
-  var ks = [], cN = 0, dSum = 0, pSum = 0;
-  for(var i=n-1;i>=0;i--){
-    var d = addDays(new Date(), -i), k = ymd(d);
-    ks.push(k);
-    if(isChecked(k)){ cN++; var s = dayStat(k); dSum += s.done; pSum += s.planned; }
-  }
-  if(!cN) return '';
-  var ws = wordsIn(ks);
-  var line = t('sum_line').replace('{c}', cN).replace('{p}', pSum).replace('{d}', dSum);
-  if(ws.length) line += t('sum_word').replace('{w}', esc(ws[0].w)).replace('{n}', ws[0].n);
-  return line;
 }
 function sdCard(){
   /* 晚间收尾 18:00 前完全不出现、不开 —— 主页更干净，也符合「白天先过好」 */
@@ -1405,11 +1391,11 @@ function recentCard(){
     var r=DB.days[k]; return (r.tasks&&taskList(r).length)||r.checkin||r.late;
   }).sort().reverse().slice(0,10);
   if(!ks.length) return '';
-  var h = '<section class="card"><div class="sec-t">'+t('rec_t')+'</div>';
+  var b = '';
   ks.forEach(function(k){
     var r = DB.days[k], d = parseYmd(k), s = dayStat(k);
     var isDemo = DB.demoKeys.indexOf(k)>=0;
-    h += '<div class="rec"><span class="rec-d num">'+fmtDate(d)+' '+wdShort(d)+'</span>';
+    b += '<div class="rec"><span class="rec-d num">'+fmtDate(d)+' '+wdShort(d)+'</span>';
     var bar='';
     if(s.checked && s.planned){
       var res=r.checkin.results||[];
@@ -1417,16 +1403,19 @@ function recentCard(){
     } else if(s.planned){
       for(var j=0;j<s.planned;j++){ bar += '<span class="rec-seg"></span>'; }
     } else { bar = '<span style="font-size:12px;color:var(--ink3)">'+t('rec_empty')+'</span>'; }
-    h += '<span class="rec-bar">'+bar+'</span>';
-    h += '<span class="rec-n num">'+(s.checked? s.done+'/'+s.planned : '—')+'</span>';
-    h += '<span class="rec-s '+(s.checked?'ok':'no')+'">'+(s.checked? t('rec_ok') : t('rec_no'))+'</span>';
-    h += '</div>';
+    b += '<span class="rec-bar">'+bar+'</span>';
+    b += '<span class="rec-n num">'+(s.checked? s.done+'/'+s.planned : '—')+'</span>';
+    b += '<span class="rec-s '+(s.checked?'ok':'no')+'">'+(s.checked? t('rec_ok') : t('rec_no'))+'</span>';
+    b += '</div>';
     if(r.late){
-      h += '<div class="rec-late"><span class="rec-late-tag">'+esc(t('late_tag'))+'</span>'+
+      b += '<div class="rec-late"><span class="rec-late-tag">'+esc(t('late_tag'))+'</span>'+
            '<span class="rec-late-tx">'+esc(trunc(r.late.text,40))+'</span></div>';
     }
   });
-  return h+'</section>';
+  /* 折叠坍缩：默认收起，不打扰；想看再点开 */
+  return '<details class="card rec-det"><summary class="rec-sum">'+
+    '<span class="rec-h">'+t('rec_t')+'</span><span class="rec-caret">›</span></summary>'+
+    '<div class="rec-body">'+b+'</div></details>';
 }
 
 /* ---------- 价值卡入口（弹窗） ---------- */
