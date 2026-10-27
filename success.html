@@ -6,10 +6,10 @@
 <meta name="theme-color" content="#101310">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="晚间收尾">
-<meta name="application-name" content="晚间收尾">
+<meta name="apple-mobile-web-app-title" content="晚间反思">
+<meta name="application-name" content="晚间反思">
 <meta name="description" content="睡前留三分钟，记下你今天注意到的、想到的、感觉到的。空白也算数。">
-<title>晚间收尾 · Evening Close</title>
+<title>晚间反思 · Evening Reflection</title>
 <script>
 /* 主题在样式前定好，避免先闪一下浅色再跳深色 */
 window.applyTheme = function(){
@@ -90,7 +90,7 @@ input,textarea{font-family:inherit;font-size:17px;color:inherit;border:0;backgro
 
 .wrap{max-width:520px;margin:0 auto;padding:4px 16px calc(104px + var(--safe-b))}
 
-/* 常驻返回晨间清单 —— 任何状态都看得到，解决「卡在晚间收尾回不去」 */
+/* 常驻返回晨间清单 —— 任何状态都看得到，解决「卡在晚间反思回不去」 */
 .home-foot{position:fixed;left:0;right:0;bottom:0;z-index:25;display:flex;justify-content:center;
   padding:0 16px calc(12px + var(--safe-b));
   background:linear-gradient(to top,var(--bg) 52%,rgba(0,0,0,0));
@@ -324,7 +324,7 @@ textarea.row-wrap{min-height:96px;padding:2px 0;line-height:1.45;font-size:17px;
 
 <header class="nav">
   <div class="nav-row">
-    <div class="nav-title" id="navT">晚间收尾</div>
+    <div class="nav-title" id="navT">晚间反思</div>
     <div class="nav-r">
       <span class="lockbadge" id="lockBadge"></span>
       <button class="iconbtn wide" data-act="lang" id="langBtn">EN</button>
@@ -346,7 +346,7 @@ textarea.row-wrap{min-height:96px;padding:2px 0;line-height:1.45;font-size:17px;
 
 <script>
 /* =========================================================
-   晚间收尾 · Evening Close
+   晚间反思 · Evening Reflection
    与「晨间清单」同源部署，直接读晨间清单的归档数据判定解锁
    ========================================================= */
 var MKEY = 'morning-three.v1';   // 晨间清单
@@ -355,7 +355,7 @@ var LKEY = 'success-lang';
 var SLOTS = 3;                   // 每晚最多三行：写完一行才露下一行，一件就够
 var MIN_DAYS = 7;                // 门槛 A：先用满 7 天
 var WINDOW = 7;                  // 门槛 B：最近一周 100%
-var EVE_MIN = 18 * 60;           // 18:00 起晚间收尾才可写
+var EVE_MIN = 18 * 60;           // 18:00 起晚间反思才可写
 function nowMin(){ var d = new Date(); return d.getHours()*60 + d.getMinutes(); }
 
 var LANG = 'zh';
@@ -489,8 +489,8 @@ function load(){
 /* ---------- 文案 ---------- */
 var T = {
   zh:{
-    nav:'晚间收尾', seg1:'今日', seg2:'成就墙',
-    ec_t:'晚间收尾', ec_s:'它 18:00 才开门', ec_left:'还有 {n}', ec_sub:'现在先过好白天 · 18:00 后再来收个尾',
+    nav:'晚间反思', seg1:'今日', seg2:'成就墙',
+    ec_t:'晚间反思', ec_s:'它 18:00 才开门', ec_left:'还有 {n}', ec_sub:'现在先过好白天 · 18:00 后再来收个尾',
     lt:'今晚',
     lt_sub:'睡前留三分钟 · 记你注意到的、想到的、感觉到的',
     night:'夜深了。睡前留三分钟给自己。',
@@ -521,7 +521,7 @@ var T = {
     s_days:'记录天数', s_total:'累计成就', s_open:'已解锁',
     unit:'天', pcs:'件',
     /* 门禁 */
-    g_lt:'晚间收尾', g_sub:'它要等晨间清单先跑稳，再开门。',
+    g_lt:'晚间反思', g_sub:'它要等晨间清单先跑稳，再开门。',
     g_lock:'先过一道门',
     g_ring_v:'还差', g_ring_u:'天', g_ring_full:'解锁进度',
     s_wait:'还差 {n} 天满 7 天',
@@ -546,8 +546,8 @@ var T = {
     nodata_seed:'空白不是空——是还没写下的你。从今天起，世界不再替你书写。'
   },
   en:{
-    nav:'Evening Close', seg1:'Tonight', seg2:'Wall',
-    ec_t:'Evening Close', ec_s:'Opens at 18:00', ec_left:'{n} to go', ec_sub:'Live the daytime first · come back at 18:00 to close the day',
+    nav:'Evening Reflection', seg1:'Tonight', seg2:'Wall',
+    ec_t:'Evening Reflection', ec_s:'Opens at 18:00', ec_left:'{n} to go', ec_sub:'Live the daytime first · come back at 18:00 to close the day',
     lt:'Tonight',
     lt_sub:'Three minutes before sleep · what you noticed, thought, felt',
     night:'Late night. Three minutes for yourself first.',
@@ -577,7 +577,7 @@ var T = {
     d_note:'Everything lives in this browser only. Export regularly if you switch devices.',
     s_days:'Days', s_total:'Total wins', s_open:'Unlocked',
     unit:'days', pcs:'wins',
-    g_lt:'Evening Close', g_sub:'It opens only after Morning Three runs steady.',
+    g_lt:'Evening Reflection', g_sub:'It opens only after Morning Three runs steady.',
     g_lock:'Behind a door',
     g_ring_v:'left', g_ring_u:'d', g_ring_full:'Progress',
     s_wait:'{n} days left',
@@ -782,7 +782,7 @@ function renderLockBadge(u){
   }
 }
 function view(){
-  /* 晚间收尾 18:00 前不开门：白天先过好，到点再来收个尾 */
+  /* 晚间反思 18:00 前不开门：白天先过好，到点再来收个尾 */
   var m = nowMin(), tk = todayKey();
   var sealedToday = !!(DB.days[tk] && DB.days[tk].checkin && DB.days[tk].checkin.at);
   if(m < EVE_MIN && !sealedToday) return viewEveningClosed();

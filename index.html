@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="晨间清单">
 <meta name="application-name" content="晨间清单">
-<meta name="description" content="早上想清楚今天要推进什么，一件也算数；18:00 收个尾，没推进的带到明天。跑满 7 天解锁睡前的晚间收尾。">
+<meta name="description" content="早上想清楚今天要推进什么，一件也算数；18:00 收个尾，没推进的带到明天。跑满 7 天解锁睡前的晚间反思。">
 <title>晨间清单 · Morning Three</title>
 <script>
 /* 主题在样式前定好，避免先闪一下浅色再跳深色 */
@@ -350,7 +350,7 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .empty-stats .es-d{font-size:13px;color:var(--ink3);line-height:1.7;margin-bottom:20px}
 .linkbtn{font-size:12.5px;font-weight:600;color:var(--brand-txt);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--brand-line)}
 
-/* ---------- 状态的镜子 / 长期对照（读晚间收尾数据） ---------- */
+/* ---------- 状态的镜子 / 长期对照（读晚间反思数据） ---------- */
 .mi-sub{font-size:12.5px;color:var(--ink3);margin:-6px 0 16px;line-height:1.55}
 .mi-emo{display:flex;flex-wrap:wrap;gap:11px 18px}
 .mi-e{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--ink2)}
@@ -474,8 +474,8 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
    常量
    ========================================================= */
 var PLAN_MIN     = 7 * 60;   // 07:00 前写下 = 晨间标记（仅用于正向标签，不再限制编辑）
-var EVE_MIN      = 18 * 60;  // 18:00 起晚间收尾显示 / 可开门
-var DAY_EDIT_MAX = 19 * 60;  // 晨间清单可编辑到 19:00（与晚间收尾有 1 小时交叠）
+var EVE_MIN      = 18 * 60;  // 18:00 起晚间反思显示 / 可开门
+var DAY_EDIT_MAX = 19 * 60;  // 晨间清单可编辑到 19:00（与晚间反思有 1 小时交叠）
 var CHECK_MIN    = EVE_MIN;  // 兼容旧引用
 var SLOTS     = 3;         // 每日三件要事
 var KEY       = 'morning-three.v1';
@@ -488,7 +488,7 @@ var T = {
     brand:'晨间清单',
     today:'今日', stats:'洞察',
     ph_plan:'早上', ph_exec:'白天', ph_check:'收尾时间', ph_sealed:'已收尾',
-    ph_edit:'白天', late_open_hint:'晚间收尾已开 · 要事可改到 19:00',
+    ph_edit:'白天', late_open_hint:'晚间反思已开 · 要事可改到 19:00',
     ph_late:'待收尾', ph_late_hint:'19:00 后只读', ph_late_sub:'要事已锁定 · 去收个尾',
     go_close:'去收个尾',
     left_pre:'距 07:00 还有 ', left_pre2:'距 18:00 收尾还有 ',
@@ -497,7 +497,7 @@ var T = {
     t_title:'今天想推进什么',
     t_sub:'想清楚一件就算数 · 18:00 收个尾',
     t_sub_exec:'白天随时可写可勾，18:00 收尾。',
-    lock_hint:'要事 = 今天结束时会让你觉得没白过的那件事。<br>早上想最理想，想到了随时写。',
+    lock_hint:'要事 = 今天结束时会让你觉得没白过的那件事。<br>输入一周后，解锁「晚间反思」。',
     sealed_at:'收尾 ·',
     ph:['今天想推进什么？一件就够','还有一件？可以不写','最后一件？可以不写'],
     lock:'锁定今日要事',
@@ -530,7 +530,7 @@ var T = {
     demo_tag:'示例',
     rec_t:'最近记录',
     rec_ok:'已收尾', rec_no:'空白', rec_empty:'—',
-    sd_title:'晚间收尾', sd_sub:'睡前记下今天推进了什么 · 一件就够',
+    sd_title:'晚间反思', sd_sub:'睡前记下今天推进了什么 · 一件就够',
     sd_lock:'未解锁 · 满 7 天 + 过去 7 天每天收尾',
     sd_left:'还差 {n} 天满 7 天', sd_seal:'过去 7 天有 {n} 天收了尾，差一点',
     sd_go:'进入',
@@ -593,7 +593,7 @@ var T = {
     /* 词云 */
     cw_t:'反复出现的事',
     cw_sub:'写过的都会留在这里，慢慢长成你自己的样子',
-    /* 状态的镜子 + 长期对照（读晚间收尾的数据） */
+    /* 状态的镜子 + 长期对照（读晚间反思的数据） */
     mi_t:'状态的镜子', mi_sub:'你留给自己的样子',
     mi_blank_head:'留白的日子',
     mi_blank:'这 {n} 天里，有 {b} 天留了白。空白不是没记录——是那天你决定不写。它也是数据。',
@@ -614,7 +614,7 @@ var T = {
     /* 晨间洞察：一句 whisper（不是仪表盘） */
     ws_word:'你反复写下的，是「{w}」—— 它这段时间一直跟着你。',
     ws_trace:'你已经在 {n} 天留下了痕迹。',
-    ws_to_eve:'晚间收尾已经敞开，去看看它们长成了什么'
+    ws_to_eve:'晚间反思已经敞开，去看看它们长成了什么'
   },
   en:{
     brand:'Morning Three',
@@ -629,7 +629,7 @@ var T = {
     t_title:'What to move today',
     t_sub:'One clear thing counts · close at 18:00',
     t_sub_exec:'Write and check anytime — the day closes at 18:00.',
-    lock_hint:'A priority is the thing that makes today not feel wasted.<br>Morning is ideal. Whenever it comes to you, write it.',
+    lock_hint:'A priority is the thing that makes today not feel wasted.<br>Write for a week to unlock Evening Reflection.',
     sealed_at:'Closed ·',
     ph:['What do you want to move? One is enough','Another one? optional','One more? optional'],
     lock:'Lock today\u2019s list',
@@ -669,7 +669,7 @@ var T = {
     toast_demo:'Sample data loaded',
     toast_demo_off:'Sample data cleared',
     tasks:'',
-    sd_title:'Evening Close',
+    sd_title:'Evening Reflection',
     sd_sub:'Before bed, note what moved today · one is enough',
     sd_lock:'Locked · 7 days plus a honest week',
     sd_left:'{n} days to unlock', sd_seal:'{n} of 7 days closed',
@@ -734,7 +734,7 @@ var T = {
     /* morning insight whisper */
     ws_word:'The word you keep writing is “{w}” — it has followed you the whole time.',
     ws_trace:'You have left a trace on {n} days so far.',
-    ws_to_eve:'Evening Close is open — go see what your traces have become',
+    ws_to_eve:'Evening Reflection is open — go see what your traces have become',
     val_link:'Why three things',
     arch_t:'All your records',
     arch_sub:'Every line you wrote stays here · look back anytime',
@@ -1125,7 +1125,7 @@ function cloudCard(){
   return h+'</div></section>';
 }
 function sdCard(){
-  /* 晚间收尾 18:00 前完全不出现、不开 —— 主页更干净，也符合「白天先过好」 */
+  /* 晚间反思 18:00 前完全不出现、不开 —— 主页更干净，也符合「白天先过好」 */
   if(nowMin() < EVE_MIN) return '';
   /* 门槛没到 7 天：主页面完全不出现 —— 不占注意力，也不制造「还差很多」的压迫感 */
   var open = sdOpen(), p = sdProgress();
@@ -1187,7 +1187,7 @@ function viewToday(){
     else { h += '<button class="btn ghost late-btn" data-act="latetoggle">'+esc(t('late_btn'))+'</button>'; }
     return h+'</section>';
   }
-  /* 19:00 后：晨间清单只读，导流晚间收尾（不审判，只指路） */
+  /* 19:00 后：晨间清单只读，导流晚间反思（不审判，只指路） */
   if(ph==='late'){
     h += '<p class="h1-sub">'+t('ph_late_sub')+'</p>'+ readList(r) +
          '<button class="btn ghost" data-act="sdgo">'+esc(t('go_close'))+'</button>';
@@ -1285,7 +1285,7 @@ function lateBox(r){
    渲染：统计
    ========================================================= */
 /* =========================================================
-   状态的镜子 + 长期对照 —— 读「晚间收尾」的状态/空白数据
+   状态的镜子 + 长期对照 —— 读「晚间反思」的状态/空白数据
    静默原则：数据不够就隐藏，绝不说「你变了」
    ========================================================= */
 var ENERGY = {
@@ -1308,7 +1308,7 @@ function eveningRecords(){
 /* =========================================================
    晨间洞察 —— 一句 whisper，不是仪表盘
    把已有的解读能力推到面前：反复出现的词，或累计留下的痕迹天数。
-   不造第二面墙；晚间收尾解锁后温柔导流，让那面墙成为唯一成就。
+   不造第二面墙；晚间反思解锁后温柔导流，让那面墙成为唯一成就。
    ========================================================= */
 function whisperCard(){
   var ks = Object.keys(DB.days).filter(function(k){
