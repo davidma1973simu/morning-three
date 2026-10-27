@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="晨间清单">
 <meta name="application-name" content="晨间清单">
-<meta name="description" content="早上想清楚今天要推进什么，一件也算数；18:00 收个尾，没推进的带到明天。跑满 7 天解锁睡前的晚间反思。">
+<meta name="description" content="早上想清楚今天要推进什么，一件也算数；18:00 收个尾，没推进的带到明天。输入一周（满 4 次，可不连续）解锁睡前的晚间反思。">
 <title>晨间清单 · Morning Three</title>
 <script>
 /* 主题在样式前定好，避免先闪一下浅色再跳深色 */
@@ -349,6 +349,8 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .empty-stats .es-t{font-size:16px;font-weight:700;margin-bottom:6px}
 .empty-stats .es-d{font-size:13px;color:var(--ink3);line-height:1.7;margin-bottom:20px}
 .linkbtn{font-size:12.5px;font-weight:600;color:var(--brand-txt);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--brand-line)}
+/* 正文里的高亮词：与价值主张链接同色同线，视觉上同一家族 */
+.hl{color:var(--brand-txt);font-weight:600;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--brand-line)}
 
 /* ---------- 状态的镜子 / 长期对照（读晚间反思数据） ---------- */
 .mi-sub{font-size:12.5px;color:var(--ink3);margin:-6px 0 16px;line-height:1.55}
@@ -497,7 +499,7 @@ var T = {
     t_title:'今天想推进什么',
     t_sub:'想清楚一件就算数 · 18:00 收个尾',
     t_sub_exec:'白天随时可写可勾，18:00 收尾。',
-    lock_hint:'要事 = 今天结束时会让你觉得没白过的那件事。<br>输入一周后，解锁「晚间反思」。',
+    lock_hint:'要事 = 今天结束时会让你觉得没白过的那件事。<br>输入一周后，解锁「<span class="hl">晚间反思</span>」。',
     sealed_at:'收尾 ·',
     ph:['今天想推进什么？一件就够','还有一件？可以不写','最后一件？可以不写'],
     lock:'锁定今日要事',
@@ -531,8 +533,8 @@ var T = {
     rec_t:'最近记录',
     rec_ok:'已收尾', rec_no:'空白', rec_empty:'—',
     sd_title:'晚间反思', sd_sub:'睡前记下今天推进了什么 · 一件就够',
-    sd_lock:'未解锁 · 满 7 天 + 过去 7 天每天收尾',
-    sd_left:'还差 {n} 天满 7 天', sd_seal:'过去 7 天有 {n} 天收了尾，差一点',
+    sd_lock:'未解锁 · 一周内输入至少 4 次（可不连续）',
+    sd_left:'还差 {n} 天满 7 天', sd_seal:'过去 7 天输入了 {n}/4 次，不连续也算',
     sd_go:'进入',
     day_unit:'天',
     toast_saved:'已保存',
@@ -629,7 +631,7 @@ var T = {
     t_title:'What to move today',
     t_sub:'One clear thing counts · close at 18:00',
     t_sub_exec:'Write and check anytime — the day closes at 18:00.',
-    lock_hint:'A priority is the thing that makes today not feel wasted.<br>Write for a week to unlock Evening Reflection.',
+    lock_hint:'A priority is the thing that makes today not feel wasted.<br>Write for a week to unlock <span class="hl">Evening Reflection</span>.',
     sealed_at:'Closed ·',
     ph:['What do you want to move? One is enough','Another one? optional','One more? optional'],
     lock:'Lock today\u2019s list',
@@ -671,8 +673,8 @@ var T = {
     tasks:'',
     sd_title:'Evening Reflection',
     sd_sub:'Before bed, note what moved today · one is enough',
-    sd_lock:'Locked · 7 days plus a honest week',
-    sd_left:'{n} days to unlock', sd_seal:'{n} of 7 days closed',
+    sd_lock:'Locked · 4 check-ins in a week',
+    sd_left:'{n} days to unlock', sd_seal:'{n} of 4 logged this week',
     sd_go:'Open',
     rm_inst:'Install to your home screen',
     in_d:'Once installed it gets its own icon, no address bar, and opens without network.',
@@ -917,13 +919,13 @@ function sdProgress(){
   }).sort();
   if(!ks.length) return null;
   var ran = Math.round((new Date(ymd(new Date())) - new Date(ks[0]))/86400000);
-  var sealed = 0;
+  var inputs = 0;
   for(var i=7;i>=1;i--){
     var d = new Date(); d.setDate(d.getDate()-i);
     var r = days[ymd(d)];
-    if(r && r.checkin && r.checkin.at) sealed++;
+    if(r && (r.tasks || r.checkin)) inputs++;   /* 那天输入过就算，不连续也行 */
   }
-  return { ran:ran, sealed:sealed, need:7, defer:sdMeta().defer||0 };
+  return { ran:ran, inputs:inputs, need:4 };
 }
 function sdIcon(open){
   if(open) return '<svg width="19" height="19" viewBox="0 0 24 24" style="fill:var(--gold)"><path d="M12 3.2l1.85 4.95L19 10l-5.15 1.85L12 16.8l-1.85-4.95L5 10l5.15-1.85z"/><path d="M18.4 15.4l.85 2.3 2.3.85-2.3.85-.85 2.3-.85-2.3-2.3-.85 2.3-.85z" opacity=".55"/></svg>';
@@ -1133,7 +1135,7 @@ function sdCard(){
 
   var note = '';
   if(!open){
-    note = t('sd_seal').replace('{n}', p.sealed);   /* 满 7 天后唯一剩下的条件就是 7 天归档 */
+    note = t('sd_seal').replace('{n}', p.inputs);   /* 满 7 天后剩下的条件：一周内输入满 4 次 */
   }
   var cls = open? 'sdcard' : 'sdcard locked slim';
   return '<section class="card sd-wrap"><div class="'+cls+'" data-act="sdgo">'+

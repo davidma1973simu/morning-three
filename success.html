@@ -354,7 +354,7 @@ var KEY  = 'success-diary.v1';   // 本应用
 var LKEY = 'success-lang';
 var SLOTS = 3;                   // 每晚最多三行：写完一行才露下一行，一件就够
 var MIN_DAYS = 7;                // 门槛 A：先用满 7 天
-var WINDOW = 7;                  // 门槛 B：最近一周 100%
+var WINDOW = 7;                  // 门槛 B：最近一周内数输入次数（满 4 次）
 var EVE_MIN = 18 * 60;           // 18:00 起晚间反思才可写
 function nowMin(){ var d = new Date(); return d.getHours()*60 + d.getMinutes(); }
 
@@ -405,31 +405,34 @@ function mDayDone(k, days){
   return Math.min(c, SLOTS);
 }
 /* 某一天是否如实归档了（漏打卡 = false；当天没写要事但点了「确认今日空缺」= true）
-   —— 这是解锁的唯一判据：诚实归档，而不是三件事全做完 */
+   —— 归档仍用于展示与统计；解锁判据已改为「那天输入过」（tasks 或 checkin 任一存在） */
 function mDaySealed(k, days){
   var r = days[k];
   return !!(r && r.checkin && r.checkin.at);
 }
 /* 过去 WINDOW 个自然日（不含今天 —— 今天还没到 18:00，永远不可能"满分"） */
 function mWindow(days){
-  var out = [], sealed = 0, doneCount = 0;
+  var out = [], sealed = 0, doneCount = 0, inputs = 0;
   for(var i=WINDOW;i>=1;i--){                       /* 昨天起往前 7 天 */
     var k = ymd(addDays(new Date(), -i));
     var ok = mDaySealed(k, days);
     var d  = mDayDone(k, days);
+    var has = !!(days[k] && (days[k].tasks || days[k].checkin));
     if(ok) sealed++;
+    if(has) inputs++;
     doneCount += d;
-    out.push({ k:k, done:d, sealed:ok });
+    out.push({ k:k, done:d, sealed:ok, has:has });
   }
   return { list:out, doneSum:doneCount, slotSum:WINDOW*SLOTS,
-           sealed:sealed, days:WINDOW, rate:(sealed/WINDOW) };
+           sealed:sealed, days:WINDOW, inputs:inputs, rate:(sealed/WINDOW) };
 }
 
 /* ---------- 解锁判定 ----------
    state: open | waiting | deferred | nodata
-   waiting   : 还没跑满 7 天
-   deferred  : 已满 7 天，但最近一周没到 100% → 顺延一周，重新评估
-   open      : 满 7 天 且 最近一周 100%
+   waiting   : 还没跑满 7 天（从第一笔输入算起）
+   deferred  : 满 7 天但一周内输入不足 4 次 → 顺延 3 天，到期必开门
+   open      : 满 7 天 且 过去 7 天输入满 4 次（可不连续）；
+               或顺延 3 天到期 —— 到期无论是否继续输入，门都开
 --------------------------------------- */
 function unlock(){
   /* 已解锁优先于一切 —— 哪怕晨间数据被清了，门也不该重新关上 */
@@ -453,21 +456,21 @@ function unlock(){
   if(ran < MIN_DAYS)
     return { state:'waiting', since:since, ran:ran, target:MIN_DAYS, left:MIN_DAYS-ran, win:win };
 
-  /* 满 7 天后每天都评估 —— 凑满 7 个干净的过去日就开门，不必等到某个整周节点。
-     等这个是纯粹的摩擦，对习惯没有任何额外价值。 */
-  if(meta.lastEval !== today){
-    meta.lastEval = today;
-    if(win.rate < 1) meta.defer = (meta.defer||0) + 1;
-    save();
+  /* 门槛 B：过去 7 天里输入满 4 次（可以不连续）—— 达标即开门，不必等任何整周节点 */
+  if(win.inputs >= 4){
+    meta.at = today; save();
+    return { state:'open', at:today, since:since, win:win, firstTime:true };
   }
 
-  if(win.rate < 1){
-    return { state:'deferred', since:since, ran:ran, defer:meta.defer, win:win,
-             miss: WINDOW - win.sealed };
+  /* 顺延：从第 7 天起再等 3 天 —— 到期无论用户是否继续输入晨间清单，门一定开 */
+  if(ran >= MIN_DAYS + 3){
+    meta.at = today; save();
+    return { state:'open', at:today, since:since, win:win, firstTime:true };
   }
-  meta.at = today;                             // 过去 7 天全归档 → 解锁
-  save();
-  return { state:'open', at:today, since:since, win:win, firstTime:true };
+
+  return { state:'deferred', since:since, ran:ran, win:win,
+           inputs:win.inputs, miss:Math.max(0, 4-win.inputs),
+           left:(MIN_DAYS+3) - ran };
 }
 
 /* ---------- 存储 ---------- */
@@ -512,7 +515,7 @@ var T = {
     rd_advice_low:'最近的疲惫 / 焦灼在提醒你：减一点，不是你的错，是安排太满',
     rd_advice_high:'让你感到充实、顺畅的事，明天再约一次',
     empty_w:'还没有相片',
-    empty_wd:'解锁之后，每天会在这里生成一张。<br>过去 7 天每天都如实归档，门就开了。',
+    empty_wd:'解锁之后，每天会在这里生成一张。<br>写满一周——不连续也行，满 4 次门就开。',
     go_morning:'去写晨间清单',
     data_t:'数据', data_sub:'导出、导入，都在这一页',
     data_link:'数据 · 导出 / 导入',
@@ -526,14 +529,14 @@ var T = {
     g_ring_v:'还差', g_ring_u:'天', g_ring_full:'解锁进度',
     s_wait:'还差 {n} 天满 7 天',
     s_wait2:'已运行 {r} 天 · 目标 {t} 天',
-    s_def:'还没凑满七天', s_def2:'过去 7 天里漏记了 {p} 天。凑满连续的 7 天，门立刻就开。',
+    s_def:'顺延中', s_def2:'过去 7 天输入了 {n} 次，还差 {p} 次。不着急——再过 {d} 天，门一定开。',
     s_open_now:'已解锁', s_opened:'解锁于 ', s_preview:'预览中',
     s_unlocking:'解锁中',
     g_cond:'解锁条件', g_cond_d:'两条都满足，门就开',
     c1_t:'晨间清单跑满 7 天', c1_d:'从你写下第一件要事那天算起。',
-    c2_t:'过去 7 天每日如实归档', c2_d:'不看三件事做没做完，只看有没有在 18:00 诚实封存。凑满连续 7 天，门立刻就开。',
-    g_now:'过去七天', g_now_d:'绿 = 已归档（无论做完几件）· 灰 = 那天没记录',
-    g_now_note:'过去 7 天里有 {n} 天如实归档了。做得少不算错，没记才算。',
+    c2_t:'一周内输入至少 4 次', c2_d:'可以不连续。过去 7 天里只要有 4 天写下了晨间清单，门就开。',
+    g_now:'过去七天', g_now_d:'绿 = 那天输入过 · 灰 = 那天没记录',
+    g_now_note:'过去 7 天里有 {n} 天输入过。做得少不算错，写了就算。',
     g_preview:'用示例数据看效果', g_preview_d:'只是预览门禁长相，不会解锁',
     g_demo_clear:'清除示例数据',
     back_morning:'返回晨间清单',
@@ -569,7 +572,7 @@ var T = {
     rd_advice_low:'The tiredness / restlessness is a signal: ease off a little. Not your fault — just too much.',
     rd_advice_high:'The things that filled you or flowed — schedule them again tomorrow.',
     empty_w:'No frames yet',
-    empty_wd:'Once unlocked, one frame per day appears here.<br>Log all 7 days honestly and the door opens.',
+    empty_wd:'Once unlocked, one frame per day appears here.<br>Write for a week — 4 days is enough, gaps are fine.',
     go_morning:'Open Morning Three',
     data_t:'Data', data_sub:'Export and import live here',
     data_link:'Data · export / import',
@@ -582,14 +585,14 @@ var T = {
     g_ring_v:'left', g_ring_u:'d', g_ring_full:'Progress',
     s_wait:'{n} days left',
     s_wait2:'Running {r} of {t} days',
-    s_def:'Still short', s_def2:'{p} of the last 7 days went unlogged. Seven in a row opens it.',
+    s_def:'Grace period', s_def2:'{n} of 4 logged this week. No rush — the door opens in {d} days no matter what.',
     s_open_now:'Unlocked', s_opened:'Unlocked ', s_preview:'Preview',
     s_unlocking:'Unlocking',
     g_cond:'Requirements', g_cond_d:'Both must be true',
     c1_t:'Morning Three for 7 days', c1_d:'Counting from the first thing you wrote down.',
-    c2_t:'Logged honestly 7 days straight', c2_d:'Not about finishing all three. About sealing the day at 18:00. Seven in a row opens it.',
-    g_now:'Last 7 days', g_now_d:'Green = logged · Grey = no record',
-    g_now_note:'{n} of the last 7 days sealed. Doing less is fine. Not logging is what counts.',
+    c2_t:'Log at least 4 times a week', c2_d:'Days need not be in a row. Any 4 days with Morning Three this week open the door.',
+    g_now:'Last 7 days', g_now_d:'Green = you showed up · Grey = no record',
+    g_now_note:'{n} of the last 7 days logged. Doing less is fine. Showing up is what counts.',
     g_preview:'Preview with sample data', g_preview_d:'Shows the door, does not unlock it',
     g_demo_clear:'Clear sample data',
     back_morning:'Back to Morning Three',
@@ -602,7 +605,6 @@ var T = {
   }
 };
 function t(k){ return (T[LANG] && T[LANG][k] !== undefined) ? T[LANG][k] : (T.zh[k] !== undefined ? T.zh[k] : k); }
-function pct(x){ return Math.round(x*100); }
 
 var ENERGY = [
   { k:'calm',  zh:'平静', en:'Calm'   },
@@ -885,7 +887,7 @@ function viewGate(u){
     ringPct = 1; ringVal = '100%'; ringLab = t('g_ring_full');
     status = t('s_open_now'); statusCls = 'ok';
   } else if(u.state === 'deferred' || u.state === 'preview'){
-    ringPct = 0; ringVal = pct(win.rate)+'%'; ringLab = t('g_ring_full');
+    ringPct = 0; ringVal = (u.inputs!=null? u.inputs : win.inputs)+' / 4'; ringLab = t('g_ring_full');
     status = (u.state==='preview'? t('s_preview') : t('s_def')); statusCls = 'warn';
   } else {
     ringPct = Math.min(1, u.ran / u.target);
@@ -916,7 +918,10 @@ function viewGate(u){
   h += '<div class="status '+statusCls+'"><span class="caret" style="color:inherit">'+
        (u.state==='open'? '●' : (u.state==='deferred'? '↻' : (u.state==='preview'? '◇' : '◷')))+'</span>'+esc(status)+'</div>';
   if(u.state==='deferred' || u.state==='preview'){
-    h += '<div class="lt-s" style="margin-top:8px">'+esc(t('s_def2').replace('{p}', (u.miss || WINDOW-win.sealed)))+'</div>';
+    h += '<div class="lt-s" style="margin-top:8px">'+esc(t('s_def2')
+      .replace('{n}', (u.inputs!=null? u.inputs : win.inputs))
+      .replace('{p}', (u.miss!=null? u.miss : 0))
+      .replace('{d}', (u.left!=null? u.left : 3)))+'</div>';
   } else if(u.state==='waiting'){
     h += '<div class="lt-s" style="margin-top:8px">'+esc(t('s_wait2').replace('{r}',u.ran).replace('{t}',u.target))+'</div>';
   }
@@ -925,22 +930,22 @@ function viewGate(u){
   /* 最近一周 */
   h += '<div class="lt-row"><div><div class="lt" style="font-size:22px;margin:22px 0 0">'+esc(t('g_now'))+'</div>'+
        '<div class="lt-s">'+esc(t('g_now_d'))+'</div></div>'+
-       '<div class="lt-s num" style="font-size:20px;font-weight:700;color:#000;flex:none">'+pct(win.rate)+'%</div></div>';
+       '<div class="lt-s num" style="font-size:20px;font-weight:700;color:#000;flex:none">'+win.inputs+' / 4</div></div>';
   h += '<div class="wk">';
   win.list.forEach(function(x){
-    /* 是否归档，不看完成条数 —— 做完 3 件和做完 1 件，只要如实封存就是绿 */
-    var cls = x.sealed? 'ok' : 'miss';
+    /* 判据是「那天输入过」，不是做完几件 —— 写一件和写三件，一样是绿 */
+    var cls = x.has? 'ok' : 'miss';
     h += '<div class="wk-c '+cls+'">'+
          '<span class="wk-d">'+wdShort(x.k)+'</span>'+
-         '<span class="wk-v num">'+(x.sealed? '✓' : '·')+'</span></div>';
+         '<span class="wk-v num">'+(x.has? '✓' : '·')+'</span></div>';
   });
   h += '</div>';
-  h += '<div class="lt-s" style="margin-top:8px">'+esc(t('g_now_note').replace('{n}', win.sealed))+'</div>';
+  h += '<div class="lt-s" style="margin-top:8px">'+esc(t('g_now_note').replace('{n}', win.inputs))+'</div>';
 
   /* 条件 */
   h += '<div class="grp"><div class="grp-h">'+esc(t('g_cond'))+'</div>'+
        rule(1, t('c1_t'), t('c1_d'), u.state==='open' || u.ran>=MIN_DAYS) +
-       rule(2, t('c2_t'), t('c2_d'), u.state==='open' || win.rate>=1) +
+       rule(2, t('c2_t'), t('c2_d'), u.state==='open' || win.inputs>=4) +
        '</div>';
 
   h += '<button class="btn-s" data-act="go">'+esc(t('back_morning'))+'</button>';
