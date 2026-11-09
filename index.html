@@ -194,6 +194,11 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .ws-line{font-size:15.5px;font-weight:600;color:var(--ink);line-height:1.55;letter-spacing:-.01em}
 .ws-go{font-size:12.5px;font-weight:700;color:var(--brand-txt);cursor:pointer;margin-top:2px}
 
+/* 晨间回响：应用先开口 —— 不抢戏，是一条轻声的线，不是卡片 */
+.echo{display:flex;align-items:flex-start;gap:10px;padding:18px 2px 6px}
+.echo svg{width:18px;height:18px;flex:none;margin-top:2px;opacity:.6}
+.echo-body{font-size:15px;line-height:1.6;font-weight:500;color:var(--ink2)}
+
 /* 坚持视图 */
 .persist{text-align:center}
 .pd-row{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin:6px 0 14px}
@@ -880,7 +885,7 @@ var ONBOARD = false;   /* 首次关闭 briefing 后触发：帮全新用户直�
    渲染：主壳
    ========================================================= */
 function render(){
-  var html = header() + seg() + (S.view==='today' ? viewToday()+otdCard()+sdCard()+valueLink() : (S.view==='archive' ? viewArchive() : viewStats()));
+  var html = header() + seg() + (S.view==='today' ? echoLine()+viewToday()+otdCard()+whisperCard()+sdCard()+valueLink() : (S.view==='archive' ? viewArchive() : viewStats()));
   document.getElementById('shell').innerHTML = html;
   bindShell();
   renderOverlay();
@@ -1361,6 +1366,93 @@ function persistCard(){
   return h+'</section>';
 }
 
+/* =========================================================
+   晨间回响 —— 应用先开口，而不是只索取
+   冷启动（无数据）：从策展问句库取一句，按年积日稳定轮换
+   有数据后：从你过去的某一天借一句话回来，制造「它记得我」的回响
+   不审判、不评分，用的是你自己的字。
+   ========================================================= */
+var ECHO_BANK = {
+  zh:[
+    '如果今天只做成一件、晚上觉得没白过的事，会是什么？',
+    '此刻，有什么事压在你心上吗？',
+    '昨天那个没做完的念头，今天还想接着吗？',
+    '今天，你想对未来的自己留一句话吗？',
+    '有什么事，你其实比自己以为的更在意？',
+    '如果今晚有人问你「今天好吗」，你会先说起哪件？',
+    '今天有没有哪个瞬间，是你昨天没料到的？',
+    '有什么一直想做、却总被别的事挤掉的事？',
+    '此刻的你，是松一点的，还是紧一点的？',
+    '今天，你想记住点什么？',
+    '有什么事，你希望明天醒来时已经在往前走了？',
+    '如果今天可以只照顾好一件事，会是什么？'
+  ],
+  en:[
+    'If you could do just one thing today that would make tonight feel worthwhile, what would it be?',
+    'Right now, is something weighing on you?',
+    'That unfinished thought from yesterday — do you want to pick it up today?',
+    'Is there a word you want to leave for the future you?',
+    'What do you care about more than you let on?',
+    'If someone asked “how was your day” tonight, what would you say first?',
+    'Was there a moment today you did not expect yesterday?',
+    'What have you kept meaning to do, always bumped by something else?',
+    'Right now, are you a little looser, or a little tighter?',
+    'What do you want to remember from today?',
+    'What do you hope is already moving forward when you wake tomorrow?',
+    'If you could only take care of one thing today, what would it be?'
+  ]
+};
+/* 有记录的日（升序），复用统一的「有痕迹」判据 */
+function recordedKeys(){
+  return Object.keys(DB.days).filter(function(k){
+    var r = DB.days[k]; return !!(r && ((r.tasks && taskList(r).length) || r.checkin || r.late));
+  }).sort();
+}
+/* 某天回响的主语：第一件要事，或晚间一句话 */
+function echoSubject(k){
+  var r = DB.days[k]; if(!r) return null;
+  var tasks = (r.tasks||[]).filter(function(x){ return x && x.text && x.text.trim(); });
+  if(tasks.length) return tasks[0].text.trim();
+  if(r.checkin && r.checkin.note && r.checkin.note.trim()) return r.checkin.note.trim();
+  return null;
+}
+/* 选回响哪一天：早期偏好近 1–3 天（制造「它记得我」），轮替避免每天一样 */
+function pickEchoDay(ks){
+  var offs = [1,2,3,2,5,3,1,7,4,2,6,3];
+  var idx = ks.length - 1 - offs[(ks.length-1) % offs.length];
+  if(idx < 0) idx = 0;
+  return ks[idx];
+}
+function buildEcho(k){
+  var w = echoSubject(k); if(!w) return null;
+  var d = parseYmd(k), diff = Math.round((new Date(ymd(new Date())) - d)/86400000);
+  if(diff <= 3){
+    return (LANG==='zh'
+      ? '几天前你写下「'+w+'」。它后来怎样了？'
+      : 'A few days ago you wrote “'+w+'”. How did it go?');
+  }
+  return (LANG==='zh'
+    ? diff+' 天前，你在意的是「'+w+'」。今天还惦记吗？'
+    : diff+' days ago, you cared about “'+w+'”. Still on your mind?');
+}
+function curatedEcho(){
+  var bank = ECHO_BANK[LANG] || ECHO_BANK.zh;
+  var now = new Date();
+  var start = new Date(now.getFullYear(), 0, 0);
+  var doy = Math.floor((now - start) / 86400000);
+  return '<span class="echo-tx">'+esc(bank[doy % bank.length])+'</span>';
+}
+function echoLine(){
+  var ks = recordedKeys(), inner;
+  if(!ks.length){
+    inner = curatedEcho();
+  } else {
+    var line = buildEcho(pickEchoDay(ks));
+    inner = line ? '<span class="echo-tx">'+esc(line)+'</span>' : curatedEcho();
+  }
+  return '<div class="echo">'+svgMoon()+'<div class="echo-body">'+inner+'</div></div>';
+}
+
 function viewStats(){
   var first = firstKey();
 
@@ -1374,7 +1466,6 @@ function viewStats(){
   }
 
   var h = '';
-  h += whisperCard();
   h += persistCard();           /* 坚持：用了几天 vs 没用几天 + 推进确认累计 —— 只看你是否天天来 */
   h += cloudCard();             /* 反复出现的事：一张卡就够，数据统计折成淡字贴在卡内 */
   h += recentCard();
