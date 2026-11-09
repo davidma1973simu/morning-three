@@ -269,14 +269,6 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .rm-copy{flex:none;font-size:12px;font-weight:700;color:var(--brand-txt);background:none;border:0;padding:4px 2px;cursor:pointer;font-family:inherit}
 .rm-alt{font-size:12px;color:var(--ink3);line-height:1.65;margin-top:14px}
 .rm-more{margin-top:15px;text-align:center}
-/* ---------- On This Day ---------- */
-.otd{background:var(--fill3);border:1px solid #2C322C;border-radius:14px;padding:14px 16px;margin-top:14px}
-.otd-h{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--brand-txt);font-weight:700}
-.otd-d{font-size:12px;color:var(--ink3);margin-top:3px}
-.otd-l{margin-top:9px}
-.otd-l div{font-size:13px;color:var(--ink);line-height:1.7;padding-left:13px;position:relative}
-.otd-l div:before{content:'';position:absolute;left:2px;top:9px;width:4px;height:4px;border-radius:50%;background:var(--edge)}
-.otd-f{font-size:11px;color:var(--ink3);margin-top:9px}
 /* ---------- 词云 / 一句话 ---------- */
 .cloud{display:flex;flex-wrap:wrap;gap:9px 13px;align-items:baseline;justify-content:center;padding:8px 2px 2px}
 .cloud span{color:var(--ink);line-height:1.25}
@@ -593,10 +585,6 @@ var T = {
     rm_alt:'不是 iPhone：装到桌面后，用系统闹钟设在 07:00，响了点图标进来，一样。',
     rm_more:'还没装到桌面？',
     rm_hint:'到点弹一条通知，点一下就到。不用靠记性。',
-    /* On This Day */
-    otd_t:'{n} 天前的今天',
-    otd_sub:'你写下的是这些',
-    otd_foot:'记下的东西，会一直在这里等你',
     /* 词云 */
     cw_t:'反复出现的事',
     cw_sub:'写过的都会留在这里，慢慢长成你自己的样子',
@@ -716,9 +704,6 @@ var T = {
     rm_alt:'Not on iPhone: install it first, then set a 07:00 alarm. Tap the icon when it rings.',
     rm_more:'Not installed yet?',
     rm_hint:'One tap at 07:00. No need to remember anything.',
-    otd_t:'{n} days ago today',
-    otd_sub:'This is what you wrote',
-    otd_foot:'What you wrote stays here, waiting for you',
     cw_t:'What keeps coming back',
     cw_sub:'Everything you write stays here, slowly becoming a picture of you',
     mi_t:'Mirror of state', mi_sub:'The face you leave yourself',
@@ -885,7 +870,7 @@ var ONBOARD = false;   /* 首次关闭 briefing 后触发：帮全新用户直�
    渲染：主壳
    ========================================================= */
 function render(){
-  var html = header() + seg() + (S.view==='today' ? echoLine()+viewToday()+otdCard()+whisperCard()+sdCard()+valueLink() : (S.view==='archive' ? viewArchive() : viewStats()));
+  var html = header() + seg() + (S.view==='today' ? echoLine()+viewToday()+whisperCard()+sdCard()+valueLink() : (S.view==='archive' ? viewArchive() : viewStats()));
   document.getElementById('shell').innerHTML = html;
   bindShell();
   renderOverlay();
@@ -1056,29 +1041,9 @@ function legacyCopy(s){
 }
 
 /* =========================================================
-   回看 —— 留痕迹的意义在积累之后那一刻
+   词云数据源 —— 反复出现的词，来自所有写下的日子
    只呈现，不评分：不比较、不算进步率、不说好坏
    ========================================================= */
-var OTD_SPANS = [365, 180, 90, 30];
-function otdCard(){
-  for(var i=0;i<OTD_SPANS.length;i++){
-    var n = OTD_SPANS[i];
-    var d = addDays(new Date(), -n), k = ymd(d), r = DB.days[k];
-    if(!r) continue;
-    var items = (r.tasks||[]).filter(function(x){ return x && x.text && x.text.trim(); });
-    var note = (r.checkin && r.checkin.note) ? String(r.checkin.note).trim() : '';
-    if(!items.length && !note) continue;
-    /* 只呈现当时写了什么，不呈现推进了几件 —— 回看不该变成复盘成绩单 */
-    var h = '<div class="otd"><div class="otd-h">'+svgMoon()+esc(t('otd_t').replace('{n}', n))+'</div>'+
-      '<div class="otd-d">'+d.getFullYear()+'/'+(d.getMonth()+1)+'/'+d.getDate()+' · '+esc(t('otd_sub'))+'</div>'+
-      '<div class="otd-l">';
-    items.slice(0,3).forEach(function(x){ h += '<div>'+esc(x.text)+'</div>'; });
-    if(!items.length) h += '<div>'+esc(note)+'</div>';
-    h += '</div><div class="otd-f">'+esc(t('otd_foot'))+'</div></div>';
-    return h;
-  }
-  return '';
-}
 
 /* 中文不做真分词：按短语切块 + 长句切 2-gram，够用且不引入依赖 */
 var STOPW = {'今天':1,'明天':1,'昨天':1,'一个':1,'一下':1,'这个':1,'那个':1,'什么':1,'可以':1,
