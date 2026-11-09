@@ -1,0 +1,1777 @@
+{
+  "version": "v33",
+  "today": "2026-11-09",
+  "generatedAt": "2026-11-09T14:26:00.863Z",
+  "profiles": [
+    {
+      "id": "A",
+      "name": "24 岁 · 男性 · 职场初任",
+      "device": "iPhone 14 Pro",
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "firstVisit": "2026-11-09T08:12:00+08:00",
+      "checks": [
+        {
+          "id": "F-01",
+          "name": "首屏能渲染且无 JS 报错",
+          "pass": true,
+          "evidence": {
+            "errors": []
+          }
+        },
+        {
+          "id": "F-02",
+          "name": "首页只有一句提示 + 一句回顾（无重复回顾）",
+          "pass": true,
+          "evidence": {
+            "echo": "今天的天气，适合做点什么？",
+            "whisper": "你反复写下的，是「方案初稿」—— 它这段时间一直跟着你。"
+          }
+        },
+        {
+          "id": "F-03",
+          "name": "首屏未被收尾浮层接管（首次即可写）",
+          "pass": true,
+          "evidence": {
+            "overlay": "",
+            "buttons": []
+          }
+        },
+        {
+          "id": "F-04",
+          "name": "今日输入框存在且字号 ≥16px（iOS 不缩放底线）",
+          "pass": true,
+          "evidence": {
+            "placeholders": [
+              "今天想推进什么？一件就够",
+              "还有一件？可以不写",
+              "最后一件？可以不写"
+            ],
+            "inputFontPx": 16
+          }
+        },
+        {
+          "id": "F-05",
+          "name": "首屏可见文字不小于 13px（可读性底线）",
+          "pass": true,
+          "evidence": {
+            "minFontPx": 13,
+            "under13Count": 0,
+            "textNodes": 27
+          }
+        },
+        {
+          "id": "F-10",
+          "name": "首页不再出现倒计时与「没白过」式施压文案",
+          "pass": true,
+          "evidence": {
+            "phaseHint": "想到就写 · 19:00 前可改",
+            "footNote": "要事 = 今天最想推进的那一件事。\n写满一周（至少 4 次，不必连续），解锁「晚间反思」。"
+          }
+        },
+        {
+          "id": "F-11",
+          "name": "首页解锁说明与真实规则一致（至少 4 次 / 不必连续）",
+          "pass": true,
+          "evidence": {
+            "footNote": "要事 = 今天最想推进的那一件事。\n写满一周（至少 4 次，不必连续），解锁「晚间反思」。"
+          }
+        },
+        {
+          "id": "F-12",
+          "name": "晚间冷启动文案自洽且不重复（不劝退、不报过期时间、只说一次）",
+          "pass": true,
+          "evidence": {
+            "phaseHint": "想到就写 · 19:00 前可改",
+            "h1sub": "白天随时可写可勾，19:00 前都能改。",
+            "coldMentions": 0,
+            "isNightFirst": false
+          }
+        },
+        {
+          "id": "F-06",
+          "name": "输入即存（无提交按钮，停下即保存）",
+          "pass": true,
+          "evidence": {
+            "toast": "已保存"
+          }
+        },
+        {
+          "id": "F-07",
+          "name": "写完第一行自动露出第二行",
+          "pass": true,
+          "evidence": {
+            "secondGhost": false
+          }
+        },
+        {
+          "id": "F-08",
+          "name": "停下 650ms 后出现「已保存」反馈",
+          "pass": true,
+          "evidence": {
+            "instantToast": "",
+            "delayedToast": "已保存",
+            "note": "输入瞬间无反馈，属延时轻提示"
+          }
+        },
+        {
+          "id": "F-09",
+          "name": "勾选「推进」可用且有即时确认",
+          "pass": true,
+          "evidence": {
+            "toast": "推进确认 · 又往前一步"
+          }
+        },
+        {
+          "id": "S-01",
+          "name": "洞察页可进入且有内容",
+          "pass": true,
+          "evidence": {
+            "head": "晨间清单\nMORNING THREE\nEN\n今日\n洞察\n坚持\n这 14 天，哪天来了，哪天没来 —— 都算数\n这 14 天，你来了 8 天\n你一共确认了 11 次「推进」\n反复出现的事\n写过的都会留在这里，慢慢长成你自己的样子\n方案初稿\n复"
+          }
+        },
+        {
+          "id": "S-02",
+          "name": "最近记录为折叠态（默认收起）",
+          "pass": true,
+          "evidence": {
+            "details": 1
+          }
+        },
+        {
+          "id": "G-07",
+          "name": "洞察页提供数据备份入口（未解锁用户第 1 天可达）",
+          "pass": true,
+          "evidence": {
+            "dataLinkOnStats": true
+          }
+        },
+        {
+          "id": "S-03",
+          "name": "归档页可打开且能看到历史记录",
+          "pass": true,
+          "evidence": {
+            "marker": "方案初稿",
+            "head": "晨间清单\nMORNING THREE\nEN\n今日\n洞察\n‹ 洞察\n回顾全部记录\n你写下的每一笔都在这里 · 随时回看\n11/9 · 一\n把方案发给导师看\n11/8 · 日\n方案定稿\n复盘\n早睡\n慢慢顺了\n11/7 · 六\n方案初稿\n提交周报\n11/6 · 五\n导师 1v1\n方案初"
+          }
+        },
+        {
+          "id": "S-04",
+          "name": "价值主张弹窗可打开（iframe）",
+          "pass": true,
+          "evidence": {
+            "valOk": true,
+            "valFrame": true
+          }
+        },
+        {
+          "id": "I-01",
+          "name": "中英切换生效",
+          "pass": true,
+          "evidence": {
+            "zhH1": "今天想推进什么",
+            "enH1": "What to move today",
+            "langBtn": "中文"
+          }
+        },
+        {
+          "id": "E-01",
+          "name": "19:00 后（今日有内容）进入只读 + 收尾浮层",
+          "pass": true,
+          "evidence": {
+            "buttons": [
+              "推进了",
+              "没推进",
+              "收下今天"
+            ],
+            "h1sub": "要事已锁定 · 去收个尾"
+          }
+        },
+        {
+          "id": "E-02",
+          "name": "满 7 天后首页出现晚间反思入口",
+          "pass": true,
+          "evidence": {
+            "sdCard": "晚间反思\n睡前记下今天推进了什么 · 一件就够 · 已经为你敞开\n›"
+          }
+        },
+        {
+          "id": "E-03",
+          "name": "收尾弹层「没推进」有显式操作入口",
+          "pass": true,
+          "evidence": {
+            "pickBtns": 2,
+            "buttons": [
+              "推进了",
+              "没推进",
+              "收下今天"
+            ]
+          }
+        },
+        {
+          "id": "E-04",
+          "name": "收尾弹层提供一句话输入",
+          "pass": true,
+          "evidence": {
+            "pickBtns": 2,
+            "sealBtn": [
+              "推进了",
+              "没推进",
+              "收下今天"
+            ],
+            "note": true
+          }
+        },
+        {
+          "id": "G-01",
+          "name": "晚间反思门禁状态可判定",
+          "pass": true,
+          "evidence": {
+            "state": "open",
+            "inputs": 5,
+            "winInputs": 5,
+            "windowDays": [
+              {
+                "k": "2026-11-02",
+                "has": false
+              },
+              {
+                "k": "2026-11-03",
+                "has": true
+              },
+              {
+                "k": "2026-11-04",
+                "has": true
+              },
+              {
+                "k": "2026-11-05",
+                "has": false
+              },
+              {
+                "k": "2026-11-06",
+                "has": true
+              },
+              {
+                "k": "2026-11-07",
+                "has": true
+              },
+              {
+                "k": "2026-11-08",
+                "has": true
+              }
+            ],
+            "text": "晚间反思\n已解锁\nEN\n晚间反思\n你写下的每一天，都留在这里\n第一帧\n2026 年 10 月 31 日\n方案初稿\n最近一帧\n2026 年 11 月 9 日\n把方案发给导师看\n这 7 天，世界没有替你写。\n这里的每一天，都是你写的。\n进入\n数据 · 导出 / 导入 ›\n晨间清单\n›"
+          }
+        },
+        {
+          "id": "G-06",
+          "name": "解锁瞬间页面无 JS 异常（无晚间记录时）",
+          "pass": true,
+          "evidence": {
+            "errors": [],
+            "gateState": "open"
+          }
+        },
+        {
+          "id": "G-03",
+          "name": "首页解锁提示与门禁判定一致",
+          "pass": true,
+          "evidence": {
+            "gateState": "open",
+            "homeSdCard": "晚间反思\n睡前记下今天推进了什么 · 一件就够 · 已经为你敞开\n›",
+            "stillLockedCopy": false
+          }
+        },
+        {
+          "id": "G-04",
+          "name": "导出备份包含晨间清单与晚间反思（真实调用导出函数）",
+          "pass": true,
+          "evidence": {
+            "exportBytes": 3942,
+            "exportHasMorningWords": true,
+            "morningDayCount": 8,
+            "exportedDayCount": 0,
+            "app": "morning-three",
+            "version": 1,
+            "packedMorningDays": 8,
+            "packedEveningDays": 0
+          }
+        },
+        {
+          "id": "G-05",
+          "name": "数据/导出入口在当前状态下可达",
+          "pass": true,
+          "evidence": {
+            "dataReach": true,
+            "dataText": true
+          }
+        },
+        {
+          "id": "G-08",
+          "name": "导出后清空再导入，晨间历史完整回来",
+          "pass": true,
+          "evidence": {
+            "dispatched": true,
+            "before": 8,
+            "after": 8,
+            "toast": "已导入"
+          }
+        }
+      ],
+      "snapshots": {
+        "first": {
+          "url": "/index.html",
+          "shellText": "晨间清单\nMORNING THREE\nEN\n今日\n洞察\n今天的天气，适合做点什么？\n白天\n想到就写 · 19:00 前可改\n今天想推进什么\n\n白天随时可写可勾，19:00 前都能改。\n\n01\n要事 = 今天最想推进的那一件事。\n写满一周（至少 4 次，不必连续），解锁「晚间反思」。\n你反复写下的，是「方案初稿」—— 它这段时间一直跟着你。\n价值主张 · 为什么是三件事 ›",
+          "cardCount": 2,
+          "echo": "今天的天气，适合做点什么？",
+          "whisper": "你反复写下的，是「方案初稿」—— 它这段时间一直跟着你。",
+          "h1": "今天想推进什么",
+          "h1sub": "白天随时可写可勾，19:00 前都能改。",
+          "footNote": "要事 = 今天最想推进的那一件事。\n写满一周（至少 4 次，不必连续），解锁「晚间反思」。",
+          "phaseHint": "想到就写 · 19:00 前可改",
+          "overlayText": "",
+          "overlayButtons": [],
+          "inputPlaceholders": [
+            "今天想推进什么？一件就够",
+            "还有一件？可以不写",
+            "最后一件？可以不写"
+          ],
+          "inputFontPx": 16,
+          "minFontPx": 13,
+          "under13Count": 0,
+          "textNodeCount": 27,
+          "sdCard": "",
+          "detailsCount": 0,
+          "langBtn": "EN"
+        },
+        "afterInput": {
+          "toast": "已保存",
+          "secondGhost": false,
+          "stored": {
+            "2026-10-31": {
+              "tasks": [
+                {
+                  "text": "方案初稿",
+                  "done": true
+                },
+                {
+                  "text": "站立会同步",
+                  "done": true
+                },
+                {
+                  "text": "下班健身",
+                  "done": false
+                }
+              ],
+              "checkin": {
+                "at": "2026-10-31T11:30:00.000Z",
+                "results": [
+                  1,
+                  1,
+                  0
+                ],
+                "note": "第一天，有点慌"
+              },
+              "writtenAt": null
+            },
+            "2026-11-01": {
+              "tasks": [
+                {
+                  "text": "方案初稿",
+                  "done": true
+                },
+                {
+                  "text": "需求确认",
+                  "done": true
+                },
+                {
+                  "text": "",
+                  "done": false
+                }
+              ],
+              "checkin": {
+                "at": "2026-11-01T11:30:00.000Z",
+                "results": [
+                  1,
+                  1
+                ],
+                "note": ""
+              },
+              "writtenAt": null
+            },
+            "2026-11-03": {
+              "tasks": [
+                {
+                  "text": "方案初稿",
+                  "done": true
+                },
+                {
+                  "text": "复盘",
+                  "done": false
+                },
+                {
+                  "text": "早睡",
+                  "done": false
+                }
+              ],
+              "checkin": {
+                "at": "2026-11-03T11:30:00.000Z",
+                "results": [
+                  1,
+                  0,
+                  0
+                ],
+                "note": "还是没早睡"
+              },
+              "writtenAt": null
+            },
+            "2026-11-04": {
+              "tasks": [
+                {
+                  "text": "周报",
+                  "done": true
+                },
+                {
+                  "text": "方案初稿",
+                  "done": false
+                },
+                {
+                  "text": "",
+                  "done": false
+                }
+              ],
+              "checkin": null,
+              "writtenAt": null
+            },
+            "2026-11-06": {
+              "tasks": [
+                {
+                  "text": "导师 1v1",
+                  "done": true
+                },
+                {
+                  "text": "方案初稿",
+                  "done": true
+                },
+                {
+                  "text": "",
+                  "done": false
+                }
+              ],
+              "checkin": {
+                "at": "2026-11-06T11:30:00.000Z",
+                "results": [
+                  1,
+                  1
+                ],
+                "note": ""
+              },
+              "writtenAt": null
+            },
+            "2026-11-07": {
+              "tasks": [
+                {
+                  "text": "方案初稿",
+                  "done": true
+                },
+                {
+                  "text": "提交周报",
+                  "done": true
+                },
+                {
+                  "text": "",
+                  "done": false
+                }
+              ],
+              "checkin": {
+                "at": "2026-11-07T11:30:00.000Z",
+                "results": [
+                  1,
+                  1
+                ],
+                "note": ""
+              },
+              "writtenAt": null
+            },
+            "2026-11-08": {
+              "tasks": [
+                {
+                  "text": "方案定稿",
+                  "done": true
+                },
+                {
+                  "text": "复盘",
+                  "done": true
+                },
+                {
+                  "text": "早睡",
+                  "done": false
+                }
+              ],
+              "checkin": {
+                "at": "2026-11-08T11:30:00.000Z",
+                "results": [
+                  1,
+                  1,
+                  0
+                ],
+                "note": "慢慢顺了"
+              },
+              "writtenAt": null
+            },
+            "2026-11-09": {
+              "tasks": [
+                {
+                  "text": "把方案发给导师看",
+                  "done": false
+                },
+                {
+                  "text": "",
+                  "done": false
+                },
+                {
+                  "text": "",
+                  "done": false
+                }
+              ],
+              "checkin": null,
+              "writtenAt": "2026-11-09T00:12:05.400Z"
+            }
+          }
+        },
+        "stats": {
+          "url": "/index.html",
+          "shellText": "晨间清单\nMORNING THREE\nEN\n今日\n洞察\n坚持\n这 14 天，哪天来了，哪天没来 —— 都算数\n这 14 天，你来了 8 天\n你一共确认了 11 次「推进」\n反复出现的事\n写过的都会留在这里，慢慢长成你自己的样子\n方案初稿\n复盘\n早睡\n导师\n最近记录\n›\n回顾全部记录 ›\n数据 · 导出 / 导入 ›",
+          "cardCount": 3,
+          "echo": "",
+          "whisper": "",
+          "h1": "",
+          "h1sub": "",
+          "footNote": "",
+          "phaseHint": "",
+          "overlayText": "",
+          "overlayButtons": [],
+          "inputPlaceholders": [],
+          "inputFontPx": null,
+          "minFontPx": 13,
+          "under13Count": 0,
+          "textNodeCount": 30,
+          "sdCard": "",
+          "detailsCount": 1,
+          "langBtn": "EN"
+        },
+        "evening": {
+          "url": "/index.html",
+          "shellText": "晨间清单\nMORNING THREE\nEN\n今日\n洞察\n今天的天气，适合做点什么？\n今天还在进行中。\n待收尾\n19:00 后只读\n今天想推进什么\n\n要事已锁定 · 去收个尾\n\n01\n把方案发给导师看\n推进了\n去收个尾\n你反复写下的，是「方案初稿」—— 它这段时间一直跟着你。\n晚间反思\n睡前记下今天推进了什么 · 一件就够 · 已经为你敞开\n›\n价值主张 · 为什么是三件事 ›",
+          "cardCount": 3,
+          "echo": "今天的天气，适合做点什么？",
+          "whisper": "你反复写下的，是「方案初稿」—— 它这段时间一直跟着你。",
+          "h1": "今天想推进什么",
+          "h1sub": "要事已锁定 · 去收个尾",
+          "footNote": "",
+          "phaseHint": "19:00 后只读",
+          "overlayText": "今天收个尾\n20:30\n\n看一眼今天写的，勾掉推进过的。\n没推进的会带到明天，不算欠账。\n\n01\n把方案发给导师看\n推进了\n没推进\n一句话（可选）\n收下今天",
+          "overlayButtons": [
+            "推进了",
+            "没推进",
+            "收下今天"
+          ],
+          "inputPlaceholders": [],
+          "inputFontPx": null,
+          "minFontPx": 13,
+          "under13Count": 0,
+          "textNodeCount": 36,
+          "sdCard": "晚间反思\n睡前记下今天推进了什么 · 一件就够 · 已经为你敞开\n›",
+          "detailsCount": 0,
+          "langBtn": "EN"
+        },
+        "overlay": {
+          "pickBtns": 2,
+          "sealBtn": [
+            "推进了",
+            "没推进",
+            "收下今天"
+          ],
+          "note": true
+        },
+        "gate": {
+          "state": "open",
+          "inputs": 5,
+          "winInputs": 5,
+          "windowDays": [
+            {
+              "k": "2026-11-02",
+              "has": false
+            },
+            {
+              "k": "2026-11-03",
+              "has": true
+            },
+            {
+              "k": "2026-11-04",
+              "has": true
+            },
+            {
+              "k": "2026-11-05",
+              "has": false
+            },
+            {
+              "k": "2026-11-06",
+              "has": true
+            },
+            {
+              "k": "2026-11-07",
+              "has": true
+            },
+            {
+              "k": "2026-11-08",
+              "has": true
+            }
+          ],
+          "text": "晚间反思\n已解锁\nEN\n晚间反思\n你写下的每一天，都留在这里\n第一帧\n2026 年 10 月 31 日\n方案初稿\n最近一帧\n2026 年 11 月 9 日\n把方案发给导师看\n这 7 天，世界没有替你写。\n这里的每一天，都是你写的。\n进入\n数据 · 导出 / 导入 ›\n晨间清单\n›"
+        },
+        "gateErrors": [],
+        "backup": {
+          "exportBytes": 3942,
+          "exportHasMorningWords": true,
+          "morningDayCount": 8,
+          "exportedDayCount": 0,
+          "app": "morning-three",
+          "version": 1,
+          "packedMorningDays": 8,
+          "packedEveningDays": 0
+        }
+      },
+      "shots": [
+        "A-01-first.png",
+        "A-02-stats.png",
+        "A-03-evening.png",
+        "A-04-gate.png"
+      ],
+      "pageErrors": []
+    },
+    {
+      "id": "B",
+      "name": "55 岁 · 女性 · 家庭妇女",
+      "device": "iPhone（默认字号）",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "firstVisit": "2026-11-09T09:40:00+08:00",
+      "checks": [
+        {
+          "id": "F-01",
+          "name": "首屏能渲染且无 JS 报错",
+          "pass": true,
+          "evidence": {
+            "errors": []
+          }
+        },
+        {
+          "id": "F-02",
+          "name": "首页只有一句提示 + 一句回顾（无重复回顾）",
+          "pass": true,
+          "evidence": {
+            "echo": "今天的天气，适合做点什么？",
+            "whisper": "你已经在 3 天留下了痕迹。"
+          }
+        },
+        {
+          "id": "F-03",
+          "name": "首屏未被收尾浮层接管（首次即可写）",
+          "pass": true,
+          "evidence": {
+            "overlay": "",
+            "buttons": []
+          }
+        },
+        {
+          "id": "F-04",
+          "name": "今日输入框存在且字号 ≥16px（iOS 不缩放底线）",
+          "pass": true,
+          "evidence": {
+            "placeholders": [
+              "今天想推进什么？一件就够",
+              "还有一件？可以不写",
+              "最后一件？可以不写"
+            ],
+            "inputFontPx": 16
+          }
+        },
+        {
+          "id": "F-05",
+          "name": "首屏可见文字不小于 13px（可读性底线）",
+          "pass": true,
+          "evidence": {
+            "minFontPx": 13,
+            "under13Count": 0,
+            "textNodes": 27
+          }
+        },
+        {
+          "id": "F-10",
+          "name": "首页不再出现倒计时与「没白过」式施压文案",
+          "pass": true,
+          "evidence": {
+            "phaseHint": "想到就写 · 19:00 前可改",
+            "footNote": "要事 = 今天最想推进的那一件事。\n写满一周（至少 4 次，不必连续），解锁「晚间反思」。"
+          }
+        },
+        {
+          "id": "F-11",
+          "name": "首页解锁说明与真实规则一致（至少 4 次 / 不必连续）",
+          "pass": true,
+          "evidence": {
+            "footNote": "要事 = 今天最想推进的那一件事。\n写满一周（至少 4 次，不必连续），解锁「晚间反思」。"
+          }
+        },
+        {
+          "id": "F-12",
+          "name": "晚间冷启动文案自洽且不重复（不劝退、不报过期时间、只说一次）",
+          "pass": true,
+          "evidence": {
+            "phaseHint": "想到就写 · 19:00 前可改",
+            "h1sub": "白天随时可写可勾，19:00 前都能改。",
+            "coldMentions": 0,
+            "isNightFirst": false
+          }
+        },
+        {
+          "id": "F-06",
+          "name": "输入即存（无提交按钮，停下即保存）",
+          "pass": true,
+          "evidence": {
+            "toast": "已保存"
+          }
+        },
+        {
+          "id": "F-07",
+          "name": "写完第一行自动露出第二行",
+          "pass": true,
+          "evidence": {
+            "secondGhost": false
+          }
+        },
+        {
+          "id": "F-08",
+          "name": "停下 650ms 后出现「已保存」反馈",
+          "pass": true,
+          "evidence": {
+            "instantToast": "",
+            "delayedToast": "已保存",
+            "note": "输入瞬间无反馈，属延时轻提示"
+          }
+        },
+        {
+          "id": "F-09",
+          "name": "勾选「推进」可用且有即时确认",
+          "pass": true,
+          "evidence": {
+            "toast": "推进确认 · 又往前一步"
+          }
+        },
+        {
+          "id": "S-01",
+          "name": "洞察页可进入且有内容",
+          "pass": true,
+          "evidence": {
+            "head": "晨间清单\nMORNING THREE\nEN\n今日\n洞察\n坚持\n这 14 天，哪天来了，哪天没来 —— 都算数\n这 14 天，你来了 4 天\n你一共确认了 5 次「推进」\n最近记录\n›\n回顾全部记录 ›\n数据 · 导出 / 导入 ›"
+          }
+        },
+        {
+          "id": "S-02",
+          "name": "最近记录为折叠态（默认收起）",
+          "pass": true,
+          "evidence": {
+            "details": 1
+          }
+        },
+        {
+          "id": "G-07",
+          "name": "洞察页提供数据备份入口（未解锁用户第 1 天可达）",
+          "pass": true,
+          "evidence": {
+            "dataLinkOnStats": true
+          }
+        },
+        {
+          "id": "S-03",
+          "name": "归档页可打开且能看到历史记录",
+          "pass": true,
+          "evidence": {
+            "marker": "买菜",
+            "head": "晨间清单\nMORNING THREE\nEN\n今日\n洞察\n‹ 洞察\n回顾全部记录\n你写下的每一笔都在这里 · 随时回看\n11/9 · 一\n去菜场买鱼\n11/8 · 日\n收拾衣柜\n给女儿寄东西\n11/5 · 四\n医院拿药\n接孙子\n11/3 · 二\n买菜\n给妈妈打电话\n晒被子\n今天太阳"
+          }
+        },
+        {
+          "id": "S-04",
+          "name": "价值主张弹窗可打开（iframe）",
+          "pass": true,
+          "evidence": {
+            "valOk": true,
+            "valFrame": true
+          }
+        },
+        {
+          "id": "I-01",
+          "name": "中英切换生效",
+          "pass": true,
+          "evidence": {
+            "zhH1": "今天想推进什么",
+            "enH1": "What to move today",
+            "langBtn": "中文"
+          }
+        },
+        {
+          "id": "E-01",
+          "name": "19:00 后（今日有内容）进入只读 + 收尾浮层",
+          "pass": true,
+          "evidence": {
+            "buttons": [
+              "推进了",
+              "没推进",
+              "收下今天"
+            ],
+            "h1sub": "要事已锁定 · 去收个尾"
+          }
+        },
+        {
+          "id": "E-02",
+          "name": "未满 7 天时晚间反思入口正确隐藏",
+          "pass": true,
+          "evidence": {
+            "sdCard": ""
+          }
+        },
+        {
+          "id": "E-03",
+          "name": "收尾弹层「没推进」有显式操作入口",
+          "pass": true,
+          "evidence": {
+            "pickBtns": 2,
+            "buttons": [
+              "推进了",
+              "没推进",
+              "收下今天"
+            ]
+          }
+        },
+        {
+          "id": "E-04",
+          "name": "收尾弹层提供一句话输入",
+          "pass": true,
+          "evidence": {
+            "pickBtns": 2,
+            "sealBtn": [
+              "推进了",
+              "没推进",
+              "收下今天"
+            ],
+            "note": true
+          }
+        },
+        {
+          "id": "G-01",
+          "name": "晚间反思门禁状态可判定",
+          "pass": true,
+          "evidence": {
+            "state": "waiting",
+            "ran": 6,
+            "inputs": 3,
+            "winInputs": 3,
+            "windowDays": [
+              {
+                "k": "2026-11-02",
+                "has": false
+              },
+              {
+                "k": "2026-11-03",
+                "has": true
+              },
+              {
+                "k": "2026-11-04",
+                "has": false
+              },
+              {
+                "k": "2026-11-05",
+                "has": true
+              },
+              {
+                "k": "2026-11-06",
+                "has": false
+              },
+              {
+                "k": "2026-11-07",
+                "has": false
+              },
+              {
+                "k": "2026-11-08",
+                "has": true
+              }
+            ],
+            "text": "晚间反思\n解锁中\nEN\n晚间反思\n它要等晨间清单先跑稳，再开门。\n1\n还差\n◷\n还差 1 天满 7 天\n已运行 6 天 · 目标 7 天\n过去七天\n绿 = 那天输入过 · 灰 = 那天没记录\n3 / 4\n一\n·\n二\n✓\n三\n·\n四\n✓\n五\n·\n六\n·\n日\n✓\n过去 7 天里有 3 天输入过。做得少不算错，写了就算。\n解锁条件\n1\n晨间清单跑满 7 天 从你写下第一件要事那天算起。\n2\n一周内输入至少 4 次 可以不连续。过去 7 天里只要有 4 天写下了晨间清单，门就开。\n返回晨间清单\n用示例数据看效果\n只是预览门禁长相，不会解锁\n数据 · 导出 / 导入 ›\n晨间清单\n›"
+          }
+        },
+        {
+          "id": "G-06",
+          "name": "解锁瞬间页面无 JS 异常（无晚间记录时）",
+          "pass": true,
+          "evidence": {
+            "errors": [],
+            "gateState": "waiting"
+          }
+        },
+        {
+          "id": "G-03",
+          "name": "首页解锁提示与门禁判定一致",
+          "pass": true,
+          "evidence": {
+            "gateState": "waiting",
+            "homeSdCard": "",
+            "stillLockedCopy": false
+          }
+        },
+        {
+          "id": "G-04",
+          "name": "导出备份包含晨间清单与晚间反思（真实调用导出函数）",
+          "pass": true,
+          "evidence": {
+            "exportBytes": 2152,
+            "exportHasMorningWords": true,
+            "morningDayCount": 6,
+            "exportedDayCount": 0,
+            "app": "morning-three",
+            "version": 1,
+            "packedMorningDays": 6,
+            "packedEveningDays": 0
+          }
+        },
+        {
+          "id": "G-05",
+          "name": "数据/导出入口在当前状态下可达",
+          "pass": true,
+          "evidence": {
+            "dataReach": true,
+            "dataText": true
+          }
+        },
+        {
+          "id": "G-08",
+          "name": "导出后清空再导入，晨间历史完整回来",
+          "pass": true,
+          "evidence": {
+            "dispatched": true,
+            "before": 6,
+            "after": 6,
+            "toast": "已导入"
+          }
+        },
+        {
+          "id": "G-02",
+          "name": "「一周内输入过」判据不把空白日算作输入",
+          "pass": true,
+          "evidence": {
+            "inflatedDays": [],
+            "winInputs": 3,
+            "windowDays": [
+              {
+                "k": "2026-11-02",
+                "has": false
+              },
+              {
+                "k": "2026-11-03",
+                "has": true
+              },
+              {
+                "k": "2026-11-04",
+                "has": false
+              },
+              {
+                "k": "2026-11-05",
+                "has": true
+              },
+              {
+                "k": "2026-11-06",
+                "has": false
+              },
+              {
+                "k": "2026-11-07",
+                "has": false
+              },
+              {
+                "k": "2026-11-08",
+                "has": true
+              }
+            ]
+          }
+        }
+      ],
+      "snapshots": {
+        "first": {
+          "url": "/index.html",
+          "shellText": "晨间清单\nMORNING THREE\nEN\n今日\n洞察\n今天的天气，适合做点什么？\n白天\n想到就写 · 19:00 前可改\n今天想推进什么\n\n白天随时可写可勾，19:00 前都能改。\n\n01\n要事 = 今天最想推进的那一件事。\n写满一周（至少 4 次，不必连续），解锁「晚间反思」。\n你已经在 3 天留下了痕迹。\n价值主张 · 为什么是三件事 ›",
+          "cardCount": 2,
+          "echo": "今天的天气，适合做点什么？",
+          "whisper": "你已经在 3 天留下了痕迹。",
+          "h1": "今天想推进什么",
+          "h1sub": "白天随时可写可勾，19:00 前都能改。",
+          "footNote": "要事 = 今天最想推进的那一件事。\n写满一周（至少 4 次，不必连续），解锁「晚间反思」。",
+          "phaseHint": "想到就写 · 19:00 前可改",
+          "overlayText": "",
+          "overlayButtons": [],
+          "inputPlaceholders": [
+            "今天想推进什么？一件就够",
+            "还有一件？可以不写",
+            "最后一件？可以不写"
+          ],
+          "inputFontPx": 16,
+          "minFontPx": 13,
+          "under13Count": 0,
+          "textNodeCount": 27,
+          "sdCard": "",
+          "detailsCount": 0,
+          "langBtn": "EN"
+        },
+        "afterInput": {
+          "toast": "已保存",
+          "secondGhost": false,
+          "stored": {
+            "2026-11-03": {
+              "tasks": [
+                {
+                  "text": "买菜",
+                  "done": true
+                },
+                {
+                  "text": "给妈妈打电话",
+                  "done": true
+                },
+                {
+                  "text": "晒被子",
+                  "done": true
+                }
+              ],
+              "checkin": {
+                "at": "2026-11-03T11:30:00.000Z",
+                "results": [
+                  1,
+                  1,
+                  1
+                ],
+                "note": "今天太阳好"
+              },
+              "writtenAt": null
+            },
+            "2026-11-04": {
+              "tasks": [],
+              "checkin": null,
+              "writtenAt": null
+            },
+            "2026-11-05": {
+              "tasks": [
+                {
+                  "text": "医院拿药",
+                  "done": true
+                },
+                {
+                  "text": "接孙子",
+                  "done": true
+                },
+                {
+                  "text": "",
+                  "done": false
+                }
+              ],
+              "checkin": {
+                "at": "2026-11-05T11:30:00.000Z",
+                "results": [
+                  1,
+                  1
+                ],
+                "note": ""
+              },
+              "writtenAt": null
+            },
+            "2026-11-06": {
+              "tasks": [],
+              "checkin": null,
+              "writtenAt": null
+            },
+            "2026-11-08": {
+              "tasks": [
+                {
+                  "text": "收拾衣柜",
+                  "done": false
+                },
+                {
+                  "text": "给女儿寄东西",
+                  "done": false
+                },
+                {
+                  "text": "",
+                  "done": false
+                }
+              ],
+              "checkin": null,
+              "writtenAt": null
+            },
+            "2026-11-09": {
+              "tasks": [
+                {
+                  "text": "去菜场买鱼",
+                  "done": false
+                },
+                {
+                  "text": "",
+                  "done": false
+                },
+                {
+                  "text": "",
+                  "done": false
+                }
+              ],
+              "checkin": null,
+              "writtenAt": "2026-11-09T01:40:02.181Z"
+            }
+          }
+        },
+        "stats": {
+          "url": "/index.html",
+          "shellText": "晨间清单\nMORNING THREE\nEN\n今日\n洞察\n坚持\n这 14 天，哪天来了，哪天没来 —— 都算数\n这 14 天，你来了 4 天\n你一共确认了 5 次「推进」\n最近记录\n›\n回顾全部记录 ›\n数据 · 导出 / 导入 ›",
+          "cardCount": 2,
+          "echo": "",
+          "whisper": "",
+          "h1": "",
+          "h1sub": "",
+          "footNote": "",
+          "phaseHint": "",
+          "overlayText": "",
+          "overlayButtons": [],
+          "inputPlaceholders": [],
+          "inputFontPx": null,
+          "minFontPx": 13,
+          "under13Count": 0,
+          "textNodeCount": 22,
+          "sdCard": "",
+          "detailsCount": 1,
+          "langBtn": "EN"
+        },
+        "evening": {
+          "url": "/index.html",
+          "shellText": "晨间清单\nMORNING THREE\nEN\n今日\n洞察\n今天的天气，适合做点什么？\n今天还在进行中。\n待收尾\n19:00 后只读\n今天想推进什么\n\n要事已锁定 · 去收个尾\n\n01\n去菜场买鱼\n推进了\n去收个尾\n你已经在 4 天留下了痕迹。\n价值主张 · 为什么是三件事 ›",
+          "cardCount": 2,
+          "echo": "今天的天气，适合做点什么？",
+          "whisper": "你已经在 4 天留下了痕迹。",
+          "h1": "今天想推进什么",
+          "h1sub": "要事已锁定 · 去收个尾",
+          "footNote": "",
+          "phaseHint": "19:00 后只读",
+          "overlayText": "今天收个尾\n20:30\n\n看一眼今天写的，勾掉推进过的。\n没推进的会带到明天，不算欠账。\n\n01\n去菜场买鱼\n推进了\n没推进\n一句话（可选）\n收下今天",
+          "overlayButtons": [
+            "推进了",
+            "没推进",
+            "收下今天"
+          ],
+          "inputPlaceholders": [],
+          "inputFontPx": null,
+          "minFontPx": 13,
+          "under13Count": 0,
+          "textNodeCount": 30,
+          "sdCard": "",
+          "detailsCount": 0,
+          "langBtn": "EN"
+        },
+        "overlay": {
+          "pickBtns": 2,
+          "sealBtn": [
+            "推进了",
+            "没推进",
+            "收下今天"
+          ],
+          "note": true
+        },
+        "gate": {
+          "state": "waiting",
+          "ran": 6,
+          "inputs": 3,
+          "winInputs": 3,
+          "windowDays": [
+            {
+              "k": "2026-11-02",
+              "has": false
+            },
+            {
+              "k": "2026-11-03",
+              "has": true
+            },
+            {
+              "k": "2026-11-04",
+              "has": false
+            },
+            {
+              "k": "2026-11-05",
+              "has": true
+            },
+            {
+              "k": "2026-11-06",
+              "has": false
+            },
+            {
+              "k": "2026-11-07",
+              "has": false
+            },
+            {
+              "k": "2026-11-08",
+              "has": true
+            }
+          ],
+          "text": "晚间反思\n解锁中\nEN\n晚间反思\n它要等晨间清单先跑稳，再开门。\n1\n还差\n◷\n还差 1 天满 7 天\n已运行 6 天 · 目标 7 天\n过去七天\n绿 = 那天输入过 · 灰 = 那天没记录\n3 / 4\n一\n·\n二\n✓\n三\n·\n四\n✓\n五\n·\n六\n·\n日\n✓\n过去 7 天里有 3 天输入过。做得少不算错，写了就算。\n解锁条件\n1\n晨间清单跑满 7 天 从你写下第一件要事那天算起。\n2\n一周内输入至少 4 次 可以不连续。过去 7 天里只要有 4 天写下了晨间清单，门就开。\n返回晨间清单\n用示例数据看效果\n只是预览门禁长相，不会解锁\n数据 · 导出 / 导入 ›\n晨间清单\n›"
+        },
+        "gateErrors": [],
+        "backup": {
+          "exportBytes": 2152,
+          "exportHasMorningWords": true,
+          "morningDayCount": 6,
+          "exportedDayCount": 0,
+          "app": "morning-three",
+          "version": 1,
+          "packedMorningDays": 6,
+          "packedEveningDays": 0
+        }
+      },
+      "shots": [
+        "B-01-first.png",
+        "B-02-stats.png",
+        "B-03-evening.png",
+        "B-04-gate.png"
+      ],
+      "pageErrors": []
+    },
+    {
+      "id": "C",
+      "name": "13 岁 · 男性 · 初中生",
+      "device": "Android 中端机",
+      "viewport": {
+        "width": 360,
+        "height": 800
+      },
+      "firstVisit": "2026-11-09T20:30:00+08:00",
+      "checks": [
+        {
+          "id": "F-01",
+          "name": "首屏能渲染且无 JS 报错",
+          "pass": true,
+          "evidence": {
+            "errors": []
+          }
+        },
+        {
+          "id": "F-02",
+          "name": "首页只有一句提示 + 一句回顾（无重复回顾）",
+          "pass": true,
+          "evidence": {
+            "echo": "今天的天气，适合做点什么？",
+            "whisper": ""
+          }
+        },
+        {
+          "id": "F-03",
+          "name": "首屏未被收尾浮层接管（首次即可写）",
+          "pass": true,
+          "evidence": {
+            "overlay": "",
+            "buttons": []
+          }
+        },
+        {
+          "id": "F-04",
+          "name": "今日输入框存在且字号 ≥16px（iOS 不缩放底线）",
+          "pass": true,
+          "evidence": {
+            "placeholders": [
+              "今天想推进什么？一件就够",
+              "还有一件？可以不写",
+              "最后一件？可以不写"
+            ],
+            "inputFontPx": 16
+          }
+        },
+        {
+          "id": "F-05",
+          "name": "首屏可见文字不小于 13px（可读性底线）",
+          "pass": true,
+          "evidence": {
+            "minFontPx": 13,
+            "under13Count": 0,
+            "textNodes": 22
+          }
+        },
+        {
+          "id": "F-10",
+          "name": "首页不再出现倒计时与「没白过」式施压文案",
+          "pass": true,
+          "evidence": {
+            "phaseHint": "现在写下，也算今天",
+            "footNote": ""
+          }
+        },
+        {
+          "id": "F-11",
+          "name": "首页解锁说明与真实规则一致（至少 4 次 / 不必连续）",
+          "pass": true,
+          "evidence": {
+            "footNote": ""
+          }
+        },
+        {
+          "id": "F-12",
+          "name": "晚间冷启动文案自洽且不重复（不劝退、不报过期时间、只说一次）",
+          "pass": true,
+          "evidence": {
+            "phaseHint": "现在写下，也算今天",
+            "h1sub": "",
+            "coldMentions": 1,
+            "isNightFirst": true
+          }
+        },
+        {
+          "id": "F-06",
+          "name": "输入即存（无提交按钮，停下即保存）",
+          "pass": true,
+          "evidence": {
+            "toast": "已保存"
+          }
+        },
+        {
+          "id": "F-07",
+          "name": "写完第一行自动露出第二行",
+          "pass": true,
+          "evidence": {
+            "secondGhost": false
+          }
+        },
+        {
+          "id": "F-08",
+          "name": "停下 650ms 后出现「已保存」反馈",
+          "pass": true,
+          "evidence": {
+            "instantToast": "",
+            "delayedToast": "已保存",
+            "note": "输入瞬间无反馈，属延时轻提示"
+          }
+        },
+        {
+          "id": "F-09",
+          "name": "勾选「推进」可用且有即时确认",
+          "pass": true,
+          "evidence": {
+            "toast": "推进确认 · 又往前一步"
+          }
+        },
+        {
+          "id": "S-01",
+          "name": "洞察页可进入且有内容",
+          "pass": true,
+          "evidence": {
+            "head": "晨间清单\nMORNING THREE\nEN\n今日\n洞察\n坚持\n这 14 天，哪天来了，哪天没来 —— 都算数\n这 14 天，你来了 3 天\n你一共确认了 1 次「推进」\n最近记录\n›\n回顾全部记录 ›\n数据 · 导出 / 导入 ›"
+          }
+        },
+        {
+          "id": "S-02",
+          "name": "最近记录为折叠态（默认收起）",
+          "pass": true,
+          "evidence": {
+            "details": 1
+          }
+        },
+        {
+          "id": "G-07",
+          "name": "洞察页提供数据备份入口（未解锁用户第 1 天可达）",
+          "pass": true,
+          "evidence": {
+            "dataLinkOnStats": true
+          }
+        },
+        {
+          "id": "S-03",
+          "name": "归档页可打开且能看到历史记录",
+          "pass": true,
+          "evidence": {
+            "marker": "数学卷子",
+            "head": "晨间清单\nMORNING THREE\nEN\n今日\n洞察\n‹ 洞察\n回顾全部记录\n你写下的每一笔都在这里 · 随时回看\n11/9 · 一\n写完数学卷子\n11/8 · 日\n物理作业\n11/7 · 六\n数学卷子\n背单词"
+          }
+        },
+        {
+          "id": "S-04",
+          "name": "价值主张弹窗可打开（iframe）",
+          "pass": true,
+          "evidence": {
+            "valOk": true,
+            "valFrame": true
+          }
+        },
+        {
+          "id": "I-01",
+          "name": "中英切换生效",
+          "pass": true,
+          "evidence": {
+            "zhH1": "今天想推进什么",
+            "enH1": "What to move today",
+            "langBtn": "中文"
+          }
+        },
+        {
+          "id": "E-01",
+          "name": "19:00 后（今日有内容）进入只读 + 收尾浮层",
+          "pass": true,
+          "evidence": {
+            "buttons": [
+              "推进了",
+              "没推进",
+              "收下今天"
+            ],
+            "h1sub": "要事已锁定 · 去收个尾"
+          }
+        },
+        {
+          "id": "E-02",
+          "name": "未满 7 天时晚间反思入口正确隐藏",
+          "pass": true,
+          "evidence": {
+            "sdCard": ""
+          }
+        },
+        {
+          "id": "E-03",
+          "name": "收尾弹层「没推进」有显式操作入口",
+          "pass": true,
+          "evidence": {
+            "pickBtns": 2,
+            "buttons": [
+              "推进了",
+              "没推进",
+              "收下今天"
+            ]
+          }
+        },
+        {
+          "id": "E-04",
+          "name": "收尾弹层提供一句话输入",
+          "pass": true,
+          "evidence": {
+            "pickBtns": 2,
+            "sealBtn": [
+              "推进了",
+              "没推进",
+              "收下今天"
+            ],
+            "note": true
+          }
+        },
+        {
+          "id": "G-01",
+          "name": "晚间反思门禁状态可判定",
+          "pass": true,
+          "evidence": {
+            "state": "waiting",
+            "ran": 2,
+            "inputs": 2,
+            "winInputs": 2,
+            "windowDays": [
+              {
+                "k": "2026-11-02",
+                "has": false
+              },
+              {
+                "k": "2026-11-03",
+                "has": false
+              },
+              {
+                "k": "2026-11-04",
+                "has": false
+              },
+              {
+                "k": "2026-11-05",
+                "has": false
+              },
+              {
+                "k": "2026-11-06",
+                "has": false
+              },
+              {
+                "k": "2026-11-07",
+                "has": true
+              },
+              {
+                "k": "2026-11-08",
+                "has": true
+              }
+            ],
+            "text": "晚间反思\n解锁中\nEN\n晚间反思\n它要等晨间清单先跑稳，再开门。\n5\n还差\n◷\n还差 5 天满 7 天\n已运行 2 天 · 目标 7 天\n过去七天\n绿 = 那天输入过 · 灰 = 那天没记录\n2 / 4\n一\n·\n二\n·\n三\n·\n四\n·\n五\n·\n六\n✓\n日\n✓\n过去 7 天里有 2 天输入过。做得少不算错，写了就算。\n解锁条件\n1\n晨间清单跑满 7 天 从你写下第一件要事那天算起。\n2\n一周内输入至少 4 次 可以不连续。过去 7 天里只要有 4 天写下了晨间清单，门就开。\n返回晨间清单\n用示例数据看效果\n只是预览门禁长相，不会解锁\n数据 · 导出 / 导入 ›\n晨间清单\n›"
+          }
+        },
+        {
+          "id": "G-06",
+          "name": "解锁瞬间页面无 JS 异常（无晚间记录时）",
+          "pass": true,
+          "evidence": {
+            "errors": [],
+            "gateState": "waiting"
+          }
+        },
+        {
+          "id": "G-03",
+          "name": "首页解锁提示与门禁判定一致",
+          "pass": true,
+          "evidence": {
+            "gateState": "waiting",
+            "homeSdCard": "",
+            "stillLockedCopy": false
+          }
+        },
+        {
+          "id": "G-04",
+          "name": "导出备份包含晨间清单与晚间反思（真实调用导出函数）",
+          "pass": true,
+          "evidence": {
+            "exportBytes": 1441,
+            "exportHasMorningWords": true,
+            "morningDayCount": 3,
+            "exportedDayCount": 0,
+            "app": "morning-three",
+            "version": 1,
+            "packedMorningDays": 3,
+            "packedEveningDays": 0
+          }
+        },
+        {
+          "id": "G-05",
+          "name": "数据/导出入口在当前状态下可达",
+          "pass": true,
+          "evidence": {
+            "dataReach": true,
+            "dataText": true
+          }
+        },
+        {
+          "id": "G-08",
+          "name": "导出后清空再导入，晨间历史完整回来",
+          "pass": true,
+          "evidence": {
+            "dispatched": true,
+            "before": 3,
+            "after": 3,
+            "toast": "已导入"
+          }
+        }
+      ],
+      "snapshots": {
+        "first": {
+          "url": "/index.html",
+          "shellText": "晨间清单\nMORNING THREE\nEN\n今日\n洞察\n今天的天气，适合做点什么？\n今晚\n现在写下，也算今天\n今天想推进什么\n01\n价值主张 · 为什么是三件事 ›",
+          "cardCount": 1,
+          "echo": "今天的天气，适合做点什么？",
+          "whisper": "",
+          "h1": "今天想推进什么",
+          "h1sub": "",
+          "footNote": "",
+          "phaseHint": "现在写下，也算今天",
+          "overlayText": "",
+          "overlayButtons": [],
+          "inputPlaceholders": [
+            "今天想推进什么？一件就够",
+            "还有一件？可以不写",
+            "最后一件？可以不写"
+          ],
+          "inputFontPx": 16,
+          "minFontPx": 13,
+          "under13Count": 0,
+          "textNodeCount": 22,
+          "sdCard": "",
+          "detailsCount": 0,
+          "langBtn": "EN"
+        },
+        "afterInput": {
+          "toast": "已保存",
+          "secondGhost": false,
+          "stored": {
+            "2026-11-07": {
+              "tasks": [
+                {
+                  "text": "数学卷子",
+                  "done": true
+                },
+                {
+                  "text": "背单词",
+                  "done": false
+                },
+                {
+                  "text": "",
+                  "done": false
+                }
+              ],
+              "checkin": {
+                "at": "2026-11-07T11:30:00.000Z",
+                "results": [
+                  1,
+                  0
+                ],
+                "note": ""
+              },
+              "writtenAt": null
+            },
+            "2026-11-08": {
+              "tasks": [
+                {
+                  "text": "物理作业",
+                  "done": false
+                },
+                {
+                  "text": "",
+                  "done": false
+                },
+                {
+                  "text": "",
+                  "done": false
+                }
+              ],
+              "checkin": null,
+              "writtenAt": null
+            },
+            "2026-11-09": {
+              "tasks": [
+                {
+                  "text": "写完数学卷子",
+                  "done": false
+                },
+                {
+                  "text": "",
+                  "done": false
+                },
+                {
+                  "text": "",
+                  "done": false
+                }
+              ],
+              "checkin": null,
+              "writtenAt": "2026-11-09T12:30:02.237Z"
+            }
+          }
+        },
+        "stats": {
+          "url": "/index.html",
+          "shellText": "晨间清单\nMORNING THREE\nEN\n今日\n洞察\n坚持\n这 14 天，哪天来了，哪天没来 —— 都算数\n这 14 天，你来了 3 天\n你一共确认了 1 次「推进」\n最近记录\n›\n回顾全部记录 ›\n数据 · 导出 / 导入 ›",
+          "cardCount": 2,
+          "echo": "",
+          "whisper": "",
+          "h1": "",
+          "h1sub": "",
+          "footNote": "",
+          "phaseHint": "",
+          "overlayText": "",
+          "overlayButtons": [],
+          "inputPlaceholders": [],
+          "inputFontPx": null,
+          "minFontPx": 13,
+          "under13Count": 0,
+          "textNodeCount": 22,
+          "sdCard": "",
+          "detailsCount": 1,
+          "langBtn": "EN"
+        },
+        "evening": {
+          "url": "/index.html",
+          "shellText": "晨间清单\nMORNING THREE\nEN\n今日\n洞察\n今天的天气，适合做点什么？\n今天还在进行中。\n待收尾\n19:00 后只读\n今天想推进什么\n\n要事已锁定 · 去收个尾\n\n01\n写完数学卷子\n推进了\n去收个尾\n你已经在 3 天留下了痕迹。\n价值主张 · 为什么是三件事 ›",
+          "cardCount": 2,
+          "echo": "今天的天气，适合做点什么？",
+          "whisper": "你已经在 3 天留下了痕迹。",
+          "h1": "今天想推进什么",
+          "h1sub": "要事已锁定 · 去收个尾",
+          "footNote": "",
+          "phaseHint": "19:00 后只读",
+          "overlayText": "今天收个尾\n21:10\n\n看一眼今天写的，勾掉推进过的。\n没推进的会带到明天，不算欠账。\n\n01\n写完数学卷子\n推进了\n没推进\n一句话（可选）\n收下今天",
+          "overlayButtons": [
+            "推进了",
+            "没推进",
+            "收下今天"
+          ],
+          "inputPlaceholders": [],
+          "inputFontPx": null,
+          "minFontPx": 13,
+          "under13Count": 0,
+          "textNodeCount": 30,
+          "sdCard": "",
+          "detailsCount": 0,
+          "langBtn": "EN"
+        },
+        "overlay": {
+          "pickBtns": 2,
+          "sealBtn": [
+            "推进了",
+            "没推进",
+            "收下今天"
+          ],
+          "note": true
+        },
+        "gate": {
+          "state": "waiting",
+          "ran": 2,
+          "inputs": 2,
+          "winInputs": 2,
+          "windowDays": [
+            {
+              "k": "2026-11-02",
+              "has": false
+            },
+            {
+              "k": "2026-11-03",
+              "has": false
+            },
+            {
+              "k": "2026-11-04",
+              "has": false
+            },
+            {
+              "k": "2026-11-05",
+              "has": false
+            },
+            {
+              "k": "2026-11-06",
+              "has": false
+            },
+            {
+              "k": "2026-11-07",
+              "has": true
+            },
+            {
+              "k": "2026-11-08",
+              "has": true
+            }
+          ],
+          "text": "晚间反思\n解锁中\nEN\n晚间反思\n它要等晨间清单先跑稳，再开门。\n5\n还差\n◷\n还差 5 天满 7 天\n已运行 2 天 · 目标 7 天\n过去七天\n绿 = 那天输入过 · 灰 = 那天没记录\n2 / 4\n一\n·\n二\n·\n三\n·\n四\n·\n五\n·\n六\n✓\n日\n✓\n过去 7 天里有 2 天输入过。做得少不算错，写了就算。\n解锁条件\n1\n晨间清单跑满 7 天 从你写下第一件要事那天算起。\n2\n一周内输入至少 4 次 可以不连续。过去 7 天里只要有 4 天写下了晨间清单，门就开。\n返回晨间清单\n用示例数据看效果\n只是预览门禁长相，不会解锁\n数据 · 导出 / 导入 ›\n晨间清单\n›"
+        },
+        "gateErrors": [],
+        "backup": {
+          "exportBytes": 1441,
+          "exportHasMorningWords": true,
+          "morningDayCount": 3,
+          "exportedDayCount": 0,
+          "app": "morning-three",
+          "version": 1,
+          "packedMorningDays": 3,
+          "packedEveningDays": 0
+        }
+      },
+      "shots": [
+        "C-01-first.png",
+        "C-02-stats.png",
+        "C-03-evening.png",
+        "C-04-gate.png"
+      ],
+      "pageErrors": []
+    }
+  ]
+}

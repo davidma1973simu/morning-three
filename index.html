@@ -34,7 +34,7 @@ applyTheme();
   --card:#FFFFFF;
   --ink:#151A16;
   --ink2:#5E665F;
-  --ink3:#9DA49E;
+  --ink3:#6C756D;
   --line:#E9ECE8;
   --line2:#DDE0DB;
   --edge:#D5D9D3;
@@ -66,7 +66,7 @@ html.night{
   --card:#191D19;
   --ink:#F1F4F0;
   --ink2:#A8B0A8;
-  --ink3:#6E7670;
+  --ink3:#9BA49B;
   --line:#2A2F2A;
   --line2:#2E332E;
   --edge:#3A413B;
@@ -108,9 +108,9 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 /* ---------- header ---------- */
 .hdr{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:22px}
 .brand{font-size:21px;font-weight:700;letter-spacing:-.01em}
-.brand-sub{font-size:11px;font-weight:600;letter-spacing:.16em;color:var(--ink3);text-transform:uppercase;margin-top:2px}
+.brand-sub{font-size:13px;font-weight:600;letter-spacing:.16em;color:var(--ink3);text-transform:uppercase;margin-top:2px}
 .hdr-r{display:flex;align-items:center;gap:8px;padding-top:2px}
-.lang{height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:12px;font-weight:600;color:var(--ink2);letter-spacing:.04em}
+.lang{height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:13px;font-weight:600;color:var(--ink2);letter-spacing:.04em}
 .lang.bell{width:30px;padding:0;display:flex;align-items:center;justify-content:center;color:var(--ink2)}
 .lang:hover{border-color:var(--edge)}
 
@@ -129,24 +129,24 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .sdcard.locked .sd-ico{background:var(--fill)}
 .sd-t{flex:1;min-width:0}
 .sd-h{font-size:16px;font-weight:700;letter-spacing:-.01em}
-.sd-p{font-size:12.5px;color:var(--ink2);margin-top:3px;line-height:1.45}
-.sd-go{flex:none;font-size:12px;font-weight:700;color:var(--brand-txt);white-space:nowrap}
+.sd-p{font-size:13px;color:var(--ink2);margin-top:3px;line-height:1.45}
+.sd-go{flex:none;font-size:13px;font-weight:700;color:var(--brand-txt);white-space:nowrap}
 .sd-caret{flex:none;color:var(--edge2);font-size:17px}
 /* 满 7 天但未解锁：收成一行安静的页脚，不与今日三件事抢注意力 */
 .sd-wrap{padding:14px 18px;opacity:.78}
 .sdcard.slim .sd-ico{width:30px;height:30px;border-radius:9px}
 .sdcard.slim .sd-h{font-size:13.5px;font-weight:600;color:var(--ink2)}
-.sdcard.slim .sd-p{font-size:11.5px;margin-top:2px}
+.sdcard.slim .sd-p{font-size:13px;margin-top:2px}
 
 /* ---------- phase row ---------- */
 .phase{display:flex;align-items:center;gap:9px;margin-bottom:14px}
 .pdot{width:7px;height:7px;border-radius:50%;background:var(--brand);flex:none}
 .pdot.w{background:var(--warn)}
 .pdot.g{background:var(--edge2)}
-.pname{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--brand-txt)}
+.pname{font-size:13px;font-weight:700;letter-spacing:.08em;color:var(--brand-txt)}
 .pname.w{color:var(--warn)}
 .pname.g{color:var(--ink3)}
-.phint{font-size:12px;color:var(--ink3);margin-left:auto;text-align:right}
+.phint{font-size:13px;color:var(--ink3);margin-left:auto;text-align:right}
 
 .h1{font-size:25px;font-weight:700;letter-spacing:-.015em;margin:0 0 4px}
 .h1-sub{font-size:13px;color:var(--ink2);margin:0 0 18px}
@@ -156,13 +156,13 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .item{display:flex;align-items:center;gap:13px;padding:13px 0;border-top:1px solid var(--line)}
 .item:first-child{border-top:0;padding-top:2px}
 .item.ghost{display:none}
-.idx{font-size:11px;font-weight:700;color:var(--ink3);width:18px;flex:none;letter-spacing:.06em;padding-top:1px}
+.idx{font-size:13px;font-weight:700;color:var(--ink3);width:18px;flex:none;letter-spacing:.06em;padding-top:1px}
 .inp{flex:1;min-width:0;font-size:16px;font-weight:500;padding:9px 0;line-height:1.45;border-bottom:1.5px solid transparent;transition:.15s}
 .inp::placeholder{color:var(--edge2);font-weight:400}
 .inp:focus{border-bottom-color:var(--brand-txt)}
 .txt{flex:1;min-width:0;font-size:16px;font-weight:500;line-height:1.45;word-break:break-word}
 .txt.filled-muted{color:var(--ink2)}
-.state{flex:none;font-size:11px;font-weight:700;letter-spacing:.04em;padding:4px 9px;border-radius:999px;background:var(--fill);color:var(--ink3)}
+.state{flex:none;font-size:13px;font-weight:700;letter-spacing:.04em;padding:4px 9px;border-radius:999px;background:var(--fill);color:var(--ink3)}
 .state.ok{background:var(--brand-soft);color:var(--brand-txt)}
 .state.no{background:var(--warn-soft);color:var(--warn)}
 
@@ -173,7 +173,7 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .check svg{opacity:0;transition:.15s}
 .check.on svg{opacity:1}
 
-.tag{font-size:10px;font-weight:700;letter-spacing:.06em;padding:3px 7px;border-radius:6px;background:var(--fill);color:var(--ink3);flex:none}
+.tag{font-size:13px;font-weight:700;letter-spacing:.06em;padding:3px 7px;border-radius:6px;background:var(--fill);color:var(--ink3);flex:none}
 .tag.ok{background:var(--brand-soft);color:var(--brand-txt)}
 
 /* ---------- buttons ---------- */
@@ -183,8 +183,8 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .btn.ghost{background:transparent;color:var(--brand-txt);border:1.5px solid var(--brand-edge2)}
 .btn.ghost:hover{background:var(--brand-soft)}
 .foot{margin-top:18px}
-.foot-note{font-size:12px;color:var(--ink3);text-align:center;margin-top:11px;line-height:1.6}
-.carry-note{font-size:12px;color:var(--brand-txt);background:var(--brand-soft);border-radius:10px;
+.foot-note{font-size:13px;color:var(--ink3);text-align:center;margin-top:11px;line-height:1.6}
+.carry-note{font-size:13px;color:var(--brand-txt);background:var(--brand-soft);border-radius:10px;
   padding:8px 11px;margin:12px 0 2px;line-height:1.55}
 
 /* 晨间洞察 whisper（不是仪表盘，是一句低声的解读） */
@@ -192,7 +192,7 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
   background:linear-gradient(180deg,var(--brand-soft),var(--card))}
 .ws-mark{color:var(--brand-txt);opacity:.75;display:flex}
 .ws-line{font-size:15.5px;font-weight:600;color:var(--ink);line-height:1.55;letter-spacing:-.01em}
-.ws-go{font-size:12.5px;font-weight:700;color:var(--brand-txt);cursor:pointer;margin-top:2px}
+.ws-go{font-size:13px;font-weight:700;color:var(--brand-txt);cursor:pointer;margin-top:2px}
 
 /* 晨间回响：应用先开口 —— 不抢戏，是一条轻声的线，不是卡片 */
 .echo{display:flex;align-items:flex-start;gap:10px;padding:18px 2px 6px}
@@ -209,7 +209,7 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 
 /* 迟到补记 */
 .late-note .btn.late-save{margin-top:12px}
-.late-done{font-size:11px;color:var(--brand-txt);font-weight:700;margin-top:8px;letter-spacing:.04em}
+.late-done{font-size:13px;color:var(--brand-txt);font-weight:700;margin-top:8px;letter-spacing:.04em}
 .late-btn{margin-top:14px}
 
 .empty-inline{text-align:center;padding:24px 6px 20px}
@@ -220,7 +220,7 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .sc-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
 .sc{background:var(--card);border-radius:16px;box-shadow:var(--sh);padding:16px 12px;text-align:center}
 .sc-v{font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1.15}
-.sc-k{font-size:11px;color:var(--ink3);font-weight:600;margin-top:4px;letter-spacing:.04em}
+.sc-k{font-size:13px;color:var(--ink3);font-weight:600;margin-top:4px;letter-spacing:.04em}
 .sc-v.na{color:var(--edge2)}
 
 /* ---------- chart ---------- */
@@ -230,7 +230,7 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .seg2-i.on{background:var(--brand);color:var(--on);box-shadow:0 1px 3px rgba(0,0,0,.15)}
 .chart-wrap{position:relative}
 .chart-svg{display:block;width:100%;height:auto;overflow:visible}
-.legend{display:flex;gap:18px;justify-content:center;margin-top:12px;font-size:11.5px;color:var(--ink3);font-weight:600}
+.legend{display:flex;gap:18px;justify-content:center;margin-top:12px;font-size:13px;color:var(--ink3);font-weight:600}
 .lg{display:flex;align-items:center;gap:6px}
 .lg-s{width:16px;height:2.5px;border-radius:2px}
 .chart-read{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 4px 10px;min-height:18px}
@@ -247,7 +247,7 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .rm-i svg{width:20px;height:20px}
 .rm-t{flex:1;display:block;min-width:0}
 .rm-t b{display:block;font-size:14.5px;font-weight:600;letter-spacing:-.01em}
-.rm-t i{display:block;font-style:normal;font-size:12px;color:var(--ink3);margin-top:3px;line-height:1.45}
+.rm-t i{display:block;font-style:normal;font-size:13px;color:var(--ink3);margin-top:3px;line-height:1.45}
 .rm-b.primary .rm-t i{color:var(--on-dim)}
 .rm-go{flex:none;font-size:20px;color:var(--ink3);line-height:1}
 .rm-b.primary .rm-go{color:var(--on-dim)}
@@ -255,7 +255,7 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
   border:1px dashed var(--line);border-radius:12px;font-size:13.5px;color:var(--ink2);margin-bottom:8px}
 .rm-ok{color:var(--brand-txt);font-weight:700;font-size:13px}
 .rm-dim{color:var(--ink3);font-weight:700;font-size:13px}
-.rm-note{font-size:12px;color:var(--ink3);line-height:1.6;margin-top:10px}
+.rm-note{font-size:13px;color:var(--ink3);line-height:1.6;margin-top:10px}
 .rm-note.dim{color:var(--ink3);margin-top:6px}
 
 /* ---------- 安装引导 sheet ---------- */
@@ -265,9 +265,9 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 #rmRoot .ov-bg{position:absolute;inset:0;background:var(--ov)}
 #rmRoot .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--card);border-radius:22px 22px 0 0;max-height:88vh;overflow-y:auto;padding:20px 22px 26px}
 .rm-url{display:flex;align-items:center;gap:8px;background:var(--fill);border-radius:10px;padding:10px 12px;margin:13px 0 2px}
-.rm-url .u{flex:1;font-size:12px;color:var(--ink2);word-break:break-all;line-height:1.5}
-.rm-copy{flex:none;font-size:12px;font-weight:700;color:var(--brand-txt);background:none;border:0;padding:4px 2px;cursor:pointer;font-family:inherit}
-.rm-alt{font-size:12px;color:var(--ink3);line-height:1.65;margin-top:14px}
+.rm-url .u{flex:1;font-size:13px;color:var(--ink2);word-break:break-all;line-height:1.5}
+.rm-copy{flex:none;font-size:13px;font-weight:700;color:var(--brand-txt);background:none;border:0;padding:4px 2px;cursor:pointer;font-family:inherit}
+.rm-alt{font-size:13px;color:var(--ink3);line-height:1.65;margin-top:14px}
 .rm-more{margin-top:15px;text-align:center}
 /* ---------- 词云 / 一句话 ---------- */
 .cloud{display:flex;flex-wrap:wrap;gap:9px 13px;align-items:baseline;justify-content:center;padding:8px 2px 2px}
@@ -278,13 +278,13 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 /* 最近记录：折叠坍缩，默认收起 */
 .rec-det{overflow:hidden}
 .rec-det>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;
-  font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--ink3);text-transform:uppercase;margin:0;padding:0}
+  font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--ink3);text-transform:uppercase;margin:0;padding:0}
 .rec-det>summary::-webkit-details-marker{display:none}
 .rec-h{flex:1}
 .rec-caret{font-size:18px;line-height:1;color:var(--ink3);transition:transform .2s ease;transform:rotate(0deg)}
 .rec-det[open] .rec-caret{transform:rotate(90deg)}
 .rec-body{margin-top:4px}
-.sec-t2{font-size:12px;color:var(--ink3);margin-bottom:9px}
+.sec-t2{font-size:13px;color:var(--ink3);margin-bottom:9px}
 #instRoot{position:fixed;inset:0;z-index:80;display:none}
 #instRoot.on{display:block}
 #instRoot .ov-bg{position:absolute;inset:0;background:var(--ov)}
@@ -323,7 +323,7 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .sh-steps li{display:flex;align-items:flex-start;gap:12px;padding:10px 0;font-size:14.5px;line-height:1.5;
   border-bottom:1px solid var(--line)}
 .sh-steps li:last-child{border-bottom:0}
-.sh-n{flex:none;width:22px;height:22px;border-radius:50%;background:var(--brand);color:var(--on);  font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.sh-n{flex:none;width:22px;height:22px;border-radius:50%;background:var(--brand);color:var(--on);  font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
 
 /* ---------- 庆祝：立刻、微小、不喧哗 ---------- */
 #celebRoot{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;
@@ -339,18 +339,18 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .cb-s{font-size:13px;color:var(--on-dim)}
 @keyframes cbdraw{to{stroke-dashoffset:0}}
 @media (prefers-reduced-motion:reduce){.cb,.cb-ring svg path{animation:none}}
-.cr-t{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--ink3);text-transform:uppercase;white-space:nowrap}
-.cr-v{font-size:12px;font-weight:700;color:var(--brand-txt);font-variant-numeric:tabular-nums;text-align:right}
+.cr-t{font-size:13px;font-weight:700;letter-spacing:.08em;color:var(--ink3);text-transform:uppercase;white-space:nowrap}
+.cr-v{font-size:13px;font-weight:700;color:var(--brand-txt);font-variant-numeric:tabular-nums;text-align:right}
 
 .empty-stats{text-align:center;padding:26px 8px 10px}
 .empty-stats .es-t{font-size:16px;font-weight:700;margin-bottom:6px}
 .empty-stats .es-d{font-size:13px;color:var(--ink3);line-height:1.7;margin-bottom:20px}
-.linkbtn{font-size:12.5px;font-weight:600;color:var(--brand-txt);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--brand-line)}
+.linkbtn{font-size:13px;font-weight:600;color:var(--brand-txt);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--brand-line)}
 /* 正文里的高亮词：与价值主张链接同色同线，视觉上同一家族 */
 .hl{color:var(--brand-txt);font-weight:600;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--brand-line)}
 
 /* ---------- 状态的镜子 / 长期对照（读晚间反思数据） ---------- */
-.mi-sub{font-size:12.5px;color:var(--ink3);margin:-6px 0 16px;line-height:1.55}
+.mi-sub{font-size:13px;color:var(--ink3);margin:-6px 0 16px;line-height:1.55}
 .mi-emo{display:flex;flex-wrap:wrap;gap:11px 18px}
 .mi-e{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--ink2)}
 .mi-dot{width:11px;height:11px;border-radius:50%;flex:none}
@@ -369,15 +369,15 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .dr-cols{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:2px}
 .dr-col-h{font-size:13px;font-weight:700;color:var(--ink2);margin-bottom:11px;display:flex;align-items:center;gap:8px}
 .dr-col-h .mi-dot{width:9px;height:9px}
-.dr-row{display:flex;align-items:center;gap:8px;margin:8px 0;font-size:12.5px}
+.dr-row{display:flex;align-items:center;gap:8px;margin:8px 0;font-size:13px}
 .dr-name{width:32px;flex:none;color:var(--ink2);font-weight:600}
 .dr-track{flex:1;height:7px;background:var(--fill);border-radius:4px;overflow:hidden}
 .dr-fill{height:100%;border-radius:4px}
-.dr-pct{width:34px;flex:none;text-align:right;color:var(--ink3);font-weight:700;font-variant-numeric:tabular-nums;font-size:11.5px}
-.dr-foot{margin-top:15px;font-size:12px;color:var(--ink3);text-align:center;line-height:1.65}
+.dr-pct{width:34px;flex:none;text-align:right;color:var(--ink3);font-weight:700;font-variant-numeric:tabular-nums;font-size:13px}
+.dr-foot{margin-top:15px;font-size:13px;color:var(--ink3);text-align:center;line-height:1.65}
 
 /* ---------- recent ---------- */
-.sec-t{font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--ink3);text-transform:uppercase;margin:0 0 12px}
+.sec-t{font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--ink3);text-transform:uppercase;margin:0 0 12px}
 .rec{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--line);font-size:13.5px}
 .rec:first-of-type{border-top:0}
 .rec-d{width:76px;flex:none;color:var(--ink2);font-weight:500}
@@ -386,11 +386,11 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .rec-seg.on{background:var(--brand)}
 .rec-seg.off{background:var(--warn-soft)}
 .rec-n{width:34px;flex:none;text-align:right;font-weight:700;color:var(--ink2)}
-.rec-s{width:52px;flex:none;text-align:right;font-size:11px;font-weight:700;letter-spacing:.03em}
+.rec-s{width:52px;flex:none;text-align:right;font-size:13px;font-weight:700;letter-spacing:.03em}
 .rec-s.ok{color:var(--brand-txt)}
 .rec-s.no{color:var(--warn)}
-.rec-late{display:flex;align-items:baseline;gap:8px;margin:-3px 0 11px;padding-left:88px;font-size:12.5px;color:var(--ink3);line-height:1.5}
-.rec-late-tag{flex:none;font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--brand-txt);background:var(--brand-soft);border-radius:6px;padding:2px 6px;white-space:nowrap}
+.rec-late{display:flex;align-items:baseline;gap:8px;margin:-3px 0 11px;padding-left:88px;font-size:13px;color:var(--ink3);line-height:1.5}
+.rec-late-tag{flex:none;font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--brand-txt);background:var(--brand-soft);border-radius:6px;padding:2px 6px;white-space:nowrap}
 .rec-late-tx{word-break:break-word}
 
 /* ---------- overlay ---------- */
@@ -398,12 +398,12 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .ov-card{background:var(--card);border-radius:24px;width:100%;max-width:520px;padding:26px 22px 22px;box-shadow:0 24px 60px -12px rgba(0,0,0,.5);margin:auto}
 .ov-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:4px}
 .ov-t{font-size:21px;font-weight:700;letter-spacing:-.015em}
-.ov-time{font-size:12px;font-weight:700;color:var(--ink3);font-variant-numeric:tabular-nums}
+.ov-time{font-size:13px;font-weight:700;color:var(--ink3);font-variant-numeric:tabular-nums}
 .ov-d{font-size:13px;color:var(--ink2);margin:0 0 20px;line-height:1.6}
 .ov-item{padding:15px 0;border-top:1px solid var(--line)}
 .ov-item:first-of-type{border-top:0;padding-top:0}
 .ov-q{display:flex;gap:11px;margin-bottom:12px}
-.ov-idx{font-size:11px;font-weight:700;color:var(--ink3);width:18px;flex:none;padding-top:3px}
+.ov-idx{font-size:13px;font-weight:700;color:var(--ink3);width:18px;flex:none;padding-top:3px}
 .ov-tx{flex:1;font-size:15.5px;font-weight:600;line-height:1.5;word-break:break-word}
 .pick{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .pick.one{grid-template-columns:1fr}
@@ -412,11 +412,11 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .pk.on-ok{background:var(--brand);border-color:var(--brand);color:var(--on)}
 .pk.on-no{background:var(--warn);border-color:var(--warn);color:#fff}
 .note{margin-top:20px}
-.note label{display:block;font-size:12px;font-weight:700;color:var(--ink3);letter-spacing:.04em;margin-bottom:8px}
+.note label{display:block;font-size:13px;font-weight:700;color:var(--ink3);letter-spacing:.04em;margin-bottom:8px}
 .note textarea{width:100%;background:var(--fill3);border-radius:12px;padding:12px 13px;min-height:70px;resize:vertical;font-size:14px;line-height:1.6;border:1.5px solid transparent;transition:.15s}
 .note textarea:focus{border-color:var(--brand);background:var(--fill3)}
 .ov-foot{margin-top:22px}
-.ov-warn{font-size:12px;color:var(--warn);text-align:center;margin-top:11px;font-weight:600;height:16px}
+.ov-warn{font-size:13px;color:var(--warn);text-align:center;margin-top:11px;font-weight:600;height:16px}
 
 /* ---------- 首次 briefing：一眼看全，读完就走 ---------- */
 #briefRoot{position:fixed;inset:0;z-index:86;display:none}
@@ -435,8 +435,8 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .br-list{list-style:none;margin:18px 0 0;padding:15px 0 2px;border-top:1px solid var(--line)}
 .br-list li{display:flex;gap:11px;align-items:flex-start;padding:8px 0;font-size:14.5px;line-height:1.5}
 .br-n{flex:none;width:20px;height:20px;border-radius:50%;background:var(--brand-soft);color:var(--brand-txt);
-  font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px}
-.br-foot{margin-top:16px;font-size:12px;color:var(--ink3);line-height:1.6;text-align:center}
+  font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.br-foot{margin-top:16px;font-size:13px;color:var(--ink3);line-height:1.6;text-align:center}
 
 /* ---------- 非工作时段的一句话：不评价，只接住 ---------- */
 .nightbar{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--ink2);
@@ -451,7 +451,7 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
   .h1{font-size:22px}
   .card{padding:18px 16px}
   .sc-v{font-size:21px}
-  .rec-d{width:64px;font-size:12.5px}
+  .rec-d{width:64px;font-size:13px}
 }
 </style>
 </head>
@@ -487,16 +487,16 @@ var T = {
     brand:'晨间清单',
     today:'今日', stats:'洞察',
     ph_plan:'早上', ph_exec:'白天', ph_check:'收尾时间', ph_sealed:'已收尾',
-    ph_edit:'白天', late_open_hint:'晚间反思已开 · 要事可改到 19:00',
+    ph_edit:'白天', ph_cold:'今晚',
     ph_late:'待收尾', ph_late_hint:'19:00 后只读', ph_late_sub:'要事已锁定 · 去收个尾',
     go_close:'去收个尾',
-    left_pre:'距 07:00 还有 ', left_pre2:'距 18:00 收尾还有 ',
+    left_pre2:'想到就写 · 19:00 前可改', cold_hint:'现在写下，也算今天',
     check_now:'18:00 已过，收个尾',
     sealed_hint:'今天收好了，明天见',
     t_title:'今天想推进什么',
     t_sub:'想清楚一件就算数 · 18:00 收个尾',
-    t_sub_exec:'白天随时可写可勾，18:00 收尾。',
-    lock_hint:'要事 = 今天结束时会让你觉得没白过的那件事。<br>输入一周后，解锁「<span class="hl">晚间反思</span>」。',
+    t_sub_exec:'白天随时可写可勾，19:00 前都能改。',
+    lock_hint:'要事 = 今天最想推进的那一件事。<br>写满一周（至少 4 次，不必连续），解锁「<span class="hl">晚间反思</span>」。',
     sealed_at:'收尾 ·',
     ph:['今天想推进什么？一件就够','还有一件？可以不写','最后一件？可以不写'],
     lock:'锁定今日要事',
@@ -523,7 +523,7 @@ var T = {
     p_day:'日', p_week:'周', p_month:'月',
     p_day_t:'最近 14 天', p_week_t:'最近 8 周', p_month_t:'最近 6 个月',
     es_t:'还没有数据',
-    es_d:'早上想清楚今天要推进什么，18:00 收个尾。<br>曲线会一天天长出来。',
+    es_d:'早上想清楚今天要推进什么，夜里留一句话。<br>痕迹会一天天留下来。',
     es_demo:'载入示例数据看看效果',
     es_demo_clear:'清除示例数据',
     demo_tag:'示例',
@@ -531,7 +531,8 @@ var T = {
     rec_ok:'已收尾', rec_no:'空白', rec_empty:'—',
     sd_title:'晚间反思', sd_sub:'睡前记下今天推进了什么 · 一件就够',
     sd_lock:'未解锁 · 一周内输入至少 4 次（可不连续）',
-    sd_left:'还差 {n} 天满 7 天', sd_seal:'过去 7 天输入了 {n}/4 次，不连续也算',
+    sd_left:'还差 {n} 天满 7 天', sd_seal:'这一周写下了 {n} 天 · 满 4 天就为你敞开',
+    sd_ready:'已经为你敞开',
     sd_go:'进入',
     day_unit:'天',
     toast_saved:'已保存',
@@ -541,7 +542,7 @@ var T = {
     toast_demo_off:'示例数据已清除',
     tasks:'件',
     val_link:'价值主张 · 为什么是三件事',
-    arch_t:'回顾全部记录',
+    arch_t:'回顾全部记录', data_link:'数据 · 导出 / 导入',
     arch_sub:'你写下的每一笔都在这里 · 随时回看',
     arch_empty:'还没有记录可回看',
     arch_blank:'这一天没写什么，也算记下了',
@@ -564,14 +565,14 @@ var T = {
     br_g_m:'早上好', br_s_m:'先把今天想清楚，剩下的慢慢来',
     br_g_d:'你好',   br_s_d:'想到就写一笔，什么时候都不晚',
     br_g_n:'晚上好', br_s_n:'今天空白也没关系，明天来写第一笔',
-    br_f1:'你不书写，世界就会替你书写',
+    br_f1:'你不书写，世界就会覆盖你的痕记',
     br_f2:'这里不催你完成 —— 只帮你留下痕迹',
     br_f3:'空白也算数，记忆由你的记录创造',
     br_fm:'不用做到完美，来就算数',
     br_go:'开始吧',
     /* 非工作时段的一句话 */
     ng_sealed:'今天收好了，明天见',
-    ng_empty:'今天空白也没关系，明天来写第一笔就好',
+    ng_empty:'今天还在进行中。',
     /* 提醒：网页推不动，走系统自动化 */
     rm_title:'每天提醒自己一次',
     rm_d:'网页没法在后台推送。让手机自己准点叫你，点一下就到这里。',
@@ -615,16 +616,16 @@ var T = {
     brand:'Morning Three',
     today:'Today', stats:'Insights',
     ph_plan:'Morning', ph_exec:'Daytime', ph_check:'Time to close', ph_sealed:'Closed',
-    ph_edit:'Daytime', late_open_hint:'Evening close is open · edit until 19:00',
+    ph_edit:'Daytime', ph_cold:'Tonight',
     ph_late:'Awaiting close', ph_late_hint:'read-only after 19:00', ph_late_sub:'Tasks locked · go close the day',
     go_close:'Close the day',
-    left_pre:'Until 07:00 · ', left_pre2:'Close by 18:00 · ',
+    left_pre2:'Write whenever · edit until 19:00', cold_hint:'Write it now — today still counts',
     check_now:'Past 18:00 — close the day',
     sealed_hint:'Today is closed. See you tomorrow.',
     t_title:'What to move today',
     t_sub:'One clear thing counts · close at 18:00',
-    t_sub_exec:'Write and check anytime — the day closes at 18:00.',
-    lock_hint:'A priority is the thing that makes today not feel wasted.<br>Write for a week to unlock <span class="hl">Evening Reflection</span>.',
+    t_sub_exec:'Write and check anytime — editable until 19:00.',
+    lock_hint:'A priority is the one thing you most want to move today.<br>Write across a week (at least 4 days, no streak needed) to unlock <span class="hl">Evening Reflection</span>.',
     sealed_at:'Closed ·',
     ph:['What do you want to move? One is enough','Another one? optional','One more? optional'],
     lock:'Lock today\u2019s list',
@@ -651,7 +652,7 @@ var T = {
     p_day:'Day', p_week:'Week', p_month:'Month',
     p_day_t:'Last 14 days', p_week_t:'Last 8 weeks', p_month_t:'Last 6 months',
     es_t:'No data yet',
-    es_d:'Start today: clear one thing in the morning, close the day at 18:00.<br>The curve grows one day at a time.',
+    es_d:'Start today: clear one thing in the morning, leave a line at night.<br>Your traces gather, one day at a time.',
     es_demo:'Load sample data to preview',
     es_demo_clear:'Clear sample data',
     demo_tag:'sample',
@@ -667,7 +668,8 @@ var T = {
     sd_title:'Evening Reflection',
     sd_sub:'Before bed, note what moved today · one is enough',
     sd_lock:'Locked · 4 check-ins in a week',
-    sd_left:'{n} days to unlock', sd_seal:'{n} of 4 logged this week',
+    sd_left:'{n} days to unlock', sd_seal:'{n} days written this week · 4 opens the door',
+    sd_ready:'It is open for you',
     sd_go:'Open',
     rm_inst:'Install to your home screen',
     in_d:'Once installed it gets its own icon, no address bar, and opens without network.',
@@ -685,13 +687,13 @@ var T = {
     br_g_m:'Good morning', br_s_m:'Clear your day first. The rest can wait',
     br_g_d:'Hello',        br_s_d:'Write one line whenever it comes to you',
     br_g_n:'Good evening', br_s_n:'A blank day is fine — tomorrow write your first line',
-    br_f1:'If you don\u2019t write, the world writes for you',
+    br_f1:'If you don\u2019t write, the world covers your traces',
     br_f2:'It doesn\u2019t push you to finish \u2014 only to leave a trace',
     br_f3:'A blank day counts. Memory is made by your records',
     br_fm:'No need to be perfect. Showing up counts',
     br_go:'Let\u2019s go',
     ng_sealed:'Today is logged. See you tomorrow',
-    ng_empty:'A blank day is fine — tomorrow write your first line',
+    ng_empty:'Today is still unfolding.',
     rm_title:'Remind me once a day',
     rm_d:'A web page cannot push in the background. Let the phone do it — tap and you are here.',
     rm_s1:'Open Shortcuts → Automation → + → Create Personal Automation',
@@ -728,7 +730,7 @@ var T = {
     ws_trace:'You have left a trace on {n} days so far.',
     ws_to_eve:'Evening Reflection is open — go see what your traces have become',
     val_link:'Why three things',
-    arch_t:'All your records',
+    arch_t:'All your records', data_link:'Data · export / import',
     arch_sub:'Every line you wrote stays here · look back anytime',
     arch_empty:'No records to look back on yet',
     arch_blank:'Nothing written that day — still counted'
@@ -748,12 +750,6 @@ function todayKey(){ return ymd(new Date()); }
 function nowMin(){ var d=new Date(); return d.getHours()*60+d.getMinutes(); }
 function esc(s){ return String(s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 function trunc(s,n){ s=String(s||'').trim(); return s.length>n ? s.slice(0,n)+'…' : s; }
-function fmtLeft(mins){
-  if(mins<0) mins=0;
-  var h=Math.floor(mins/60), m=mins%60;
-  if(LANG==='en') return (h? h+'h ':'')+pad(m)+'m';
-  return (h? h+' 小时 ':'')+pad(m)+' 分';
-}
 function fmtDate(d){
   if(LANG==='en'){ return (d.getMonth()+1)+'/'+d.getDate(); }
   return (d.getMonth()+1)+'/'+d.getDate();
@@ -814,6 +810,14 @@ function taskList(r){
   if(!r || !r.tasks) return [];
   return r.tasks.filter(function(x){ return x && x.text && String(x.text).trim(); });
 }
+/* 「那天输入过」唯一判据 —— 与 success.html 同源同逻辑。
+   空白日（打开过又删光）不算输入，不灌水解锁进度。 */
+function hasInput(r){
+  if(!r) return false;
+  if(r.checkin && r.checkin.at) return true;
+  if(r.late && r.late.text && String(r.late.text).trim()) return true;
+  return !!(r.tasks && r.tasks.some(function(x){ return x && x.text && String(x.text).trim(); }));
+}
 function isChecked(k){ var r=peek(k); return !!(r && r.checkin); }
 
 /* 当天处于哪个阶段：edit（可写可改到 19:00）/ late（19:00 后只读，等收尾）/ sealed（已收尾） */
@@ -842,10 +846,7 @@ function dayStat(k){
 
 /* 首次有记录的日期 */
 function firstKey(){
-  var ks = Object.keys(DB.days).filter(function(k){
-    var r=DB.days[k];
-    return (r.tasks && taskList(r).length) || r.checkin;
-  }).sort();
+  var ks = Object.keys(DB.days).filter(function(k){ return hasInput(DB.days[k]); }).sort();
   return ks.length? ks[0] : null;
 }
 
@@ -904,16 +905,13 @@ function sdOpen(){ return !!sdMeta().at; }
 /* 成功日记离开门还差什么 —— 直接写在卡上，不让人猜 */
 function sdProgress(){
   var days = DB.days;
-  var ks = Object.keys(days).filter(function(k){
-    var r = days[k]; return !!(r && (r.tasks || r.checkin));
-  }).sort();
+  var ks = Object.keys(days).filter(function(k){ return hasInput(days[k]); }).sort();
   if(!ks.length) return null;
   var ran = Math.round((new Date(ymd(new Date())) - new Date(ks[0]))/86400000);
   var inputs = 0;
   for(var i=7;i>=1;i--){
     var d = new Date(); d.setDate(d.getDate()-i);
-    var r = days[ymd(d)];
-    if(r && (r.tasks || r.checkin)) inputs++;   /* 那天输入过就算，不连续也行 */
+    if(hasInput(days[ymd(d)])) inputs++;   /* 那天输入过就算，不连续也行 */
   }
   return { ran:ran, inputs:inputs, need:4 };
 }
@@ -1100,13 +1098,12 @@ function sdCard(){
   /* 晚间反思 18:00 前完全不出现、不开 —— 主页更干净，也符合「白天先过好」 */
   if(nowMin() < EVE_MIN) return '';
   /* 门槛没到 7 天：主页面完全不出现 —— 不占注意力，也不制造「还差很多」的压迫感 */
-  var open = sdOpen(), p = sdProgress();
+  var p = sdProgress();
+  /* 真值计算：该开就开，不等 success.html 来写解锁标记 —— 两页状态不再漂移 */
+  var open = sdOpen() || (!!p && p.ran >= 7 && (p.inputs >= 4 || p.ran >= 10));
   if(!open && (!p || p.ran < 7)) return '';
 
-  var note = '';
-  if(!open){
-    note = t('sd_seal').replace('{n}', p.inputs);   /* 满 7 天后剩下的条件：一周内输入满 4 次 */
-  }
+  var note = open ? t('sd_ready') : t('sd_seal').replace('{n}', p.inputs);
   var cls = open? 'sdcard' : 'sdcard locked slim';
   return '<section class="card sd-wrap"><div class="'+cls+'" data-act="sdgo">'+
     '<div class="sd-ico">'+sdIcon(open)+'</div>'+
@@ -1121,6 +1118,8 @@ function sdCard(){
    ========================================================= */
 function viewToday(){
   var k = todayKey(), ph = phaseOf(k);
+  /* 晚间冷启动：空白日仍给可写输入框，而不是只读列表 + 强制收尾 */
+  if(ph==='late' && typeof COLD_SESSION !== 'undefined' && COLD_SESSION) ph = 'edit';
   var carried = takeCarry();          /* 昨天没推进的，今天空白时自动带过来 */
   var r = peek(k);
   var early = isMorning(r);
@@ -1129,9 +1128,10 @@ function viewToday(){
   var m = nowMin();
 
   var dot='', name, hint;
+  var cold = (typeof COLD_SESSION !== 'undefined' && COLD_SESSION);
   if(ph==='edit'){
-    name = t('ph_edit');
-    hint = (m < EVE_MIN) ? (t('left_pre2')+fmtLeft(EVE_MIN-m)) : t('late_open_hint');
+    name = cold ? t('ph_cold') : t('ph_edit');
+    hint = cold ? t('cold_hint') : t('left_pre2');   /* 静态一句：不倒计时，不制造时间压力 */
   }
   else if(ph==='late'){ name=t('ph_late'); dot=' w'; hint=t('ph_late_hint'); }
   else { /* sealed */
@@ -1141,7 +1141,7 @@ function viewToday(){
   }
 
   /* 空白封存日：不重复叠一句"明天来写"，把位置留给补记通道 */
-  var h = '<section class="card">'+ ((ph==='sealed' && !hasContent) ? '' : nightLine(r)) +
+  var h = '<section class="card">'+ ((cold || (ph==='sealed' && !hasContent)) ? '' : nightLine(r)) +
     '<div class="phase"><span class="pdot'+dot+'"></span>'+
       '<span class="pname'+(dot===' w'?' w':dot===' g'?' g':'')+'">'+name+'</span>'+
       (hint ? '<span class="phint">'+esc(hint)+'</span>' : '')+
@@ -1168,7 +1168,7 @@ function viewToday(){
 
   /* 早上想清楚最理想，但全天都能写、能改、能勾 —— 想到了就写 */
   var tag = early ? ' <span class="tag ok">'+esc(t('tag_am'))+'</span>' : '';
-  h += '<p class="h1-sub">'+t('t_sub_exec')+tag+'</p>';
+  if(!cold) h += '<p class="h1-sub">'+t('t_sub_exec')+tag+'</p>';
 
   var cn = carryCount(r);
   if(cn) h += '<div class="carry-note">'+esc(t('carry_note').replace('{n}', cn))+'</div>';
@@ -1283,9 +1283,7 @@ function eveningRecords(){
    不造第二面墙；晚间反思解锁后温柔导流，让那面墙成为唯一成就。
    ========================================================= */
 function whisperCard(){
-  var ks = Object.keys(DB.days).filter(function(k){
-    var r = DB.days[k]; return !!(r && ((r.tasks && taskList(r).length) || r.checkin));
-  });
+  var ks = Object.keys(DB.days).filter(function(k){ return hasInput(DB.days[k]); });
   if(ks.length < 3) return '';           /* 痕迹还太薄，沉默比硬说好 */
   var ws = wordsIn(ks);
   var line = ws.length
@@ -1308,7 +1306,7 @@ function persistCard(){
   for(var i=13;i>=0;i--){
     var k = ymd(addDays(new Date(), -i));
     var r = DB.days[k];
-    var has = !!(r && ((r.tasks && taskList(r).length) || r.checkin || r.late));
+    var has = hasInput(r);
     if(has) used++;
     dots.push(has);
   }
@@ -1392,6 +1390,7 @@ function viewStats(){
       '<div class="es-d">'+t('es_d')+'</div>'+
       '</div>'+
       '<button class="btn ghost" data-act="demo">'+t('es_demo')+'</button>'+
+      '<div class="arch-go" style="margin-top:12px"><a class="linkbtn" href="success.html?view=data">'+esc(t('data_link'))+' ›</a></div>'+
       '</section>';
   }
 
@@ -1400,6 +1399,7 @@ function viewStats(){
   h += cloudCard();             /* 反复出现的事：一张卡就够，数据统计折成淡字贴在卡内 */
   h += recentCard();
   h += '<div class="arch-go"><button class="linkbtn" data-act="view" data-v="archive">'+esc(t('arch_t'))+' ›</button></div>';
+  h += '<div class="arch-go" style="margin-top:12px"><a class="linkbtn" href="success.html?view=data">'+esc(t('data_link'))+' ›</a></div>';
   if(DB.demoKeys.length){
     h += '<div style="text-align:center;margin-top:4px"><button class="linkbtn" data-act="demooff">'+t('es_demo_clear')+'</button></div>';
   }
@@ -1410,9 +1410,8 @@ function viewStats(){
    最近记录
    ========================================================= */
 function recentCard(){
-  var ks = Object.keys(DB.days).filter(function(k){
-    var r=DB.days[k]; return (r.tasks&&taskList(r).length)||r.checkin||r.late;
-  }).sort().reverse().slice(0,10);
+  var ks = Object.keys(DB.days).filter(function(k){ return hasInput(DB.days[k]); })
+    .sort().reverse().slice(0,10);
   if(!ks.length) return '';
   var b = '';
   ks.forEach(function(k){
@@ -1425,7 +1424,7 @@ function recentCard(){
       for(var i=0;i<res.length;i++){ bar += '<span class="rec-seg '+(res[i]?'on':'off')+'"></span>'; }
     } else if(s.planned){
       for(var j=0;j<s.planned;j++){ bar += '<span class="rec-seg"></span>'; }
-    } else { bar = '<span style="font-size:12px;color:var(--ink3)">'+t('rec_empty')+'</span>'; }
+    } else { bar = '<span style="font-size:13px;color:var(--ink3)">'+t('rec_empty')+'</span>'; }
     b += '<span class="rec-bar">'+bar+'</span>';
     b += '<span class="rec-n num">'+(s.checked? s.done+'/'+s.planned : '—')+'</span>';
     b += '<span class="rec-s '+(s.checked?'ok':'no')+'">'+(s.checked? t('rec_ok') : t('rec_no'))+'</span>';
@@ -1459,9 +1458,7 @@ function closeValue(){
 }
 /* 归档回顾：把写过的日子完整呈现，随时回看 —— 录入的东西必须能被 review，否则毁掉信任 */
 function viewArchive(){
-  var ks = Object.keys(DB.days).filter(function(k){
-    var r=DB.days[k]; return (r.tasks&&taskList(r).length)||r.checkin||r.late;
-  }).sort().reverse();
+  var ks = Object.keys(DB.days).filter(function(k){ return hasInput(DB.days[k]); }).sort().reverse();
   var back = '<div class="arch-back"><button class="linkbtn" data-act="view" data-v="stats">‹ '+esc(t('stats'))+'</button></div>';
   if(!ks.length) return '<section class="card">'+back+'<div class="empty-stats"><div class="es-t">'+t('arch_empty')+'</div></div></section>';
   var h = '<section class="card">'+back+'<div class="sec-t">'+esc(t('arch_t'))+'</div><div class="sec-t2">'+esc(t('arch_sub'))+'</div>';
@@ -1483,8 +1480,10 @@ function viewArchive(){
    只问「推进了吗」，不问「为什么没做完」；没推进的顺延，不算欠账
    ========================================================= */
 function mustCheck(){
-  var ph = phaseOf(todayKey());
-  return ph==='late';
+  /* 19:00 后才第一次来、今天还是空白：先让人写，不催收尾。
+     COLD_SESSION 只在页面加载时算一次，写完这一笔本次会话都不弹浮层。 */
+  if(typeof COLD_SESSION !== 'undefined' && COLD_SESSION) return false;
+  return phaseOf(todayKey())==='late';
 }
 function renderOverlay(){
   var root = document.getElementById('ovRoot');
@@ -1501,13 +1500,15 @@ function renderOverlay(){
     h += '<div>';
     tasks.forEach(function(x,i){
       h += '<div class="ov-item"><div class="ov-q"><span class="ov-idx num">'+pad(i+1)+'</span><span class="ov-tx">'+esc(x.text)+'</span></div>'+
-        '<div class="pick one">'+
+        '<div class="pick">'+
           '<button class="pk'+(S.picks[i]===1?' on-ok':'')+'" data-act="pick" data-i="'+i+'" data-v="1">'+t('ov_done')+'</button>'+
+          '<button class="pk'+(S.picks[i]===2?' on-no':'')+'" data-act="pick" data-i="'+i+'" data-v="2">'+t('ov_undone')+'</button>'+
         '</div></div>';
     });
     h += '</div>';
-    h += '<div class="note"><label>'+t('ov_label')+'</label><textarea id="ovNote" maxlength="120" placeholder="'+esc(t('ov_ph'))+'">'+esc(S.note||'')+'</textarea></div>';
   }
+  /* 一句话永远可选：空白日也留得下点什么，不必非得先有任务 */
+  h += '<div class="note"><label>'+t('ov_label')+'</label><textarea id="ovNote" maxlength="120" placeholder="'+esc(t('ov_ph'))+'">'+esc(S.note||'')+'</textarea></div>';
 
   /* 不需要每条都点：没点的就是「明天再说」，照样能收尾 */
   h += '<div class="ov-foot"><button class="btn" data-act="seal">'+(tasks.length? t('ov_seal') : t('ov_seal_empty'))+'</button>'+
@@ -1919,6 +1920,9 @@ if('serviceWorker' in navigator){
 }
 
 load();
+/* 晚间冷启动判定：已过 19:00 + 今天还没写下一笔 + 未收尾。
+   会话级，写完不反转 —— 避免刚落笔就被收尾浮层接管。 */
+var COLD_SESSION = (nowMin() >= EVE_MIN && !isChecked(todayKey()) && !taskList(peek(todayKey())).length);
 try{ var lg = localStorage.getItem('mt.lang'); if(lg==='en'||lg==='zh') LANG = lg; }catch(e){}
 bindOverlay();
 render();

@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>morning-three · 三画像完整测试报告（v32 基线 + v33 复测）</title>
+<style>
+:root{
+  --bg:#F2F6F7; --card:#FFFFFF; --ink:#16201F; --ink2:#42514F; --ink3:#7C8B89;
+  --line:#DDE7E8; --brand:#0E6B50; --brand-soft:#E4F1EC; --red:#B4433A; --red-soft:#FBEEEC;
+  --amber:#9A6B1E; --amber-soft:#FBF3E2; --blue:#2C6280; --blue-soft:#EAF2F6;
+  --sh:0 2px 8px rgba(22,32,31,.04),0 16px 40px rgba(22,32,31,.06);
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(160deg,#F2F6F7 0%,#E8F0F1 60%,#E3EDEF 100%);
+  color:var(--ink);font:15px/1.75 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:1000px;margin:0 auto;padding:64px 28px 100px}
+header.top{margin-bottom:44px}
+.kicker{font-size:12px;font-weight:700;letter-spacing:.18em;color:var(--brand);text-transform:uppercase}
+h1{font-size:38px;line-height:1.25;letter-spacing:-.02em;margin:12px 0 10px;font-weight:700}
+.lede{font-size:16px;color:var(--ink2);max-width:720px;margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.pill{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:12.5px;color:var(--ink2);font-weight:600}
+.pill b{color:var(--ink)}
+section{margin-top:52px}
+h2{font-size:23px;letter-spacing:-.01em;margin:0 0 6px;font-weight:700}
+h2 .num{color:var(--brand);font-size:14px;font-weight:700;letter-spacing:.08em;margin-right:10px;vertical-align:2px}
+.sub{color:var(--ink3);font-size:13.5px;margin:0 0 22px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px 28px;box-shadow:var(--sh);margin-bottom:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(max-width:760px){.grid3,.grid2{grid-template-columns:1fr}.wrap{padding:40px 18px 70px}h1{font-size:30px}}
+.verdict{border-left:4px solid var(--red);background:var(--red-soft)}
+.verdict .big{font-size:20px;font-weight:700;line-height:1.5;margin:0 0 8px}
+.verdict p{margin:0;color:var(--ink2);font-size:14.5px}
+.stat{display:flex;align-items:baseline;gap:8px}
+.stat .n{font-size:34px;font-weight:700;letter-spacing:-.03em;line-height:1}
+.stat .l{font-size:13px;color:var(--ink3)}
+.statrow{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:6px}
+@media(max-width:760px){.statrow{grid-template-columns:repeat(2,1fr)}}
+.pf{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--sh)}
+.pf .tag{display:inline-block;background:var(--brand-soft);color:var(--brand);font-size:11px;font-weight:700;letter-spacing:.1em;border-radius:6px;padding:4px 9px}
+.pf h3{font-size:18px;margin:14px 0 4px;letter-spacing:-.01em}
+.pf .who{font-size:13px;color:var(--ink3);margin:0 0 14px}
+.pf dl{margin:0;font-size:13px}
+.pf dl div{display:flex;gap:10px;padding:6px 0;border-top:1px solid var(--line)}
+.pf dt{width:64px;flex:none;color:var(--ink3)}
+.pf dd{margin:0;color:var(--ink2)}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:16px;overflow:hidden;box-shadow:var(--sh);font-size:14px}
+th,td{padding:13px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:#F7FAFA;font-size:12px;letter-spacing:.04em;color:var(--ink3);font-weight:700}
+tr:last-child td{border-bottom:0}
+td.c,th.c{text-align:center}
+.score{display:inline-block;width:26px;height:26px;line-height:26px;border-radius:8px;font-weight:700;font-size:13px}
+.s5,.s4{background:var(--brand-soft);color:var(--brand)}
+.s3{background:var(--amber-soft);color:var(--amber)}
+.s2,.s1{background:var(--red-soft);color:var(--red)}
+.badge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;border-radius:6px;padding:3px 8px;white-space:nowrap}
+.p0{background:var(--red-soft);color:var(--red)}
+.p1{background:#FBEDE0;color:#A25A16}
+.p2{background:var(--amber-soft);color:var(--amber)}
+.p3{background:var(--blue-soft);color:var(--blue)}
+.evi{background:#F7FAFA;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:12.5px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ink2);margin-top:10px;word-break:break-word}
+.def{border-left:3px solid var(--line);padding-left:18px;margin:0 0 22px}
+.def.p0x{border-color:var(--red)}.def.p1x{border-color:#D98A3C}.def.p2x{border-color:#C9A24A}.def.p3x{border-color:#7CA8BF}
+.def h3{font-size:17px;margin:0 0 6px;letter-spacing:-.01em}
+.def .src{font-size:12px;color:var(--ink3);margin:0 0 8px}
+.def p{font-size:14px;color:var(--ink2);margin:0 0 8px}
+.shots{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:8px}
+@media(max-width:760px){.shots{grid-template-columns:1fr}}
+figure{margin:0;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--sh)}
+figure img{display:block;width:100%;height:auto;background:#EDF2F2}
+figcaption{padding:12px 14px;font-size:12.5px;color:var(--ink2);line-height:1.55}
+figcaption b{color:var(--ink)}
+ul.tight{margin:8px 0 0;padding-left:20px;font-size:14px;color:var(--ink2)}
+ul.tight li{margin:5px 0}
+.ok{color:var(--brand);font-weight:700}
+.foot{margin-top:60px;padding-top:22px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink3)}
+code{background:#F1F6F6;border-radius:5px;padding:1px 5px;font-size:12.5px}
+.note{background:var(--blue-soft);border:1px solid #D6E6EE;border-radius:14px;padding:16px 18px;font-size:13.5px;color:#2C4A5A;margin-top:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="kicker">Morning Three · QA Report</div>
+  <h1>三画像完整测试报告</h1>
+  <p class="lede">对 v32 做一次真跑 + 真审：浏览器自动化实测功能链路，专家视角走查体验与价值。目标不是证明产品好，是把短板和错误挖出来。</p>
+  <div class="meta">
+    <span class="pill">版本 <b>v32</b></span>
+    <span class="pill">测试日 <b>2026-11-09</b></span>
+    <span class="pill">引擎 <b>Playwright 1.63 / Chrome</b></span>
+    <span class="pill">基线 <b>70 条 · 19 条未通过</b></span>
+    <span class="pill" style="border-color:var(--brand);color:var(--brand)">v33 复测 <b>85 条 · 0 未通过</b></span>
+    <span class="pill">截图 <b>13 张</b></span>
+  </div>
+</header>
+
+<section>
+  <div class="card verdict" style="border-left-color:var(--brand);background:var(--brand-soft);margin-bottom:12px">
+    <p class="big" style="color:var(--brand)">v33 已修复并上线：8 个缺陷中的 P0 / P1 / P2 共 10 项全部闭环。</p>
+    <p style="margin:0">同日复跑 <b>85 条断言 / 0 未通过</b>，文案护栏 <b>31 条 / 0 未通过</b>，三个画像 <code>pageerror</code> 全为空。下方保留 v32 的原始结论与缺陷清单作为基线证据；<a href="#" style="color:var(--brand);font-weight:700">第 08 节</a>是修复与复测结论。</p>
+  </div>
+  <div class="card verdict">
+    <p class="big">结论：功能主干稳，但有三个必须先修的硬伤——首次解锁白屏、夜间冷启动被收尾浮层锁死、导出备份不含晨间清单历史。</p>
+    <p>19 条未通过断言全部可归因到 8 个缺陷，没有随机失败。其中 3 个是发布前必改；其余多为一致性、可访问性与文案问题。<b>产品定位不需要为 13 岁与 55 岁两个画像改动</b>——他们不是 MRD 定义的目标用户，测试价值在于暴露通用缺陷，而不是让产品去适配所有人。</p>
+  </div>
+  <div class="statrow">
+    <div class="card"><div class="stat"><span class="n" style="color:var(--red)">3</span><span class="l">P0 阻断</span></div></div>
+    <div class="card"><div class="stat"><span class="n" style="color:#A25A16">3</span><span class="l">P1 严重</span></div></div>
+    <div class="card"><div class="stat"><span class="n" style="color:var(--amber)">4</span><span class="l">P2 体验/一致性</span></div></div>
+    <div class="card"><div class="stat"><span class="n" style="color:var(--blue)">4</span><span class="l">P3 结构性观察</span></div></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">01</span>方法与边界</h2>
+  <p class="sub">先说清楚哪些是实测、哪些是判断，避免把推演包装成用户反馈。</p>
+  <div class="grid2">
+    <div class="card">
+      <h3 style="margin:0 0 8px;font-size:17px">A · 浏览器自动化实测</h3>
+      <p style="font-size:14px;color:var(--ink2);margin:0">三个独立浏览器上下文，各自独立 localStorage；固定系统时间为 2026-11-09，分别模拟上午首访与 20:30 晚访。真实点击、真实输入、真实读取 DOM 与 computed style，覆盖首屏 → 输入 → 勾选 → 洞察 → 归档 → 价值弹窗 → 中英切换 → 19:00 后只读 → 收尾浮层 → 晚间反思门禁 → 数据导出。共 70 条断言、12 张全页截图。</p>
+      <div class="evi">复跑：node testing/audit-run.js<br>原始日志：testing/raw-log.json</div>
+    </div>
+    <div class="card">
+      <h3 style="margin:0 0 8px;font-size:17px">B · 专家认知走查</h3>
+      <p style="font-size:14px;color:var(--ink2);margin:0">六维评分、画像适配、美感与长期价值判断，是<b>我的专业评估</b>，不是用户打分。没有招募真人，报告里不出现「用户满意度」「NPS」这类编造指标。凡涉及画像心理与场景适配的结论，均标注为「走查」。</p>
+      <div class="evi">评分制：1–5 分，5 为最佳<br>标注规则：〔实测〕/〔走查〕/〔代码〕</div>
+    </div>
+  </div>
+  <div class="note"><b>一个诚实的前提：</b>用固定时间模拟真实作息，能暴露时间闸门与状态机问题，但无法复现「连续 30 天真实使用」的留存曲线。长期价值一章的结论属于走查，不是实测留存数据。</div>
+</section>
+
+<section>
+  <h2><span class="num">02</span>三个画像</h2>
+  <p class="sub">差异体现在设备、首次访问时间、历史数据密度与输入内容；其余条件完全一致。</p>
+  <div class="grid3">
+    <div class="pf">
+      <span class="tag">PROFILE A</span>
+      <h3>24 岁 · 男性 · 职场初任</h3>
+      <p class="who">最贴近 MRD 目标用户</p>
+      <dl>
+        <div><dt>设备</dt><dd>iPhone 14 Pro · 393×852</dd></div>
+        <div><dt>首访</dt><dd>08:12（通勤前）</dd></div>
+        <div><dt>数据</dt><dd>8 天，反复出现「方案初稿」</dd></div>
+        <div><dt>晚间</dt><dd>20:30 收尾</dd></div>
+        <div><dt>场景</dt><dd>想把散乱的工作理出主次</dd></div>
+      </dl>
+    </div>
+    <div class="pf">
+      <span class="tag">PROFILE B</span>
+      <h3>55 岁 · 女性 · 家庭妇女</h3>
+      <p class="who">低频、非目标导向的日常</p>
+      <dl>
+        <div><dt>设备</dt><dd>iPhone · 390×844（默认字号）</dd></div>
+        <div><dt>首访</dt><dd>09:40（买菜回来）</dd></div>
+        <div><dt>数据</dt><dd>6 天里 3 天有效 + 2 天空记录</dd></div>
+        <div><dt>晚间</dt><dd>20:30 收尾</dd></div>
+        <div><dt>场景</dt><dd>家务、照护、重复且没有「完成」</dd></div>
+      </dl>
+    </div>
+    <div class="pf">
+      <span class="tag">PROFILE C</span>
+      <h3>13 岁 · 男性 · 初中生</h3>
+      <p class="who">放学后才有空 · 非目标用户</p>
+      <dl>
+        <div><dt>设备</dt><dd>Android 中端机 · 360×800</dd></div>
+        <div><dt>首访</dt><dd>20:30（晚自习后）</dd></div>
+        <div><dt>数据</dt><dd>2 天，数学卷子 / 物理作业</dd></div>
+        <div><dt>晚间</dt><dd>21:10 复访</dd></div>
+        <div><dt>场景</dt><dd>只想记下今天要交什么</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">03</span>六维评估矩阵</h2>
+  <p class="sub">分数为专家走查判断〔走查〕；括注中的断言 ID 为实测支撑〔实测〕。5 = 优秀，1 = 不可用。</p>
+  <table>
+    <thead><tr><th>维度</th><th class="c">A · 24 岁</th><th class="c">B · 55 岁</th><th class="c">C · 13 岁</th><th>关键依据</th></tr></thead>
+    <tbody>
+      <tr><td><b>功能</b></td><td class="c"><span class="score s4">4</span></td><td class="c"><span class="score s3">3</span></td><td class="c"><span class="score s1">1</span></td><td>输入即存、顺延、归档、洞察、中英切换全通过；C 晚访被强制收尾，核心功能完全不可达（F-03/04/06–09）</td></tr>
+      <tr><td><b>可用性</b></td><td class="c"><span class="score s4">4</span></td><td class="c"><span class="score s2">2</span></td><td class="c"><span class="score s1">1</span></td><td>最小 11px、8 处 &lt;13px 淡字（F-05）；收尾弹层只有「推进了」一个大按钮，无显式「没推进」（E-03）</td></tr>
+      <tr><td><b>体验与互动</b></td><td class="c"><span class="score s3">3</span></td><td class="c"><span class="score s2">2</span></td><td class="c"><span class="score s1">1</span></td><td>输入瞬间无反馈，650ms 后才弹「已保存」（F-08）；三画像同一天收到完全相同的一句策展提示，无个性化</td></tr>
+      <tr><td><b>界面与美感</b></td><td class="c"><span class="score s5">5</span></td><td class="c"><span class="score s3">3</span></td><td class="c"><span class="score s4">4</span></td><td>极简、冷调、无 emoji、卡片层次干净，首页去重后只剩一句提示 + 一句回顾（F-02）；扣分项全在小字对比度与暗夜下的可读性</td></tr>
+      <tr><td><b>开始使用价值</b></td><td class="c"><span class="score s3">3</span></td><td class="c"><span class="score s2">2</span></td><td class="c"><span class="score s1">1</span></td><td>白天首访路径顺畅；晚访首屏直接是「今天空白，收个尾」，连写一句的机会都没有（C-01 截图）</td></tr>
+      <tr><td><b>长期价值</b></td><td class="c"><span class="score s2">2</span></td><td class="c"><span class="score s2">2</span></td><td class="c"><span class="score s1">1</span></td><td>导出备份不含晨间清单历史（G-04）、前 7 天无数据入口（G-05）、首次解锁白屏（G-06）；「日复一日录入」的信任底座没兜住</td></tr>
+    </tbody>
+  </table>
+  <div class="note"><b>不要误读这张表。</b>B 与 C 的低分主要来自「非目标用户」的错配，不是产品该去补的功能。真正跨画像通用的问题是：字号、夜间冷启动、收尾弹层语义、数据备份。改这四项，三个人都受益；为 13 岁做青少年模式、为 55 岁做家务模板，只会毁掉极简定位。</div>
+</section>
+
+<section>
+  <h2><span class="num">04</span>实测结果摘要</h2>
+  <p class="sub">70 条断言，51 通过 / 19 未通过。19 条全部指向下表 8 个具体缺陷，无随机失败。</p>
+  <table>
+    <thead><tr><th>画像</th><th class="c">通过</th><th class="c">未通过</th><th>未通过集中在</th></tr></thead>
+    <tbody>
+      <tr><td>A · 24 岁</td><td class="c">19</td><td class="c" style="color:var(--red);font-weight:700">4</td><td>首次解锁白屏、首页解锁状态不同步、导出缺主数据、数据入口不可达</td></tr>
+      <tr><td>B · 55 岁</td><td class="c">19</td><td class="c" style="color:var(--red);font-weight:700">5</td><td>空白日被算作输入、导出缺主数据、数据入口不可达、收尾弹层语义</td></tr>
+      <tr><td>C · 13 岁</td><td class="c">13</td><td class="c" style="color:var(--red);font-weight:700">10</td><td>夜间首访 6 条链路全部阻断 + 收尾浮层 + 导出缺主数据</td></tr>
+    </tbody>
+  </table>
+  <div class="card" style="margin-top:16px">
+    <h3 style="margin:0 0 10px;font-size:16px">稳定通过的部分（不要改坏）</h3>
+    <ul class="tight">
+      <li><span class="ok">首页去重生效</span>：一句今日提示 + 一句长期洞察，无重复回顾、无历史词泄漏（F-02，三画像全通过）</li>
+      <li><span class="ok">录入链路顺畅</span>：输入即存、写完自动露出下一行、勾选即时确认（F-06/07/08/09，A/B 全通过）</li>
+      <li><span class="ok">回看链路完整</span>：洞察、折叠的最近记录、归档、价值主张弹窗、中英切换全部可达（S-01~04 / I-01）</li>
+      <li><span class="ok">阶段控制符合设计</span>：未满 7 天正确隐藏晚间反思入口（E-02，B/C 通过）；19:00 后进入只读（E-01）</li>
+      <li><span class="ok">零 JS 异常</span>：除 A 首次解锁瞬间外，所有页面无报错</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">05</span>缺陷清单</h2>
+  <p class="sub">每条带证据来源。〔实测〕= 断言 ID / 截图，〔代码〕= 文件行号，〔走查〕= 专家判断。</p>
+
+  <div class="card">
+    <div class="def p0x">
+      <h3><span class="badge p0">P0-1</span>　首次解锁「晚间反思」必定白屏</h3>
+      <p class="src">〔实测〕G-06 · A-04-gate.png　〔代码〕success.html:796–798, 821–830</p>
+      <p>解锁那一刻调用 <code>viewWhisper(u)</code>，它遍历 <code>DB.days</code>（晚间记录）取首末两帧。但刚解锁的用户必然还没有任何晚间记录，<code>ks=[]</code> → <code>frame(undefined)</code> → 读 <code>r.items</code> 抛 <code>TypeError: Cannot read properties of undefined (reading 'items')</code>，渲染中断，只剩页头页脚。A 画像截图整片空白。</p>
+      <p><b>影响：</b>用户按规则坚持 7 天、终于等到解锁，第一次打开看到空页面。这是全用户必现，不是边缘情况。</p>
+      <div class="evi">gateState: open　pageerror: TypeError: Cannot read properties of undefined (reading 'items')　截图 A-04-gate.png</div>
+    </div>
+
+    <div class="def p0x">
+      <h3><span class="badge p0">P0-2</span>　19:00 后首次访问，核心功能被收尾浮层完全锁死</h3>
+      <p class="src">〔实测〕F-03/04/06/07/08/09、E-04 · C-01-first.png　〔代码〕index.html:1485–1491, 1162–1166</p>
+      <p><code>mustCheck()</code> 只判断 <code>phaseOf(todayKey())==='late'</code>，不看用户是否用过。20:30 首次打开：全屏遮罩 + 唯一按钮「今天空白，收个尾」；背景模糊不可读；当日清单只读、无输入框、无勾选；因为当天没有任务，连「一句话（可选）」输入框都不渲染。测得的 6 条输入链路断言全部阻断。</p>
+      <p><b>影响：</b>放学后 / 加班后 / 睡前才遇到产品的人，第一天完全用不了。这不是「体验不好」，是<b>冷启动直接失败</b>。与「今天空白也算数」的初衷正面冲突。</p>
+      <div class="evi">首屏 overlayButtons: ["今天空白，收个尾"]　inputPlaceholders: []　h1-sub: "要事已锁定 · 去收个尾"　截图 C-01-first.png</div>
+    </div>
+
+    <div class="def p0x">
+      <h3><span class="badge p0">P0-3</span>　「导出备份」不含晨间清单历史，备份承诺是空的</h3>
+      <p class="src">〔实测〕G-04（三画像全失败）　〔代码〕success.html:1364–1369, 520–523</p>
+      <p><code>exportJSON()</code> 只打包 <code>{days:DB.days, unlock}</code>，即晚间反思自己的记录，<b>完全不含</b> <code>morning-three.v1</code> 里的晨间三件事。A 画像有 8 天晨间数据，导出文件仅 98 字节、0 天、不含「方案初稿」。而数据页文案写着「换设备或清缓存会丢，建议定期导出」。</p>
+      <p><b>影响：</b>用户以为备份了全部，实际最重要的记录一条没存。这是信任级缺陷——之前定过的原则「日复一日录入却无法保存会毁掉信任」，正好被这里击穿。</p>
+      <div class="evi">A: morningDayCount=8 / exportedDayCount=0 / exportBytes=98 / hasMorningWords=false　B: 6 / 0 / 66　C: 2 / 0 / 66</div>
+    </div>
+
+    <div class="def p1x">
+      <h3><span class="badge p1">P1-1</span>　「一周内输入过」把空白日算作输入</h3>
+      <p class="src">〔实测〕G-02、B-04-gate.png　〔代码〕success.html:414–425, 393–397；index.html:905–918</p>
+      <p>判据写的是 <code>days[k].tasks || days[k].checkin</code>，而 <code>tasks:[]</code> 空数组是 truthy。用户打开页面、写了又删光、或点过勾选都会留下空记录，全被计为「那天输入过」。B 画像窗口内真实输入 3 天，页面显示 <b>5 / 4</b>，还同时写着「还差 1 天满 7 天」，自相矛盾。同一产品里 <code>whisperCard()</code> 用 <code>taskList(r).length</code> 严格过滤，两处判据不一致。</p>
+      <p><b>影响：</b>解锁条件可被空白操作灌水，提前开门；门禁数字误导用户。</p>
+      <div class="evi">inflatedDays: ["2026-11-04","2026-11-06"]　winInputs: 5（真实 3）　门禁页显示「5 / 4」</div>
+    </div>
+
+    <div class="def p1x">
+      <h3><span class="badge p1">P1-2</span>　首页解锁状态与门禁真值不同步</h3>
+      <p class="src">〔实测〕G-03　〔代码〕index.html:903, 1099–1116；success.html:437–474</p>
+      <p>首页 <code>sdOpen()</code> 读的是 <code>success-diary.v1</code> 的 <code>unlock.at</code>，而该标记<b>只有进入 success.html 才会写入</b>。A 已满足全部条件（门禁判定 <code>open</code>），首页却仍显示「过去 7 天输入了 <b>5/4</b> 次，不连续也算」——分子大于分母，看起来像还没达标。用户必须多点一次才开门。</p>
+      <div class="evi">gateState: open　homeSdCard: "晚间反思 / 睡前记下今天推进了什么 · 一件就够 · 过去 7 天输入了 5/4 次，不连续也算"</div>
+    </div>
+
+    <div class="def p1x">
+      <h3><span class="badge p1">P1-3</span>　未解锁用户没有任何数据 / 导出入口</h3>
+      <p class="src">〔实测〕G-05（三画像全失败）　〔代码〕success.html:1048, 1088, 802</p>
+      <p>「数据 · 导出 / 导入」按钮只存在于成就墙视图（<code>viewWall</code>），而成就墙要解锁后才看得到；门禁页没有该入口。实测三个画像在当前视图均无法到达。最需要备份的正是前 7 天的新用户。</p>
+    </div>
+
+    <div class="def p2x">
+      <h3><span class="badge p2">P2-1</span>　收尾弹层没有显式的「没推进」操作</h3>
+      <p class="src">〔实测〕E-03（三画像全失败）、E-04（C 失败） · A-03-evening.png　〔代码〕index.html:1500–1513；字典 <code>ov_undone</code> 定义未使用</p>
+      <p>每条任务只有一个大绿按钮「推进了」，「没推进会带到明天」全靠上方小字说明暗示；误点后无法撤销。字典里明明有 <code>ov_undone:'没推进'</code> 却没渲染。空白日收尾连一句话输入框都没有。对不熟悉产品语义的人，这是明显的认知负荷。</p>
+    </div>
+
+    <div class="def p2x">
+      <h3><span class="badge p2">P2-2</span>　可访问性：11px 起的小字与低对比度</h3>
+      <p class="src">〔实测〕F-05 · B-01-first.png　〔代码〕index.html:110–186</p>
+      <p>全页最小字号 <b>11px</b>，A/B 首屏各有 <b>8 处</b>文字小于 13px：副标题、倒计时、页脚提示、标签、品牌副名。输入框 16px 达标（iOS 不会自动缩放），但周围全是淡灰 12px。暗夜主题下对比度进一步下降。55 岁画像这里是硬伤。</p>
+    </div>
+
+    <div class="def p2x">
+      <h3><span class="badge p2">P2-3</span>　文案调性硬约束有盲区，且倒计时制造压力</h3>
+      <p class="src">〔实测〕B-01-first.png　〔代码〕index.html:499, 493；value.html:76</p>
+      <p>v30 定过「不提没白过 / 不追问压力」，但首页 <code>lock_hint</code> 仍是「要事 = 今天结束时会让你觉得<b>没白过</b>的那件事」；<code>smoke-echo-tone.js</code> 只检查策展问句库，护栏覆盖不到字典其它字段。同时「距 18:00 收尾还有 8 小时 20 分」是持续倒计时，与「不打扰 / 空白也算数」的哲学相冲。</p>
+    </div>
+
+    <div class="def p2x">
+      <h3><span class="badge p2">P2-4</span>　核心哲思句与解锁规则文案不一致</h3>
+      <p class="src">〔代码〕index.html:567, 499；value.html:76；success.html:536–537</p>
+      <p>价值卡写「你不书写，世界就会<b>覆盖你的痕记</b>」，首次 briefing 写「你不书写，世界就会<b>替你书写</b>」——同一句核心主张两种说法。首页写「输入一周后解锁晚间反思」，真实规则是「满 7 天 + 过去 7 天输入 ≥4 次（可不连续）+ 顺延 3 天必开」，预期落差明显。</p>
+    </div>
+
+    <div class="def p3x">
+      <h3><span class="badge p3">P3</span>　结构性观察（不是 bug，是留存风险）</h3>
+      <p class="src">〔实测〕F-08 / 三画像 echo 一致　〔走查〕</p>
+      <ul class="tight">
+        <li><b>即时回报仍然极弱</b>：输入瞬间无反馈，650ms 后才弹一个 1.9 秒消失的「已保存」。用户反馈的「只有输出没有输入」没被真正解决。</li>
+        <li><b>策展提示全用户同句</b>：三个画像同一天都收到「今天的天气，适合做点什么？」——无个性化，制造不了「它记得我」的期待。</li>
+        <li><b>单点存储</b>：无账号、无跨设备同步，公司电脑与手机数据不通；提醒要靠手动配 iOS 快捷指令 / Android 闹钟。</li>
+        <li><b>画像错配</b>：13 岁的作息（19:00 锁定撞晚自习）、「要事 / 推进 / 顺延」职场词、哲思价值主张；55 岁的目标导向三件事框架不贴合重复性家务。<b>建议明确「不服务」，不是加功能适配。</b></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">06</span>截图证据</h2>
+  <p class="sub">全部为真实浏览器运行截图，非设计稿。路径相对本报告所在目录。</p>
+  <div class="shots">
+    <figure><img src="shots/C-01-first.png" alt="13岁画像20:30首访"><figcaption><b>C-01 · 夜间首访（P0-2）</b>　全屏遮罩，唯一按钮「今天空白，收个尾」；背景模糊不可读，无输入框、无一句话输入。</figcaption></figure>
+    <figure><img src="shots/A-04-gate.png" alt="A画像解锁后空白页"><figcaption><b>A-04 · 首次解锁白屏（P0-1）</b>　「已解锁」标签与半条进度条之下，整片内容区空白，伴随 JS 异常。</figcaption></figure>
+    <figure><img src="shots/A-03-evening.png" alt="收尾弹层"><figcaption><b>A-03 · 收尾弹层（P2-1）</b>　只有一个「推进了」大按钮；「没推进的会带到明天」仅作说明文字，无显式操作。</figcaption></figure>
+    <figure><img src="shots/B-01-first.png" alt="55岁画像首屏"><figcaption><b>B-01 · 首屏可读性（P2-2/P2-3）</b>　视觉极简干净，但页脚两行 12px 淡字、右侧倒计时、「没白过」措辞均在此屏可见。</figcaption></figure>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">07</span>改进计划</h2>
+  <p class="sub">完整分级、改法与验收标准见同目录 <code>改进计划.md</code>。这里只给顺序。</p>
+  <div class="card">
+    <ul class="tight">
+      <li><b>第 1 批 · 发布前必做（P0）</b>：解锁白屏兜底 → 夜间冷启动不强制收尾 → 导出/导入合并两处数据并把入口提到首页。</li>
+      <li><b>第 2 批 · 本版修（P1）</b>：抽统一的 <code>hasInput(r)</code> 判据 → 首页解锁状态由真值计算而非等另一页写标记 → 门禁页无条件给数据入口 → 修「5/4」显示。</li>
+      <li><b>第 3 批 · 下个迭代（P2）</b>：字号下限 13px、去掉倒计时、收尾弹层二选一且可撤销、调性护栏扩到全站字典、统一核心句与解锁文案。</li>
+      <li><b>第 4 批 · 验证后再定（P3）</b>：即时价值与回响个性化、跨设备、画像适配——先做小样本实验，别直接改产品。</li>
+    </ul>
+    <div class="note"><b>红线（不改初衷）：</b>不加积分 / 等级 / 连续天数惩罚，不做社交排行与好友对比，不推送轰炸，不把回看做成成就展示墙，不为非目标画像做专用模式。所有修补只允许减少认知负荷，不允许增加。</div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">08</span>v33 修复与复测结论</h2>
+  <p class="sub">2026-11-09 同日完成：三个 P0、三个 P1、四个 P2 全部修复；P3 按原计划不进产品。以下均为真实复跑结果，不是推演。</p>
+
+  <div class="card">
+    <div class="statrow" style="margin-bottom:20px">
+      <div class="card" style="margin:0"><div class="stat"><span class="n" style="color:var(--brand)">3/3</span><span class="l">P0 阻断已修</span></div></div>
+      <div class="card" style="margin:0"><div class="stat"><span class="n" style="color:var(--brand)">3/3</span><span class="l">P1 严重已修</span></div></div>
+      <div class="card" style="margin:0"><div class="stat"><span class="n" style="color:var(--brand)">4/4</span><span class="l">P2 体验已修</span></div></div>
+      <div class="card" style="margin:0"><div class="stat"><span class="n" style="color:var(--blue)">4</span><span class="l">P3 仅做实验</span></div></div>
+    </div>
+    <p style="font-size:14px;color:var(--ink2);margin:0 0 18px">
+      断言从 70 条扩到 85 条（新增 15 条：备份回环、数据入口可达、字号下限、冷启动文案、解锁规则一致），原 19 条 FAIL 全部转 PASS。
+      <b>没有靠删断言或放宽判定刷绿</b>：F-05 从「发现小字算通过」改成「无小字才算通过」；G-04 从自己拼一份假 payload 改成真实调用 <code>backupPayload()</code>；G-03 增加了「必须显示『已经为你敞开』」的反向校验。
+      这三条原本就是测试脚本自身的缺陷，一并修正。
+    </p>
+    <table>
+      <thead><tr><th style="width:88px">缺陷</th><th>根因与修法</th><th style="width:190px">验收</th></tr></thead>
+      <tbody>
+        <tr><td><b>P0-1</b></td><td>解锁低语页读错了库：拿空的晚间记录去取首末帧。改为读晨间清单 <code>mLoad()</code>，并对 <code>frame(k)</code> 做兜底；无痕迹时直接进今日页。顺带让「这 7 天，世界没有替你写」第一次有了真实内容。</td><td>G-06 三画像零异常；A-04 截图首帧 10/31「方案初稿」、末帧 11/9「把方案发给导师看」</td></tr>
+        <tr><td><b>P0-2</b></td><td>19:00 后只要今日空白就只读 + 弹收尾浮层，形成死路。引入会话级 <code>COLD_SESSION</code>（18:00 后 + 今日空白 + 未收尾）：此状态下仍给可写输入框，本次会话不弹收尾；刷新后若今日已有内容，老用户流程原样保留。</td><td>C 画像 F-03/04/06/07/08/09 全通过；A/B 晚间 E-01 仍通过</td></tr>
+        <tr><td><b>P0-3</b></td><td>导出只带晚间记录。抽 <code>backupPayload()</code> 统一备份包（<code>morning</code> + <code>evening</code> + 版本/时间），导入同时兼容新包与旧格式；文件名改 <code>morning-three-backup-*.json</code>。</td><td>G-04 真实调用导出函数；G-08 清空后再导入，晨间历史条数完整回来</td></tr>
+        <tr><td><b>P1-1</b></td><td>两页各写一套判据，空数组被当成输入。统一 <code>hasInput(r)</code>（真实文字 / 归档 / 补记），六个调用点全部对齐。</td><td>B 画像 G-02 通过，<code>inflatedDays</code> 为空；门禁不再出现「5 / 4」</td></tr>
+        <tr><td><b>P1-2</b></td><td>首页解锁状态依赖 success.html 写过标记。改为按同一套规则算真值：满 7 天且（4 次或顺延到期）即视为已开，文案「已经为你敞开」。</td><td>A 画像 G-03 通过（门禁判定 open 时首页不再说「还差」）</td></tr>
+        <tr><td><b>P1-3</b></td><td>数据入口藏在解锁后的成就墙。<code>view()</code> 改为单出口并常驻一个数据入口，任何状态（含 18:00 前、未解锁）可达；洞察页底部也加了直达链接 <code>success.html?view=data</code>。</td><td>G-05 三画像通过；G-07 洞察页入口可达；全新用户数据页零报错</td></tr>
+        <tr><td><b>P2-1</b></td><td>收尾弹层每条任务补回「推进了 / 没推进」二选一（原本 CSS 就留了两列），「一句话（可选）」改为空白日也常驻，误点可再点取消。</td><td>E-03 / E-04 三画像通过</td></tr>
+        <tr><td><b>P2-2</b></td><td>全站可见文字下限提到 13px（index 43 处 / success 16 处），浅色与暗夜 <code>--ink3</code> 对比度同步提高。</td><td>F-05 三画像 <code>minFontPx ≥ 13</code>、<code>under13Count = 0</code>；55 岁画像截图复核</td></tr>
+        <tr><td><b>P2-3 / P2-4</b></td><td>删掉「距 18:00 收尾还有 X」倒计时及死函数；「没白过」换成正向表达；briefing 核心句与 value.html 统一为「你不书写，世界就会覆盖你的痕记」；解锁说明写明「至少 4 次、不必连续」。调性护栏从策展库扩到全站字典与数据契约。</td><td>F-10 / F-11 通过；<code>smoke-echo-tone.js</code> 31 条全通过</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3 style="margin:0 0 12px;font-size:17px">截图人工走查追加修掉的 4 个问题</h3>
+    <p class="sub" style="margin-bottom:14px">断言只能证明「没坏」，证明不了「不啰嗦」。以下 4 处是逐张看图后补修的，均已加进护栏或断言。</p>
+    <ul class="tight">
+      <li><b>夜间冷启动文案自相矛盾</b>：20:30 首访时页面一边说「明天来写第一笔」「19:00 前可改」，一边又给了输入框。改为「今晚 · 现在写下，也算今天」，副标题与横幅留白。</li>
+      <li><b>同义句说了三遍</b>：横幅、阶段提示、副标题都在说「现在写下」。砍到只剩阶段行一句，F-12 直接断言「现在写下」在首屏只出现 1 次。</li>
+      <li><b>数据页统计口径歧义</b>：只有晨间记录的用户看到「记录天数 0」。改为晨间 ∪ 晚间并集（同一天只算一次），导出行另标「晨间 X 天 · 晚间 Y 天」。</li>
+      <li><b>返回入口重复</b>：数据页原本有「返回晨间清单」大按钮 + 页脚胶囊，修 P1-3 时又加了第三个。合并为一个「‹ 晚间反思」+ 常驻页脚胶囊。</li>
+    </ul>
+    <div class="note" style="margin-top:18px"><b>刻意没做的事：</b>P3 四项（即时回报、回响个性化、跨设备、画像适配）一个都没进产品。13 岁与 55 岁画像的低分来自定位错配，不是功能缺失；修的是通用缺陷，不动 MRD 定义的 25–40 岁知识工作者定位。首页仍然只有「一句提示 + 今日清单 + 一句洞察」，没有新增卡片、积分、连续天数或推送。</div>
+  </div>
+
+  <div class="card" style="border-left:4px solid var(--amber);background:var(--amber-soft)">
+    <p style="margin:0;font-size:14px;color:var(--ink2)"><b>剩余风险：</b>全程无真人参与、无 30 天真实留存数据；「没黏性、两天弃用」这条原始用户反馈，本版只修了反馈时序的结构性阻塞（白屏、锁死、备份失信、状态漂移），并没有证明留存会改善。下一次改动前请先备份 v33 稳定版；任何 P3 改动须先跑 10 人 × 14 天小样本，看第 3 天回访率，不提升就砍掉。</p>
+  </div>
+</section>
+
+<div class="foot">
+  morning-three · 测试报告 v1.1（v32 基线 + v33 复测）· 2026-11-09<br>
+  可复跑资产：<code>testing/audit-run.js</code>（85 条断言）· <code>testing/raw-log.json</code>（原始日志）· <code>testing/shots/</code>（13 张截图）· <code>smoke-echo-tone.js</code>（31 条护栏）· <code>testing/改进计划.md</code><br>
+  方法局限：无真人参与、无 30 天真实留存数据；六维评分与画像适配结论为专家走查。
+</div>
+
+</div>
+</body>
+</html>
