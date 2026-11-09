@@ -1335,36 +1335,40 @@ function persistCard(){
    晨间回响 —— 应用先开口，而不是只索取
    冷启动（无数据）：从策展问句库取一句，按年积日稳定轮换
    有数据后：从你过去的某一天借一句话回来，制造「它记得我」的回响
-   不审判、不评分，用的是你自己的字。
+
+   文案调性（硬约束）：温暖、陪伴、正能量、希望。
+   不追问困扰与压力，不提「没做完 / 没白过 / 被挤掉」，不给状态贴标签，
+   不审判、不评分、不要求交代结果。
+   冷启动问句不得假设用户已有任何历史记录 —— 只面向此刻、今天、明天。
    ========================================================= */
 var ECHO_BANK = {
   zh:[
-    '如果今天只做成一件、晚上觉得没白过的事，会是什么？',
-    '此刻，有什么事压在你心上吗？',
-    '昨天那个没做完的念头，今天还想接着吗？',
+    '今天，想从哪一件小事开始？',
+    '今天的天气，适合做点什么？',
+    '今天，有没有一件事你愿意慢慢做？',
     '今天，你想对未来的自己留一句话吗？',
-    '有什么事，你其实比自己以为的更在意？',
+    '有没有什么，最近悄悄变好了一点？',
     '如果今晚有人问你「今天好吗」，你会先说起哪件？',
     '今天有没有哪个瞬间，是你昨天没料到的？',
-    '有什么一直想做、却总被别的事挤掉的事？',
-    '此刻的你，是松一点的，还是紧一点的？',
+    '有什么小事，一直想试试，今天刚好可以？',
+    '今天，有什么事让你觉得被好好对待了？',
     '今天，你想记住点什么？',
     '有什么事，你希望明天醒来时已经在往前走了？',
     '如果今天可以只照顾好一件事，会是什么？'
   ],
   en:[
-    'If you could do just one thing today that would make tonight feel worthwhile, what would it be?',
-    'Right now, is something weighing on you?',
-    'That unfinished thought from yesterday — do you want to pick it up today?',
-    'Is there a word you want to leave for the future you?',
-    'What do you care about more than you let on?',
-    'If someone asked “how was your day” tonight, what would you say first?',
-    'Was there a moment today you did not expect yesterday?',
-    'What have you kept meaning to do, always bumped by something else?',
-    'Right now, are you a little looser, or a little tighter?',
+    'What small thing would you like to start with today?',
+    'What does today feel right for?',
+    'Is there something today you would like to take slowly?',
+    'Is there a line you would like to leave for the future you?',
+    'Has anything quietly gotten a little better lately?',
+    'If someone asked “how was your day” tonight, what would you mention first?',
+    'Was there a moment today you did not see coming?',
+    'Something small you have wanted to try — could today be the day?',
+    'Was there anything today that made you feel well looked after?',
     'What do you want to remember from today?',
     'What do you hope is already moving forward when you wake tomorrow?',
-    'If you could only take care of one thing today, what would it be?'
+    'If you could take care of just one thing today, what would it be?'
   ]
 };
 /* 有记录的日（升序），复用统一的「有痕迹」判据 */
@@ -1392,9 +1396,10 @@ function buildEcho(k){
   var w = echoSubject(k); if(!w) return null;
   var d = parseYmd(k), diff = Math.round((new Date(ymd(new Date())) - d)/86400000);
   if(diff <= 3){
+    /* 只轻轻提起那件事，不追问推进结果 —— 陪伴，不是查账 */
     return (LANG==='zh'
-      ? '几天前你写下「'+w+'」。它后来怎样了？'
-      : 'A few days ago you wrote “'+w+'”. How did it go?');
+      ? '几天前你写下「'+w+'」。今天又想起它了。'
+      : 'A few days ago you wrote “'+w+'”. It came to mind again today.');
   }
   return (LANG==='zh'
     ? diff+' 天前，你在意的是「'+w+'」。今天还惦记吗？'
