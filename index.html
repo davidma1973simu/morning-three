@@ -273,17 +273,41 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .cloud{display:flex;flex-wrap:wrap;gap:9px 13px;align-items:baseline;justify-content:center;padding:8px 2px 2px}
 .cloud span{color:var(--ink);line-height:1.25}
 .cloud span.hot{color:var(--brand-txt);font-weight:700}
-/* 词云卡内：给未来留的虚线区 */
-.future-box{margin-top:14px;height:72px;border:1.5px dashed var(--line);border-radius:14px}
-/* 最近记录：折叠坍缩，默认收起 */
-.rec-det{overflow:hidden}
-.rec-det>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;
+.cloud span.soft{color:var(--ink3);font-weight:500}
+/* 最近记录：折叠坍缩，默认收起；展开后是全部记录的日历 */
+.rec-card{overflow:hidden}
+.rec-head{display:flex;align-items:center;justify-content:space-between;cursor:pointer;
   font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--ink3);text-transform:uppercase;margin:0;padding:0}
-.rec-det>summary::-webkit-details-marker{display:none}
 .rec-h{flex:1}
 .rec-caret{font-size:18px;line-height:1;color:var(--ink3);transition:transform .2s ease;transform:rotate(0deg)}
-.rec-det[open] .rec-caret{transform:rotate(90deg)}
-.rec-body{margin-top:4px}
+.rec-head.open .rec-caret{transform:rotate(90deg)}
+.rec-body{margin-top:10px}
+/* 日历：全部记录按日查看 */
+.cal{margin-top:2px}
+.cal-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.cal-m{font-size:14px;font-weight:700;color:var(--ink);letter-spacing:.02em}
+.cal-nav{width:30px;height:30px;border:1px solid var(--line);border-radius:9px;background:var(--card);
+  color:var(--ink2);font-size:17px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.cal-nav:active{background:var(--fill)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-dow{margin-bottom:6px}
+.cal-dow-c{text-align:center;font-size:11px;color:var(--ink3);font-weight:600}
+.cal-cell{position:relative;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;
+  font-size:13px;color:var(--ink2);border-radius:9px}
+.cal-cell.empty{visibility:hidden}
+.cal-cell.has{cursor:pointer;color:var(--ink);font-weight:600}
+.cal-cell.has:active{background:var(--fill)}
+.cal-cell.today{box-shadow:inset 0 0 0 1.5px var(--brand-line)}
+.cal-cell.sel{background:var(--brand);color:var(--on);font-weight:700}
+.cal-cell.sel .cal-dot{background:var(--on)}
+.cal-d{line-height:1}
+.cal-dot{position:absolute;bottom:5px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--brand-txt)}
+.cal-hint{font-size:13px;color:var(--ink3);line-height:1.6;margin-top:12px;text-align:center}
+.cal-det{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.cal-det-d{font-size:13px;color:var(--sub);margin-bottom:8px}
+.cal-det-sec{font-size:12px;font-weight:700;color:var(--ink3);letter-spacing:.08em;text-transform:uppercase;margin:10px 0 5px}
+.cal-it{font-size:15px;line-height:1.5;padding:2px 0}
+.cal-done{color:var(--brand-txt);font-weight:700;margin-left:4px}
 .sec-t2{font-size:13px;color:var(--ink3);margin-bottom:9px}
 #instRoot{position:fixed;inset:0;z-index:80;display:none}
 #instRoot.on{display:block}
@@ -529,6 +553,9 @@ var T = {
     demo_tag:'示例',
     rec_t:'最近记录',
     rec_ok:'已收尾', rec_no:'空白', rec_empty:'—',
+    cal_hint:'选一天，看看那天写了什么',
+    cal_plan:'当天写下',
+    cal_eve:'晚间反思',
     sd_title:'晚间反思', sd_sub:'睡前记下今天推进了什么 · 一件就够',
     sd_lock:'未解锁 · 一周内输入至少 4 次（可不连续）',
     sd_left:'还差 {n} 天满 7 天', sd_seal:'这一周写下了 {n} 天 · 满 4 天就为你敞开',
@@ -663,6 +690,9 @@ var T = {
     demo_tag:'sample',
     rec_t:'Recent',
     rec_ok:'closed', rec_no:'blank', rec_empty:'—',
+    cal_hint:'Pick a day to see what you wrote',
+    cal_plan:'Planned that day',
+    cal_eve:'Evening reflection',
     day_unit:'d',
     toast_saved:'Saved',
     tick_on:'Advanced — one step forward',
@@ -874,14 +904,14 @@ function streak(){
 /* =========================================================
    状态
    ========================================================= */
-var S = { view:'today', period:'day', picks:[], note:'', lateOpen:false };
+var S = { view:'today', period:'day', picks:[], note:'', lateOpen:false, archMonth:null, archDay:null, recOpen:false };
 var ONBOARD = false;   /* 首次关闭 briefing 后触发：帮全新用户直接落到「写第一笔」 */
 
 /* =========================================================
    渲染：主壳
    ========================================================= */
 function render(){
-  var html = header() + seg() + (S.view==='today' ? echoLine()+viewToday()+whisperCard()+sdCard()+valueLink() : (S.view==='archive' ? viewArchive() : viewStats()));
+  var html = header() + seg() + (S.view==='today' ? echoLine()+viewToday()+whisperCard()+sdCard()+valueLink() : viewStats());
   document.getElementById('shell').innerHTML = html;
   bindShell();
   renderOverlay();
@@ -1096,12 +1126,12 @@ function cloudCard(){
   var h = '<section class="card"><div class="sec-t">'+esc(t('cw_t'))+'</div>'+
     '<div class="sec-t2">'+esc(t('cw_sub'))+'</div><div class="cloud">';
   ws.forEach(function(x,i){
-    var sz = (max===min) ? 15 : Math.round(13 + (x.n-min)/(max-min)*7);
-    h += '<span class="'+(i<3?'hot':'')+'" style="font-size:'+sz+'px">'+esc(x.w)+'</span>';
+    var ratio = (max===min) ? 1 : (x.n-min)/(max-min);
+    var sz = Math.round(15 + ratio*19);          /* 15–34px，频次差一眼可见 */
+    var cls = i<3 ? 'hot' : (ratio<0.5 ? 'soft' : '');
+    h += '<span class="'+cls+'" style="font-size:'+sz+'px">'+esc(x.w)+'</span>';
   });
   h += '</div>';
-  /* 同一张卡里给未来留个家：总结 / 鼓励 / 语义提醒以后出现在这里 */
-  h += '<div class="future-box"></div>';
   return h+'</div></section>';
 }
 function sdCard(){
@@ -1416,7 +1446,6 @@ function viewStats(){
   h += persistCard();           /* 坚持：用了几天 vs 没用几天 + 推进确认累计 —— 只看你是否天天来 */
   h += cloudCard();             /* 反复出现的事：一张卡就够，数据统计折成淡字贴在卡内 */
   h += recentCard();
-  h += '<div class="arch-go"><button class="linkbtn" data-act="view" data-v="archive">'+esc(t('arch_t'))+' ›</button></div>';
   h += '<div class="arch-go" style="margin-top:12px"><a class="linkbtn" href="success.html?view=data">'+esc(t('data_link'))+' ›</a></div>';
   if(DB.demoKeys.length){
     h += '<div style="text-align:center;margin-top:4px"><button class="linkbtn" data-act="demooff">'+t('es_demo_clear')+'</button></div>';
@@ -1428,34 +1457,78 @@ function viewStats(){
    最近记录
    ========================================================= */
 function recentCard(){
-  var ks = Object.keys(DB.days).filter(function(k){ return hasInput(DB.days[k]); })
-    .sort().reverse().slice(0,10);
+  var ks = Object.keys(DB.days).filter(function(k){ return hasInput(DB.days[k]); });
   if(!ks.length) return '';
-  var b = '';
-  ks.forEach(function(k){
-    var r = DB.days[k], d = parseYmd(k), s = dayStat(k);
-    var isDemo = DB.demoKeys.indexOf(k)>=0;
-    b += '<div class="rec"><span class="rec-d num">'+fmtDate(d)+' '+wdShort(d)+'</span>';
-    var bar='';
-    if(s.checked && s.planned){
-      var res=r.checkin.results||[];
-      for(var i=0;i<res.length;i++){ bar += '<span class="rec-seg '+(res[i]?'on':'off')+'"></span>'; }
-    } else if(s.planned){
-      for(var j=0;j<s.planned;j++){ bar += '<span class="rec-seg"></span>'; }
-    } else { bar = '<span style="font-size:13px;color:var(--ink3)">'+t('rec_empty')+'</span>'; }
-    b += '<span class="rec-bar">'+bar+'</span>';
-    b += '<span class="rec-n num">'+(s.checked? s.done+'/'+s.planned : '—')+'</span>';
-    b += '<span class="rec-s '+(s.checked?'ok':'no')+'">'+(s.checked? t('rec_ok') : t('rec_no'))+'</span>';
-    b += '</div>';
-    if(r.late){
-      b += '<div class="rec-late"><span class="rec-late-tag">'+esc(t('late_tag'))+'</span>'+
-           '<span class="rec-late-tx">'+esc(trunc(r.late.text,40))+'</span></div>';
-    }
+  /* 最近记录 = 全部记录：以日历呈现，点日期看那天写了什么 */
+  var recSet = {}; ks.forEach(function(k){ recSet[k]=1; });
+  if(!S.archMonth){
+    var latest = ks.slice().sort()[ks.length-1];
+    S.archMonth = latest.slice(0,7);
+  }
+  var ym = S.archMonth.split('-'); var y=+ym[0], m=+ym[1];
+  var open = S.recOpen;
+  var h = '<div class="card rec-card">';
+  h += '<div class="rec-head'+(open?' open':'')+'" data-act="recopen">'+
+       '<span class="rec-h">'+esc(t('rec_t'))+'</span><span class="rec-caret">›</span></div>';
+  if(open){
+    h += '<div class="rec-body">'+calendarHTML(y,m,recSet,todayKey());
+    if(S.archDay && recSet[S.archDay]){ h += dayDetail(S.archDay); }
+    else { h += '<div class="cal-hint">'+esc(t('cal_hint'))+'</div>'; }
+    h += '</div>';
+  }
+  return h+'</div>';
+}
+
+function calendarHTML(y,m,recSet,today){
+  var start = weekStart(new Date(y, m-1, 1));   /* 周一开头 */
+  var cells = [], cur = new Date(start);
+  for(var i=0;i<42;i++){
+    var ck = ymd(cur);
+    cells.push({ k:ck, inM:(cur.getFullYear()===y && cur.getMonth()===m-1), has:!!recSet[ck], isToday:(ck===today) });
+    cur.setDate(cur.getDate()+1);
+  }
+  var h = '<div class="cal">';
+  h += '<div class="cal-hd"><button class="cal-nav" data-act="recmonth" data-v="-1" aria-label="上个月">‹</button>'+
+       '<span class="cal-m">'+y+' · '+fmtMonth(new Date(y,m-1,1))+'</span>'+
+       '<button class="cal-nav" data-act="recmonth" data-v="1" aria-label="下个月">›</button></div>';
+  h += '<div class="cal-grid cal-dow">';
+  ['一','二','三','四','五','六','日'].forEach(function(w){ h += '<span class="cal-dow-c">'+w+'</span>'; });
+  h += '</div><div class="cal-grid">';
+  cells.forEach(function(c){
+    if(!c.inM){ h += '<span class="cal-cell empty"></span>'; return; }
+    var cls = 'cal-cell'+(c.has?' has':'')+(c.k===S.archDay?' sel':'')+(c.isToday?' today':'');
+    h += '<span class="'+cls+'"'+(c.has?' data-act="recday" data-k="'+c.k+'"':'')+'>'+
+         '<span class="cal-d">'+c.k.split('-')[2]+'</span>'+
+         (c.has?'<span class="cal-dot"></span>':'')+'</span>';
   });
-  /* 折叠坍缩：默认收起，不打扰；想看再点开 */
-  return '<details class="card rec-det"><summary class="rec-sum">'+
-    '<span class="rec-h">'+t('rec_t')+'</span><span class="rec-caret">›</span></summary>'+
-    '<div class="rec-body">'+b+'</div></details>';
+  h += '</div></div>';
+  return h;
+}
+
+function dayDetail(k){
+  var r = DB.days[k] || {}, d = parseYmd(k);
+  var items = (r.tasks||[]).filter(function(x){ return x && x.text && x.text.trim(); });
+  var note = (r.checkin && r.checkin.note) ? String(r.checkin.note).trim() : '';
+  var h = '<div class="cal-det"><div class="cal-det-d">'+fmtDate(d)+' · '+wdShort(d)+(r.late?' <span class="arc-late">'+esc(t('late_tag'))+'</span>':'')+'</div>';
+  if(items.length){
+    h += '<div class="cal-det-sec">'+esc(t('cal_plan'))+'</div>';
+    items.forEach(function(x){
+      var st = x.done ? ' <span class="cal-done">✓</span>' : '';
+      h += '<div class="cal-it">'+esc(x.text)+st+'</div>';
+    });
+  }
+  if(note){
+    h += '<div class="cal-det-sec">'+esc(t('cal_eve'))+'</div>';
+    h += '<div class="arc-note">'+esc(note)+'</div>';
+  }
+  if(r.late && r.late.text){
+    h += '<div class="cal-det-sec">'+esc(t('late_tag'))+'</div>';
+    h += '<div class="arc-note">'+esc(trunc(r.late.text,80))+'</div>';
+  }
+  if(!items.length && !note && !(r.late && r.late.text)){
+    h += '<div class="cal-hint">'+esc(t('arch_blank'))+'</div>';
+  }
+  return h+'</div>';
 }
 
 /* ---------- 价值卡入口（弹窗） ---------- */
@@ -1474,24 +1547,7 @@ function closeValue(){
   el.classList.remove('on');
   el.innerHTML = '';
 }
-/* 归档回顾：把写过的日子完整呈现，随时回看 —— 录入的东西必须能被 review，否则毁掉信任 */
-function viewArchive(){
-  var ks = Object.keys(DB.days).filter(function(k){ return hasInput(DB.days[k]); }).sort().reverse();
-  var back = '<div class="arch-back"><button class="linkbtn" data-act="view" data-v="stats">‹ '+esc(t('stats'))+'</button></div>';
-  if(!ks.length) return '<section class="card">'+back+'<div class="empty-stats"><div class="es-t">'+t('arch_empty')+'</div></div></section>';
-  var h = '<section class="card">'+back+'<div class="sec-t">'+esc(t('arch_t'))+'</div><div class="sec-t2">'+esc(t('arch_sub'))+'</div>';
-  ks.forEach(function(k){
-    var r=DB.days[k], d=parseYmd(k);
-    var items=(r.tasks||[]).filter(function(x){return x && x.text && x.text.trim();});
-    var note=(r.checkin && r.checkin.note) ? String(r.checkin.note).trim() : '';
-    h += '<div class="arc"><div class="arc-d num">'+fmtDate(d)+' · '+wdShort(d)+(r.late?' <span class="arc-late">'+esc(t('late_tag'))+'</span>':'')+'</div>';
-    if(items.length){ items.forEach(function(x){ h += '<div class="arc-it">'+esc(x.text)+'</div>'; }); }
-    if(note){ h += '<div class="arc-note">'+esc(note)+'</div>'; }
-    if(!items.length && !note){ h += '<div class="arc-it muted">'+esc(t('arch_blank'))+'</div>'; }
-    h += '</div>';
-  });
-  return h+'</section>';
-}
+/* 归档回顾已由「最近记录」内的日历取代（按日查看，不平铺罗列） */
 
 /* =========================================================
    收尾浮层 —— 不是关门，是把今天放好
@@ -1561,6 +1617,14 @@ function bindShell(){
       var er = rec(todayKey());
       er.committed = false; save(); render();
     }
+    else if(a==='recopen'){ S.recOpen = !S.recOpen; render(); }
+    else if(a==='recmonth'){
+      var v = +el.getAttribute('data-v');
+      var ym = S.archMonth.split('-'); var y=+ym[0], m=+ym[1];
+      m += v; if(m<1){ m=12; y--; } else if(m>12){ m=1; y++; }
+      S.archMonth = y+'-'+pad(m); render();
+    }
+    else if(a==='recday'){ S.archDay = el.getAttribute('data-k'); render(); }
     else if(a==='demo'){ loadDemo(); }
     else if(a==='demooff'){ clearDemo(); }
     else if(a==='latetoggle'){ S.lateOpen = !S.lateOpen; render(); }
