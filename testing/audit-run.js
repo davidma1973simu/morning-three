@@ -231,23 +231,41 @@ async function shot(page, name) {
       p.snapshots.afterInput = afterInput;
       const today = TODAY;
       const wrote = afterInput.stored[today] && afterInput.stored[today].tasks.some(t => t.text === cfg.firstInput);
-      rec(p, 'F-06', '输入即存（无提交按钮，停下即保存）', !!wrote, { toast: afterInput.toast });
+      rec(p, 'F-06', '输入即存（停下即保存）', !!wrote, { toast: afterInput.toast });
       rec(p, 'F-07', '写完第一行自动露出第二行', afterInput.secondGhost === false, { secondGhost: afterInput.secondGhost });
       rec(p, 'F-08', '停下 650ms 后出现「已保存」反馈', afterInput.toast.indexOf('已保存') >= 0,
         { instantToast, delayedToast: afterInput.toast, note: '输入瞬间无反馈，属延时轻提示' });
 
-      const tickOk = await tap(page, '.check[data-i="0"]');
-      await page.waitForTimeout(150);
-      const afterTick = await page.evaluate(() => ({
-        toast: (document.querySelector('#toast') || {}).innerText || '',
-        on: !!document.querySelector('.check.on')
-      }));
-      rec(p, 'F-09', '勾选「推进」可用且有即时确认', tickOk && afterTick.on, { toast: afterTick.toast });
+      // 晨间已移除「完成勾选」圆框；改为「提交 → 展示 → 编辑」
+      const hasCheck = await page.evaluate(() => !!document.querySelector('.check'));
+      const submitBtn = await page.$('[data-act="submitday"]');
+      let submitted = false, sawEdit = false, sawToast = '';
+      if(submitBtn){
+        await page.click('[data-act="submitday"]');
+        await page.waitForTimeout(200);
+        const st = await page.evaluate(() => ({
+          editBtn: !!document.querySelector('[data-act="editday"]'),
+          toast: (document.querySelector('#toast') || {}).innerText || '',
+          inputs: document.querySelectorAll('.inp').length
+        }));
+        submitted = st.editBtn;
+        sawToast = st.toast;
+        if(st.editBtn){
+          await page.click('[data-act="editday"]');
+          await page.waitForTimeout(150);
+          sawEdit = await page.evaluate(() => document.querySelectorAll('.inp').length > 0);
+        }
+      }
+      rec(p, 'F-09', '晨间无勾选圆框', !hasCheck, {});
+      rec(p, 'F-09b', '提交后切展示态(出现编辑键)且给反馈', submitted && sawToast.indexOf('已记下') >= 0, { toast: sawToast });
+      rec(p, 'F-09c', '编辑键可重新打开输入', sawEdit, {});
     } else {
-      rec(p, 'F-06', '输入即存（无提交按钮，停下即保存）', false, '首屏无输入框（被浮层/只读态接管）');
+      rec(p, 'F-06', '输入即存（停下即保存）', false, '首屏无输入框（被浮层/只读态接管）');
       rec(p, 'F-07', '写完第一行自动露出第二行', false, '首屏无输入框');
       rec(p, 'F-08', '录入后给出即时反馈（toast）', false, '首屏无输入框');
-      rec(p, 'F-09', '勾选「推进」可用且有即时确认', false, '首屏无输入框');
+      rec(p, 'F-09', '晨间无勾选圆框', false, '首屏无输入框');
+      rec(p, 'F-09b', '提交后切展示态且给反馈', false, '首屏无输入框');
+      rec(p, 'F-09c', '编辑键可重新打开输入', false, '首屏无输入框');
     }
 
     // ---- 洞察 / 归档 / 价值 ----

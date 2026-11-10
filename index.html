@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="晨间清单">
 <meta name="application-name" content="晨间清单">
-<meta name="description" content="早上想清楚今天要推进什么，一件也算数；18:00 收个尾，没推进的带到明天。输入一周（满 4 次，可不连续）解锁睡前的晚间反思。">
+<meta name="description" content="早上想清楚今天要推进什么，一件也算数；18:00 收个尾，想留的带到明天。输入一周（满 4 次，可不连续）解锁睡前的晚间反思。">
 <title>晨间清单 · Morning Three</title>
 <script>
 /* 主题在样式前定好，避免先闪一下浅色再跳深色 */
@@ -474,7 +474,7 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
    ========================================================= */
 var PLAN_MIN     = 7 * 60;   // 07:00 前写下 = 晨间标记（仅用于正向标签，不再限制编辑）
 var EVE_MIN      = 18 * 60;  // 18:00 起晚间反思显示 / 可开门
-var DAY_EDIT_MAX = 19 * 60;  // 晨间清单可编辑到 19:00（与晚间反思有 1 小时交叠）
+var DAY_EDIT_MAX = 18 * 60;  // 晨间清单可编辑到 18:00（与晚间反思有 1 小时交叠）
 var CHECK_MIN    = EVE_MIN;  // 兼容旧引用
 var SLOTS     = 3;         // 每日三件要事
 var KEY       = 'morning-three.v1';
@@ -488,14 +488,14 @@ var T = {
     today:'今日', stats:'洞察',
     ph_plan:'早上', ph_exec:'白天', ph_check:'收尾时间', ph_sealed:'已收尾',
     ph_edit:'白天', ph_cold:'今晚',
-    ph_late:'待收尾', ph_late_hint:'19:00 后只读', ph_late_sub:'要事已锁定 · 去收个尾',
+    ph_late:'待收尾', ph_late_hint:'18:00 后只读', ph_late_sub:'要事已锁定 · 去收个尾',
     go_close:'去收个尾',
-    left_pre2:'想到就写 · 19:00 前可改', cold_hint:'现在写下，也算今天',
+    left_pre2:'想到就写 · 18:00 前可改', cold_hint:'现在写下，也算今天',
     check_now:'18:00 已过，收个尾',
     sealed_hint:'今天收好了，明天见',
     t_title:'今天想推进什么',
     t_sub:'想清楚一件就算数 · 18:00 收个尾',
-    t_sub_exec:'白天随时可写可勾，19:00 前都能改。',
+    t_sub_exec:'白天随时可写，18:00 前都能改。',
     lock_hint:'要事 = 今天最想推进的那一件事。<br>写满一周（至少 4 次，不必连续），解锁「<span class="hl">晚间反思</span>」。',
     sealed_at:'收尾 ·',
     ph:['今天想推进什么？一件就够','还有一件？可以不写','最后一件？可以不写'],
@@ -509,14 +509,14 @@ var T = {
     start_check:'开始收尾',
     st_pending:'待推进', st_done:'推进了', st_undone:'带到明天',
     ov_t:'今天收个尾',
-    ov_d_note:'看一眼今天写的，勾掉推进过的。<br>没推进的会带到明天，不算欠账。',
+    ov_d_note:'看一眼今天写的，勾掉推进过的；想把哪件留到明天，点「带到明天」。',
     ov_d_empty:'今天还没写要事。没关系，直接收下就好，明天记得来。',
-    ov_done:'推进了', ov_undone:'没推进',
+    ov_done:'推进了', ov_undone:'带到明天',
     ov_label:'一句话（可选）',
     ov_ph:'今天怎么样？',
     ov_seal:'收下今天', ov_seal_empty:'今天空白，收个尾',
     ov_need:'',
-    carry_note:'昨天没推进的 {n} 件带来了 · 不想做就删掉',
+    carry_note:'昨天留了 {n} 件到今天 · 不想做就删掉',
     carry_tag:'顺延',
     ps_t:'坚持', ps_sub:'这 14 天，哪天来了，哪天没来 —— 都算数',
     ps_used:'这 14 天，你来了 {n} 天', ps_cfm:'你一共确认了 {n} 次「推进」',
@@ -537,6 +537,11 @@ var T = {
     day_unit:'天',
     toast_saved:'已保存',
     tick_on:'推进确认 · 又往前一步',
+    submit_day:'提交今日规划',
+    edit_day:'编辑',
+    edit_day_sub:'改到 18:00 前都行',
+    submit_ok:'已记下今天的三件事',
+    submit_empty:'先写至少一件再提交',
     toast_sealed:'今天收好了',
     toast_demo:'已载入示例数据',
     toast_demo_off:'示例数据已清除',
@@ -617,14 +622,14 @@ var T = {
     today:'Today', stats:'Insights',
     ph_plan:'Morning', ph_exec:'Daytime', ph_check:'Time to close', ph_sealed:'Closed',
     ph_edit:'Daytime', ph_cold:'Tonight',
-    ph_late:'Awaiting close', ph_late_hint:'read-only after 19:00', ph_late_sub:'Tasks locked · go close the day',
+    ph_late:'Awaiting close', ph_late_hint:'read-only after 18:00', ph_late_sub:'Tasks locked · go close the day',
     go_close:'Close the day',
-    left_pre2:'Write whenever · edit until 19:00', cold_hint:'Write it now — today still counts',
+    left_pre2:'Write whenever · edit until 18:00', cold_hint:'Write it now — today still counts',
     check_now:'Past 18:00 — close the day',
     sealed_hint:'Today is closed. See you tomorrow.',
     t_title:'What to move today',
     t_sub:'One clear thing counts · close at 18:00',
-    t_sub_exec:'Write and check anytime — editable until 19:00.',
+    t_sub_exec:'Write and check anytime — editable until 18:00.',
     lock_hint:'A priority is the one thing you most want to move today.<br>Write across a week (at least 4 days, no streak needed) to unlock <span class="hl">Evening Reflection</span>.',
     sealed_at:'Closed ·',
     ph:['What do you want to move? One is enough','Another one? optional','One more? optional'],
@@ -638,14 +643,14 @@ var T = {
     start_check:'Close today',
     st_pending:'pending', st_done:'moved', st_undone:'carried',
     ov_t:'Close the day',
-    ov_d_note:'Look at what you wrote. Check what moved.<br>The rest carries to tomorrow — no debt.',
+    ov_d_note:'Look at what you wrote. Check what you moved. Tap “Carry to tomorrow” on anything you want to keep for tomorrow.',
     ov_d_empty:'Nothing written today. That is fine — just close it, and come back tomorrow.',
-    ov_done:'Moved', ov_undone:'Not yet',
+    ov_done:'Advanced', ov_undone:'Carry to tomorrow',
     ov_label:'One line (optional)',
     ov_ph:'How was today?',
     ov_seal:'Close today', ov_seal_empty:'Close a blank day',
     ov_need:'',
-    carry_note:'{n} carried over from yesterday · delete what you no longer want',
+    carry_note:'{n} kept from yesterday · delete what you no longer want',
     carry_tag:'carried',
     ps_t:'Showing up', ps_sub:'These 14 days — each day you showed up counts',
     ps_used:'You showed up {n} days', ps_cfm:'You confirmed “advanced” {n} times',
@@ -661,6 +666,11 @@ var T = {
     day_unit:'d',
     toast_saved:'Saved',
     tick_on:'Advanced — one step forward',
+    submit_day:'Submit today’s plan',
+    edit_day:'Edit',
+    edit_day_sub:'Editable until 18:00',
+    submit_ok:'Today’s three are saved',
+    submit_empty:'Write at least one first',
     toast_sealed:'Today closed',
     toast_demo:'Sample data loaded',
     toast_demo_off:'Sample data cleared',
@@ -820,7 +830,7 @@ function hasInput(r){
 }
 function isChecked(k){ var r=peek(k); return !!(r && r.checkin); }
 
-/* 当天处于哪个阶段：edit（可写可改到 19:00）/ late（19:00 后只读，等收尾）/ sealed（已收尾） */
+/* 当天处于哪个阶段：edit（可写可改到 18:00）/ late（18:00 后只读，等收尾）/ sealed（已收尾） */
 function phaseOf(k){
   var today = todayKey();
   if(isChecked(k)) return 'sealed';
@@ -1159,22 +1169,32 @@ function viewToday(){
     else { h += '<button class="btn ghost late-btn" data-act="latetoggle">'+esc(t('late_btn'))+'</button>'; }
     return h+'</section>';
   }
-  /* 19:00 后：晨间清单只读，导流晚间反思（不审判，只指路） */
+  /* 18:00 后：晨间清单只读，导流晚间反思（不审判，只指路） */
   if(ph==='late'){
     h += '<p class="h1-sub">'+t('ph_late_sub')+'</p>'+ readList(r) +
          '<button class="btn ghost" data-act="sdgo">'+esc(t('go_close'))+'</button>';
     return h+'</section>';
   }
 
-  /* 早上想清楚最理想，但全天都能写、能改、能勾 —— 想到了就写 */
+  /* 早上想清楚最理想，但全天都能写、能改 —— 想到了就写。点「提交」才算今日规划已记下 */
   var tag = early ? ' <span class="tag ok">'+esc(t('tag_am'))+'</span>' : '';
   if(!cold) h += '<p class="h1-sub">'+t('t_sub_exec')+tag+'</p>';
+
+  /* 已提交：展示态 + 编辑入口（18:00 前可改）；否则：草稿态 + 提交入口 */
+  var committed = r && r.committed && taskList(r).length;
+  if(committed){
+    h += readList(r) +
+         '<button class="btn ghost" data-act="editday">'+esc(t('edit_day'))+'</button>' +
+         (m < DAY_EDIT_MAX ? '<div class="foot-note">'+esc(t('edit_day_sub'))+'</div>' : '');
+    return h+'</section>';
+  }
 
   var cn = carryCount(r);
   if(cn) h += '<div class="carry-note">'+esc(t('carry_note').replace('{n}', cn))+'</div>';
 
-  h += editRows(r, true, ONBOARD && !firstKey()) +
-       (m < EVE_MIN ? '<div class="foot-note">'+t('lock_hint')+'</div>' : '');
+  h += editRows(r, ONBOARD && !firstKey()) +
+       '<button class="btn" data-act="submitday">'+esc(t('submit_day'))+'</button>' +
+       (m < DAY_EDIT_MAX ? '<div class="foot-note">'+t('lock_hint')+'</div>' : '');
   return h+'</section>';
 }
 
@@ -1187,7 +1207,8 @@ function isMorning(r){
 /* 可编辑行：输入框 + （07:00 后）完成勾选 */
 /* 不预先画三个空位：写完一行才露出下一行。
    上限仍是 3（超过三件就没有优先级了），下限 1 —— 一件也收 */
-function editRows(r, showCheck, firstRun){
+function editRows(r, firstRun){
+  /* 晨间只负责“写下今天想推进什么”，完成与否交给晚间反思 —— 这里不再有勾选框 */
   var tasks = (r && r.tasks) ? r.tasks : [];
   var phArr = t('ph');
   var p0 = firstRun ? t('first_ph') : phArr[0];
@@ -1205,10 +1226,6 @@ function editRows(r, showCheck, firstRun){
       '<input class="inp" data-i="'+i+'" type="text" maxlength="60" autocomplete="off" '+
       'placeholder="'+esc(phTxt)+'" value="'+esc(txt)+'">'+
       (it.carried && txt.trim() ? '<span class="tag">'+esc(t('carry_tag'))+'</span>' : '');
-    if(showCheck){
-      h += '<button class="check'+(it.done?' on':'')+(txt.trim()?'':' dis')+'" data-act="tick" data-i="'+i+'" aria-label="toggle">'+
-        '<svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6.2 L4.7 8.8 L10 3.4" fill="none" style="stroke:var(--on)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>';
-    }
     h += '</div>';
   }
   return h+'</div>';
@@ -1221,6 +1238,7 @@ function readList(r){
     var st = x.done? 'ok':'';
     h += '<div class="item"><span class="idx num">'+pad(i+1)+'</span>'+
       '<span class="txt'+(x.done?'':' filled-muted')+'">'+esc(x.text)+'</span>'+
+      (x.carried ? '<span class="tag">'+esc(t('carry_tag'))+'</span>' : '')+
       (st? '<span class="state ok">'+t('st_done')+'</span>' : '')+'</div>';
   });
   return h+'</div>';
@@ -1480,7 +1498,7 @@ function viewArchive(){
    只问「推进了吗」，不问「为什么没做完」；没推进的顺延，不算欠账
    ========================================================= */
 function mustCheck(){
-  /* 19:00 后才第一次来、今天还是空白：先让人写，不催收尾。
+  /* 18:00 后才第一次来、今天还是空白：先让人写，不催收尾。
      COLD_SESSION 只在页面加载时算一次，写完这一笔本次会话都不弹浮层。 */
   if(typeof COLD_SESSION !== 'undefined' && COLD_SESSION) return false;
   return phaseOf(todayKey())==='late';
@@ -1510,7 +1528,7 @@ function renderOverlay(){
   /* 一句话永远可选：空白日也留得下点什么，不必非得先有任务 */
   h += '<div class="note"><label>'+t('ov_label')+'</label><textarea id="ovNote" maxlength="120" placeholder="'+esc(t('ov_ph'))+'">'+esc(S.note||'')+'</textarea></div>';
 
-  /* 不需要每条都点：没点的就是「明天再说」，照样能收尾 */
+  /* 只有点「带到明天」的才留到明天；没点的只记今天，不自动带 */
   h += '<div class="ov-foot"><button class="btn" data-act="seal">'+(tasks.length? t('ov_seal') : t('ov_seal_empty'))+'</button>'+
     '<div class="ov-warn"></div></div>';
 
@@ -1534,7 +1552,15 @@ function bindShell(){
     var a = el.getAttribute('data-act');
     if(a==='view'){ S.view = el.getAttribute('data-v'); render(); }
     else if(a==='lang'){ LANG = LANG==='zh'?'en':'zh'; try{localStorage.setItem('mt.lang',LANG);}catch(err){} render(); }
-    else if(a==='tick'){ toggleDone(+el.getAttribute('data-i')); }
+    else if(a==='submitday'){
+      var sr = rec(todayKey());
+      if(!taskList(sr).length){ toast(t('submit_empty')); return; }
+      sr.committed = true; save(); render(); toast(t('submit_ok'));
+    }
+    else if(a==='editday'){
+      var er = rec(todayKey());
+      er.committed = false; save(); render();
+    }
     else if(a==='demo'){ loadDemo(); }
     else if(a==='demooff'){ clearDemo(); }
     else if(a==='latetoggle'){ S.lateOpen = !S.lateOpen; render(); }
@@ -1560,8 +1586,6 @@ function bindShell(){
     var i = +el.getAttribute('data-i');
     setTask(i, el.value);
     savedHint();                       /* 录入即存，停下即给「已保存」反馈 */
-    var item = el.parentNode, ck = item ? item.querySelector('.check') : null;
-    if(ck) ck.classList.toggle('dis', !el.value.trim());
     /* 写下这一行，就露出下一行 —— 不重绘，不打断输入 */
     if(el.value.trim()){
       var box = sh.querySelector('.items');
@@ -1571,18 +1595,7 @@ function bindShell(){
   };
 }
 
-/* 勾选完成状态（全天可勾，直到 19:00）—— 勾上即给「推进确认」的小奖励 */
-function toggleDone(i){
-  var r = rec(todayKey());
-  while(r.tasks.length < SLOTS) r.tasks.push({text:'',done:false});
-  var it = r.tasks[i];
-  if(!it || !it.text || !it.text.trim()) return;
-  var was = it.done;
-  it.done = !it.done;
-  save();
-  if(it.done && !was) toast(t('tick_on'));   /* 推进确认 = 你又往前走了一步 */
-  render();
-}
+/* morning done-checkbox removed: advanced/not-advanced belongs to evening reflection, not planning */
 
 function setTask(i, text){
   var r = rec(todayKey());
@@ -1754,12 +1767,12 @@ function seal(){
   var r = rec(todayKey()), tasks = taskList(r);
 
   /* picks 对齐到非空要事：只存在 tasks[] 里的才算数。
-     1 = 推进了，0 = 没推进（不点也算，明天带走） */
+     1 = 推进了，2 = 显式「带到明天」才留到明天 —— 没点的只记今天，绝不自动带 */
   var results = [], carry = [];
   for(var i=0;i<tasks.length;i++){
     var ok = S.picks[i] === 1;
     results.push(ok);
-    if(!ok) carry.push(tasks[i].text);
+    if(S.picks[i] === 2) carry.push(tasks[i].text);   /* 只有显式确认顺延的才带 */
   }
 
   r.checkin = { at:new Date().toISOString(), results:results, note:(S.note||'').trim() };
@@ -1920,7 +1933,7 @@ if('serviceWorker' in navigator){
 }
 
 load();
-/* 晚间冷启动判定：已过 19:00 + 今天还没写下一笔 + 未收尾。
+/* 晚间冷启动判定：已过 18:00 + 今天还没写下一笔 + 未收尾。
    会话级，写完不反转 —— 避免刚落笔就被收尾浮层接管。 */
 var COLD_SESSION = (nowMin() >= EVE_MIN && !isChecked(todayKey()) && !taskList(peek(todayKey())).length);
 try{ var lg = localStorage.getItem('mt.lang'); if(lg==='en'||lg==='zh') LANG = lg; }catch(e){}
