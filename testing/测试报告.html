@@ -377,8 +377,12 @@ code{background:#F1F6F6;border-radius:5px;padding:1px 5px;font-size:12.5px}
   </div>
 </section>
 
+<div class="card" style="border-left:4px solid var(--green);background:var(--green-soft)">
+  <p style="margin:0;font-size:14px;color:var(--ink2)"><b>v34 增补（2026-11-09，已发布 GitHub Pages）：</b>顺延改为显式确认——只有晚间点「带到明天」的项才带入次日空白日，未确认的绝不自动顺延（消除"每天打开是空页"）；晨间移除完成勾选框，改为「草稿 → 提交确认（给简单回馈）→ 展示态（编辑键）→ 18:00 前可改、18:00 后锁定」。<code>DAY_EDIT_MAX</code> 19:00→18:00，全局文案同步。聚焦实测 <code>testing/v34-flow.js</code> 19/19 通过；sw.js 升至 v34。WorkBuddy 入口待 David 本轮授权覆盖。</p>
+</div>
+
 <div class="foot">
-  morning-three · 测试报告 v1.1（v32 基线 + v33 复测）· 2026-11-09<br>
+  morning-three · 测试报告 v1.1（v32 基线 + v33 复测 + v34 增补）· 2026-11-09<br>
   可复跑资产：<code>testing/audit-run.js</code>（85 条断言）· <code>testing/raw-log.json</code>（原始日志）· <code>testing/shots/</code>（13 张截图）· <code>smoke-echo-tone.js</code>（31 条护栏）· <code>testing/改进计划.md</code><br>
   方法局限：无真人参与、无 30 天真实留存数据；六维评分与画像适配结论为专家走查。
 </div>
