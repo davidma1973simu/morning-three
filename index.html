@@ -553,6 +553,7 @@ var T = {
     demo_tag:'示例',
     rec_t:'最近记录',
     rec_ok:'已收尾', rec_no:'空白', rec_empty:'—',
+    cal_eve3:'晚上三问', cal_q1:'做对了', cal_q2:'做错了', cal_q3:'要改正', cal_note:'还想说',
     cal_hint:'选一天，看看那天写了什么',
     cal_plan:'当天写下',
     cal_eve:'晚间反思',
@@ -690,6 +691,7 @@ var T = {
     demo_tag:'sample',
     rec_t:'Recent',
     rec_ok:'closed', rec_no:'blank', rec_empty:'—',
+    cal_eve3:'Evening 3Q', cal_q1:'Right', cal_q2:'Wrong', cal_q3:'Fix', cal_note:'More',
     cal_hint:'Pick a day to see what you wrote',
     cal_plan:'Planned that day',
     cal_eve:'Evening reflection',
@@ -1509,6 +1511,11 @@ function dayDetail(k){
   var r = DB.days[k] || {}, d = parseYmd(k);
   var items = (r.tasks||[]).filter(function(x){ return x && x.text && x.text.trim(); });
   var note = (r.checkin && r.checkin.note) ? String(r.checkin.note).trim() : '';
+  /* 晚间三问来自 success-diary.v1（与晨间分库，但按同一天 key 关联） */
+  var sdays = loadEvening();
+  var sr = sdays[k] || {};
+  var sq = (sr.items||[]).filter(function(x){ return x && String(x).trim(); });
+  var snote = (sr.note && String(sr.note).trim()) ? sr.note : '';
   var h = '<div class="cal-det"><div class="cal-det-d">'+fmtDate(d)+' · '+wdShort(d)+(r.late?' <span class="arc-late">'+esc(t('late_tag'))+'</span>':'')+'</div>';
   if(items.length){
     h += '<div class="cal-det-sec">'+esc(t('cal_plan'))+'</div>';
@@ -1517,15 +1524,26 @@ function dayDetail(k){
       h += '<div class="cal-it">'+esc(x.text)+st+'</div>';
     });
   }
+  if(sq.length){
+    h += '<div class="cal-det-sec">'+esc(t('cal_eve3'))+'</div>';
+    var ql = [t('cal_q1'),t('cal_q2'),t('cal_q3')];
+    sq.forEach(function(x,i){
+      h += '<div class="cal-it"><span class="cal-q">'+esc(ql[i]||'')+'</span>'+esc(x)+'</div>';
+    });
+  }
   if(note){
     h += '<div class="cal-det-sec">'+esc(t('cal_eve'))+'</div>';
     h += '<div class="arc-note">'+esc(note)+'</div>';
+  }
+  if(snote){
+    h += '<div class="cal-det-sec">'+esc(t('cal_note'))+'</div>';
+    h += '<div class="arc-note">'+esc(snote)+'</div>';
   }
   if(r.late && r.late.text){
     h += '<div class="cal-det-sec">'+esc(t('late_tag'))+'</div>';
     h += '<div class="arc-note">'+esc(trunc(r.late.text,80))+'</div>';
   }
-  if(!items.length && !note && !(r.late && r.late.text)){
+  if(!items.length && !sq.length && !note && !snote && !(r.late && r.late.text)){
     h += '<div class="cal-hint">'+esc(t('arch_blank'))+'</div>';
   }
   return h+'</div>';

@@ -125,6 +125,9 @@ textarea.row-wrap{min-height:96px;padding:2px 0;line-height:1.45;font-size:17px;
 .inp.ghost{display:none}
 .none-row{padding:0 16px 13px}
 .none-btn{font-size:13px;color:var(--ink3);background:none;border:0;padding:0;font-family:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.daypick{display:flex;gap:8px;padding:8px 16px 0}
+.dp{flex:1;padding:9px 0;border-radius:10px;font-size:14px;font-weight:600;color:var(--ink2);background:var(--fill);border:1px solid transparent;transition:all .15s}
+.dp.on{color:var(--on);background:var(--brand-soft);border-color:var(--brand)}
 .none-d{font-size:15px;color:var(--ink3)}
 .low{padding:2px 16px 12px}
 .low textarea{width:100%;border:0;background:none;font-family:inherit;font-size:16px;color:var(--ink);
@@ -359,7 +362,7 @@ var EVE_MIN = 18 * 60;           // 18:00 起晚间反思才可写
 function nowMin(){ var d = new Date(); return d.getHours()*60 + d.getMinutes(); }
 
 var LANG = 'zh';
-var S = { view:'today', energy:null, sheetKey:null, bannerOff:false, sheetOpen:false };
+var S = { view:'today', energy:null, sheetKey:null, bannerOff:false, sheetOpen:false, editK:null };
 var DB = { days:{}, unlock:{ at:null, defer:0 }, demo:false };
 
 /* ---------- 工具 ---------- */
@@ -506,16 +509,17 @@ var T = {
     night:'夜深了。睡前留三分钟给自己。',
     night2:'睡前把今天收个尾。',
     b_t:'今天还没记', b_d:'睡前花三分钟，记下你今天注意到的、想到的。', b_x:'不再提醒',
-    ach:'今天的痕迹', ach_p:'不用记流水账。一句触动的、一个念头、一个小行动，都算。',
-    ach_loop:'观察 · 分析 · 行动',
-    ach_none:'今天没有', ach_none_d:'今天没有 · 也算记下了', ach_undo:'还是想写点',
+    ach:'今晚三问', ach_p:'不用写长。做对的一件、做错的一件、明天想改的一件，都算。',
+    ach_loop:'做对 · 做错 · 改正',
+    ach_none:'今晚空白', ach_none_d:'今晚空白 · 也算记下了', ach_undo:'还是想写点',
+    note_t:'还想说点什么', note_p:'可选 · 一句也好',
     low_t:'那时候你在做什么？', low_p:'不用评价，写当时在做什么就好。刷短视频也算。',
     low_ph:'比如：刷短视频、发呆、跟人聊了一会儿',
     low_tag:'不在状态时',
     e_t:'今天的状态', e_p:'随便选一个，之后还能改。',
     save:'记下今晚', saved:'已记下今天', saved_blank:'今天空白，也记下了',
     save_hint:'空着也能保存 · 空白也是一天',
-    ph:['今天有什么事情触动了你？你做了什么？','我当时在想什么？','我接下来能做的一件小事是什么？'],
+    ph:['今天做对了什么？','今天做错了什么？','明天要改正什么？'],
     wall_t:'成就墙', wall_sub:'你写下的每一天，都留在这里',
     rd_t:'这段时间的状态', rd_sub:'六种感受的累计占比',
     rd_advice_none:'继续记录，状态会慢慢浮现',
@@ -563,16 +567,17 @@ var T = {
     night:'Late night. Three minutes for yourself first.',
     night2:'Close out today before you sleep.',
     b_t:'Not written yet', b_d:'Three minutes before bed. Note what you noticed, what you thought.',
-    ach:'Today’s trace', ach_p:'Not a log. One stir, one thought, one small move — all count.',
-    ach_loop:'Notice · Reflect · Act',
-    ach_none:'Nothing today', ach_none_d:'Nothing today · that counts too', ach_undo:'Actually, let me write',
+    ach:'Three questions tonight', ach_p:'Keep it short. One right, one wrong, one to fix — all count.',
+    ach_loop:'Right · Wrong · Fix',
+    ach_none:'Blank tonight', ach_none_d:'Blank tonight · that counts too', ach_undo:'Actually, let me write',
+    note_t:'Anything else', note_p:'Optional · even one line',
     low_t:'What were you doing then?', low_p:'No judgement. Just what you were doing. Scrolling counts.',
     low_ph:'e.g. scrolling, staring out, talking to someone',
     low_tag:'When it slipped',
     e_t:'How it felt', e_p:'Pick one. You can change it later.',
     save:'Save tonight', saved:'Tonight saved', saved_blank:'A blank day — recorded anyway',
     save_hint:'You can save this empty · a blank day is still a day',
-    ph:['What touched you today? What did you do?','What were you thinking then?','One small thing you could do next?'],
+    ph:['What went right today?','What went wrong today?','What will you fix tomorrow?'],
     wall_t:'The Wall', wall_sub:'Every day you wrote stays here',
     rd_t:'How you’ve been', rd_sub:'Six states, cumulative share',
     rd_advice_none:'Keep logging — the picture will emerge',
@@ -623,7 +628,7 @@ var ENERGY = [
 ];
 /* 哪些状态算「不在状态」—— 只有这时才追问一句，平时不出现 */
 var LOWK = { tired:1, tense:1 };
-function blankDay(){ return { items:['','',''], done:'', low:'', energy:null, none:false, at:null }; }
+function blankDay(){ return { items:['','',''], done:'', low:'', energy:null, none:false, at:null, note:'' }; }
 function eName(k){
   for(var i=0;i<ENERGY.length;i++){ if(ENERGY[i].k===k) return LANG==='en'? ENERGY[i].en : ENERGY[i].zh; }
   return '';
@@ -985,7 +990,7 @@ function rule(n, title, desc, passed){
 
 /* ---------- 今日 ---------- */
 function viewToday(){
-  var k = todayKey(), r = rec(k);
+  var k = S.editK || todayKey(), r = rec(k);
   var h = '';
 
   /* 夜间提示 */
@@ -1003,6 +1008,12 @@ function viewToday(){
   h += '<div class="lt-row"><div><div class="lt">'+esc(t('lt'))+'</div>'+
        '<div class="lt-s">'+esc(fmtFull(k))+' · '+esc(wdFull(k))+'</div></div>'+
        '<div class="lt-s" style="flex:none;font-weight:600;color:#000">'+esc(fmtDate(k))+'</div></div>';
+
+  /* 时间窗：今天可填，昨天可补，更早的（墙/日历点开）只读不在此列 */
+  h += '<div class="daypick">'+
+       '<button class="dp'+(k===todayKey()?' on':'')+'" data-act="editday" data-v="today">今天</button>'+
+       '<button class="dp'+(k===ymd(addDays(new Date(),-1))?' on':'')+'" data-act="editday" data-v="yesterday">昨天</button>'+
+       '</div>';
 
   if(r.at){
     h += '<div class="nightbar">'+esc(anyItem(r)? t('saved') : t('saved_blank'))+' · '+esc(hhmm(r.at))+'</div>';
@@ -1027,6 +1038,10 @@ function viewToday(){
   h += '<div class="none-row"><button class="none-btn" data-act="'+(r.none?'unoneday':'noneday')+'">'+
     esc(r.none? t('ach_undo') : t('ach_none'))+'</button></div>';
   h += '</div>';
+
+  /* 可选自由补充：三问之外，还想说的都算 */
+  h += '<div class="grp" style="margin-top:14px"><div class="grp-h">'+esc(t('note_t'))+'</div>'+
+       '<div class="low"><textarea data-f="note" maxlength="200" placeholder="'+esc(t('note_p'))+'">'+esc(r.note||'')+'</textarea></div></div>';
 
   /* 状态：只有选到「不在状态」才追问一句，平时不出现 */
   h += '<div class="grp"><div class="grp-h">'+esc(t('e_t'))+'</div><div class="chips">';
@@ -1165,6 +1180,10 @@ function renderSheet(){
     h += '<div class="sh-item"><div class="sh-n" style="background:'+f[2]+'">'+pad(n)+'</div>'+
          '<div class="sh-x">'+esc(x)+'</div></div>';
   });
+  if(r.note && String(r.note).trim()){
+    h += '<div class="sh-item"><div class="sh-n" style="background:#D8DCE6">·</div>'+
+         '<div class="sh-x mut">'+esc(t('note_t'))+'：'+esc(r.note)+'</div></div>';
+  }
 
   if(r.done && String(r.done).trim()){
     h += '<div class="sh-item"><div class="sh-n" style="background:#4A524B">·</div>'+
@@ -1215,13 +1234,14 @@ function rec(k){
   if(!r.items) r.items = ['','',''];        /* 老记录兼容 */
   if(r.low === undefined) r.low = '';
   if(r.none === undefined) r.none = false;
+  if(r.note === undefined) r.note = '';
   return r;
 }
 function anyItem(r){ return !!(r.items && r.items.some(function(x){ return x && String(x).trim(); })); }
 
 /* 不再拦着不让人保存：空白也是一天，也是数据 */
 function saveTonight(){
-  var k = todayKey(), r = rec(k);
+  var k = S.editK || todayKey(), r = rec(k);
   if(r.none){
     r.items = ['','',''];
   } else {
@@ -1233,6 +1253,8 @@ function saveTonight(){
   if(ta) r.done = ta.value.trim();
   var lw = document.querySelector('textarea[data-f="low"]');
   if(lw) r.low = lw.value.trim();
+  var nt = document.querySelector('textarea[data-f="note"]');
+  if(nt) r.note = nt.value.trim();
   var chip = document.querySelector('.chip.on');
   if(chip) r.energy = chip.getAttribute('data-v');
   r.at = new Date().toISOString();
@@ -1272,6 +1294,7 @@ function bind(){
     if(a==='go'){ location.href = 'index.html'; return; }
     if(a==='closewhisper'){ S.whisper = false; render(); return; }
     if(a==='banner'){ S.bannerOff = true; render(); return; }
+    if(a==='editday'){ S.editK = (el.getAttribute('data-v')==='yesterday'? ymd(addDays(new Date(),-1)) : null); render(); return; }
     if(a==='save'){ saveTonight(); return; }
     if(a==='noneday'){ var rn = rec(todayKey()); rn.none = true; rn.items = ['','','']; save(); render(); return; }
     if(a==='unoneday'){ var ru = rec(todayKey()); ru.none = false; save(); render(); return; }
