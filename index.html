@@ -51,6 +51,8 @@ applyTheme();
   --brand-edge2:#D9E4DE;
   --brand-line:rgba(14,107,80,.35);
   --warn:#C26600;
+  --hl:#E0922B;          /* 高亮标记：暖琥珀，区别于「有记录」的绿点 */
+  --hl-txt:#9A5B12;
   --warn-soft:#FBEEE7;
   --gold:#C26600;
   --gold-soft:#FFF0DF;
@@ -81,6 +83,8 @@ html.night{
   --brand-edge:#2E4A39;
   --brand-edge2:#2E3A31;
   --brand-line:rgba(63,224,129,.4);
+  --hl:#F0B255;          /* 暗色主题下高亮用更亮的琥珀，避免被背景吃掉 */
+  --hl-txt:#F0B255;
   --warn:#E8734A;
   --warn-soft:#3A2822;
   --gold:#FFB84D;
@@ -302,8 +306,21 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .cal-cell.sel .cal-dot{background:var(--on)}
 .cal-d{line-height:1}
 .cal-dot{position:absolute;bottom:5px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--brand-txt)}
+.cal-hl{position:absolute;top:5px;right:6px;width:5px;height:5px;border-radius:50%;background:var(--hl)}
 .cal-hint{font-size:13px;color:var(--ink3);line-height:1.6;margin-top:12px;text-align:center}
 .cal-det{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+/* 高亮标记：日历里点开某天后，底部安静的「留个标记」入口 + 已存标记展示 */
+.cal-hl-mark{margin-top:14px;padding-top:12px;border-top:1px dashed var(--brand-edge2)}
+.cal-hl-tip{font-size:12px;color:var(--ink3);margin-bottom:4px}
+.hl-pill{font:inherit;font-size:13px;padding:6px 12px;border-radius:999px;border:1px solid var(--brand-edge);
+  background:var(--card);color:var(--ink3);cursor:pointer;margin:4px 6px 0 0;transition:all .15s;line-height:1.2}
+.hl-pill:hover{border-color:var(--brand-txt);color:var(--brand-txt)}
+.hl-pill.on{background:var(--brand-txt);color:#fff;border-color:var(--brand-txt)}
+.hl-inp{width:100%;margin-top:6px;min-height:46px;resize:vertical;border:1px solid var(--line);border-radius:12px;
+  padding:8px 10px;font:inherit;font-size:14px;background:var(--card);color:var(--ink);box-sizing:border-box}
+.cal-hl-row{display:flex;gap:8px;align-items:baseline;margin:3px 0}
+.cal-hl-tag{font-size:12px;font-weight:700;color:var(--hl-txt);white-space:nowrap}
+.cal-hl-tx{font-size:14px;color:var(--ink)}
 .cal-det-d{font-size:13px;color:var(--sub);margin-bottom:8px}
 .cal-det-sec{font-size:12px;font-weight:700;color:var(--ink3);letter-spacing:.08em;text-transform:uppercase;margin:10px 0 5px}
 .cal-it{font-size:15px;line-height:1.5;padding:2px 0}
@@ -553,6 +570,12 @@ var T = {
     demo_tag:'示例',
     rec_t:'最近记录',
     rec_ok:'已收尾', rec_no:'空白', rec_empty:'—',
+    hl_tip:'为这一天留个标记',
+    hl_decision:'做了重要决定', hl_emotion:'情绪很强烈', hl_realize:'突然想通了',
+    hl_ph_decision:'比如：坚决买房用于养老出租',
+    hl_ph_emotion:'比如：很妒忌别人的某次成功',
+    hl_ph_realize:'比如：意识到自己已经财务自由',
+    hl_sec:'这一天的标记',
     cal_eve3:'晚上三问', cal_q1:'做对了', cal_q2:'做错了', cal_q3:'要改正', cal_note:'还想说',
     cal_hint:'选一天，看看那天写了什么',
     cal_plan:'当天写下',
@@ -691,6 +714,12 @@ var T = {
     demo_tag:'sample',
     rec_t:'Recent',
     rec_ok:'closed', rec_no:'blank', rec_empty:'—',
+    hl_tip:'Mark this day',
+    hl_decision:'Made a key decision', hl_emotion:'Felt something strong', hl_realize:'Suddenly saw it',
+    hl_ph_decision:'e.g. firmly bought a home to rent for retirement',
+    hl_ph_emotion:'e.g. envied someone’s success',
+    hl_ph_realize:'e.g. realized you’re already financially free',
+    hl_sec:'Markers for this day',
     cal_eve3:'Evening 3Q', cal_q1:'Right', cal_q2:'Wrong', cal_q3:'Fix', cal_note:'More',
     cal_hint:'Pick a day to see what you wrote',
     cal_plan:'Planned that day',
@@ -843,8 +872,10 @@ function carryCount(r){
   return r.tasks.filter(function(x){ return x && x.carried && x.text && String(x.text).trim(); }).length;
 }
 function rec(k){
-  if(!DB.days[k]) DB.days[k] = { tasks:[], checkin:null, writtenAt:null };
-  return DB.days[k];
+  if(!DB.days[k]) DB.days[k] = { tasks:[], checkin:null, writtenAt:null, hl:{decision:'',emotion:'',realize:''} };
+  var r = DB.days[k];
+  if(!r.hl) r.hl = {decision:'',emotion:'',realize:''};
+  return r;
 }
 function peek(k){ return DB.days[k] || null; }
 
@@ -906,7 +937,7 @@ function streak(){
 /* =========================================================
    状态
    ========================================================= */
-var S = { view:'today', period:'day', picks:[], note:'', lateOpen:false, archMonth:null, archDay:null, recOpen:false };
+var S = { view:'today', period:'day', picks:[], note:'', lateOpen:false, archMonth:null, archDay:null, recOpen:false, hlOpen:{} };
 var ONBOARD = false;   /* 首次关闭 briefing 后触发：帮全新用户直接落到「写第一笔」 */
 
 /* =========================================================
@@ -1463,8 +1494,14 @@ function recentCard(){
   if(!ks.length) return '';
   /* 最近记录 = 全部记录：以日历呈现，点日期看那天写了什么 */
   var recSet = {}; ks.forEach(function(k){ recSet[k]=1; });
+  /* 高亮标记（决定/情绪/顿悟）也来自当天记录，单独成集，让只标了高亮的日子也能点开 */
+  var hlSet = {};
+  Object.keys(DB.days).forEach(function(k){
+    var r = DB.days[k];
+    if(r && r.hl && (r.hl.decision || r.hl.emotion || r.hl.realize)) hlSet[k]=1;
+  });
   if(!S.archMonth){
-    var latest = ks.slice().sort()[ks.length-1];
+    var latest = (ks.length ? ks.slice().sort()[ks.length-1] : todayKey());
     S.archMonth = latest.slice(0,7);
   }
   var ym = S.archMonth.split('-'); var y=+ym[0], m=+ym[1];
@@ -1473,20 +1510,21 @@ function recentCard(){
   h += '<div class="rec-head'+(open?' open':'')+'" data-act="recopen">'+
        '<span class="rec-h">'+esc(t('rec_t'))+'</span><span class="rec-caret">›</span></div>';
   if(open){
-    h += '<div class="rec-body">'+calendarHTML(y,m,recSet,todayKey());
-    if(S.archDay && recSet[S.archDay]){ h += dayDetail(S.archDay); }
+    h += '<div class="rec-body">'+calendarHTML(y,m,recSet,hlSet,todayKey());
+    if(S.archDay && (recSet[S.archDay] || hlSet[S.archDay])){ h += dayDetail(S.archDay); }
     else { h += '<div class="cal-hint">'+esc(t('cal_hint'))+'</div>'; }
     h += '</div>';
   }
   return h+'</div>';
 }
 
-function calendarHTML(y,m,recSet,today){
+function calendarHTML(y,m,recSet,hlSet,today){
   var start = weekStart(new Date(y, m-1, 1));   /* 周一开头 */
   var cells = [], cur = new Date(start);
   for(var i=0;i<42;i++){
     var ck = ymd(cur);
-    cells.push({ k:ck, inM:(cur.getFullYear()===y && cur.getMonth()===m-1), has:!!recSet[ck], isToday:(ck===today) });
+    var has = !!recSet[ck] || !!hlSet[ck];        /* 有记录 或 有高亮，都点得开 */
+    cells.push({ k:ck, inM:(cur.getFullYear()===y && cur.getMonth()===m-1), has:has, hl:!!hlSet[ck], isToday:(ck===today) });
     cur.setDate(cur.getDate()+1);
   }
   var h = '<div class="cal">';
@@ -1501,7 +1539,8 @@ function calendarHTML(y,m,recSet,today){
     var cls = 'cal-cell'+(c.has?' has':'')+(c.k===S.archDay?' sel':'')+(c.isToday?' today':'');
     h += '<span class="'+cls+'"'+(c.has?' data-act="recday" data-k="'+c.k+'"':'')+'>'+
          '<span class="cal-d">'+c.k.split('-')[2]+'</span>'+
-         (c.has?'<span class="cal-dot"></span>':'')+'</span>';
+         (c.hl?'<span class="cal-hl"></span>':'')+
+         (recSet[c.k]?'<span class="cal-dot"></span>':'')+'</span>';
   });
   h += '</div></div>';
   return h;
@@ -1516,6 +1555,9 @@ function dayDetail(k){
   var sr = sdays[k] || {};
   var sq = (sr.items||[]).filter(function(x){ return x && String(x).trim(); });
   var snote = (sr.note && String(sr.note).trim()) ? sr.note : '';
+  var hl = r.hl || {};
+  var hlAny = !!(hl.decision || hl.emotion || hl.realize);
+  var HL = [['decision','hl_decision'],['emotion','hl_emotion'],['realize','hl_realize']];
   var h = '<div class="cal-det"><div class="cal-det-d">'+fmtDate(d)+' · '+wdShort(d)+(r.late?' <span class="arc-late">'+esc(t('late_tag'))+'</span>':'')+'</div>';
   if(items.length){
     h += '<div class="cal-det-sec">'+esc(t('cal_plan'))+'</div>';
@@ -1539,12 +1581,34 @@ function dayDetail(k){
     h += '<div class="cal-det-sec">'+esc(t('cal_note'))+'</div>';
     h += '<div class="arc-note">'+esc(snote)+'</div>';
   }
+  if(hlAny){
+    h += '<div class="cal-det-sec">'+esc(t('hl_sec'))+'</div>';
+    HL.forEach(function(p){
+      if(hl[p[0]] && String(hl[p[0]]).trim()){
+        h += '<div class="cal-hl-row"><span class="cal-hl-tag">'+esc(t(p[1]))+'</span>'+
+             '<span class="cal-hl-tx">'+esc(hl[p[0]])+'</span></div>';
+      }
+    });
+  }
   if(r.late && r.late.text){
     h += '<div class="cal-det-sec">'+esc(t('late_tag'))+'</div>';
     h += '<div class="arc-note">'+esc(trunc(r.late.text,80))+'</div>';
   }
-  if(!items.length && !sq.length && !note && !snote && !(r.late && r.late.text)){
+  if(!items.length && !sq.length && !note && !snote && !hlAny && !(r.late && r.late.text)){
     h += '<div class="cal-hint">'+esc(t('arch_blank'))+'</div>';
+  }
+  /* 标记入口：仅当天及过去可标（未来不开放），安静地放在底部，日常不出现 */
+  if(k <= todayKey()){
+    h += '<div class="cal-hl-mark">';
+    h += '<div class="cal-hl-tip">'+esc(t('hl_tip'))+'</div>';
+    HL.forEach(function(p){
+      var on = (hl[p[0]] && String(hl[p[0]]).trim()) || S.hlOpen[p[0]];
+      h += '<button class="hl-pill'+(on?' on':'')+'" data-act="hltoggle" data-t="'+p[0]+'">'+esc(t(p[1]))+'</button>';
+      if(on){
+        h += '<textarea class="hl-inp" data-act="hltext" data-t="'+p[0]+'" placeholder="'+esc(t('hl_ph_'+p[0]))+'">'+esc((hl[p[0]]||''))+'</textarea>';
+      }
+    });
+    h += '</div>';
   }
   return h+'</div>';
 }
@@ -1643,6 +1707,11 @@ function bindShell(){
       S.archMonth = y+'-'+pad(m); render();
     }
     else if(a==='recday'){ S.archDay = el.getAttribute('data-k'); render(); }
+    else if(a==='hltoggle'){
+      var tk = el.getAttribute('data-t');
+      S.hlOpen[tk] = !S.hlOpen[tk];
+      render();
+    }
     else if(a==='demo'){ loadDemo(); }
     else if(a==='demooff'){ clearDemo(); }
     else if(a==='latetoggle'){ S.lateOpen = !S.lateOpen; render(); }
@@ -1664,7 +1733,16 @@ function bindShell(){
   };
   sh.oninput = function(e){
     var el = e.target;
-    if(!el.classList || !el.classList.contains('inp')) return;
+    if(!el.classList || !el.classList.contains('inp')){
+      /* 日历里的高亮小记：录入即存当天记录，不重绘以保持输入焦点 */
+      if(el.classList && el.classList.contains('hl-inp')){
+        var tk = el.getAttribute('data-t');
+        var r = rec(S.archDay || todayKey());
+        r.hl[tk] = el.value;
+        save();
+      }
+      return;
+    }
     var i = +el.getAttribute('data-i');
     setTask(i, el.value);
     savedHint();                       /* 录入即存，停下即给「已保存」反馈 */
