@@ -155,14 +155,14 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .h1{font-size:25px;font-weight:700;letter-spacing:-.015em;margin:0 0 4px}
 .h1-sub{font-size:13px;color:var(--ink2);margin:0 0 18px}
 
-/* ---------- items ---------- */
-.items{display:flex;flex-direction:column}
-.item{display:flex;align-items:center;gap:13px;padding:13px 0;border-top:1px solid var(--line)}
-.item:first-child{border-top:0;padding-top:2px}
+/* ---------- items：书写区是首页主角，用一块柔和底色把视线收拢到这里 ---------- */
+.items{display:flex;flex-direction:column;background:var(--fill3);border-radius:14px;padding:2px 15px;margin-top:2px}
+.item{display:flex;align-items:center;gap:13px;padding:14px 0;border-top:1px solid var(--line)}
+.item:first-child{border-top:0}
 .item.ghost{display:none}
 .idx{font-size:13px;font-weight:700;color:var(--ink3);width:18px;flex:none;letter-spacing:.06em;padding-top:1px}
 .inp{flex:1;min-width:0;font-size:16px;font-weight:500;padding:9px 0;line-height:1.45;border-bottom:1.5px solid transparent;transition:.15s}
-.inp::placeholder{color:var(--edge2);font-weight:400}
+.inp::placeholder{color:var(--ink3);font-weight:400}
 .inp:focus{border-bottom-color:var(--brand-txt)}
 .txt{flex:1;min-width:0;font-size:16px;font-weight:500;line-height:1.45;word-break:break-word}
 .txt.filled-muted{color:var(--ink2)}
@@ -191,12 +191,11 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .carry-note{font-size:13px;color:var(--brand-txt);background:var(--brand-soft);border-radius:10px;
   padding:8px 11px;margin:12px 0 2px;line-height:1.55}
 
-/* 晨间洞察 whisper（不是仪表盘，是一句低声的解读） */
-.whisper{display:flex;flex-direction:column;gap:9px;
-  background:linear-gradient(180deg,var(--brand-soft),var(--card))}
-.ws-mark{color:var(--brand-txt);opacity:.75;display:flex}
-.ws-line{font-size:15.5px;font-weight:600;color:var(--ink);line-height:1.55;letter-spacing:-.01em}
-.ws-go{font-size:13px;font-weight:700;color:var(--brand-txt);cursor:pointer;margin-top:2px}
+/* 晨间洞察 whisper（不是卡片、不是仪表盘，只是背景上一句低声的解读） */
+.whisper{display:flex;align-items:flex-start;gap:9px;padding:16px 6px 2px}
+.ws-mark{color:var(--ink3);opacity:.6;display:flex;flex:none;margin-top:1px}
+.ws-line{font-size:13px;font-weight:500;color:var(--ink3);line-height:1.6;letter-spacing:-.01em}
+.ws-go{font-size:12px;font-weight:600;color:var(--brand-txt);cursor:pointer;margin-top:3px;opacity:.8}
 
 /* 晨间回响：应用先开口 —— 不抢戏，是一条轻声的线，不是卡片 */
 .echo{display:flex;align-items:flex-start;gap:10px;padding:18px 2px 6px}
@@ -537,7 +536,7 @@ var T = {
     t_title:'今天想推进什么',
     t_sub:'想清楚一件就算数 · 18:00 收个尾',
     t_sub_exec:'白天随时可写，18:00 前都能改。',
-    lock_hint:'要事 = 今天最想推进的那一件事。<br>写满一周（至少 4 次，不必连续），解锁「<span class="hl">晚间反思</span>」。',
+    lock_hint:'写满一周（至少 4 次，不必连续），解锁「<span class="hl">晚间反思</span>」。',
     sealed_at:'收尾 ·',
     ph:['今天想推进什么？一件就够','还有一件？可以不写','最后一件？可以不写'],
     lock:'锁定今日要事',
@@ -681,7 +680,7 @@ var T = {
     t_title:'What to move today',
     t_sub:'One clear thing counts · close at 18:00',
     t_sub_exec:'Write and check anytime — editable until 18:00.',
-    lock_hint:'A priority is the one thing you most want to move today.<br>Write across a week (at least 4 days, no streak needed) to unlock <span class="hl">Evening Reflection</span>.',
+    lock_hint:'Write across a week (at least 4 days, no streak needed) to unlock <span class="hl">Evening Reflection</span>.',
     sealed_at:'Closed ·',
     ph:['What do you want to move? One is enough','Another one? optional','One more? optional'],
     lock:'Lock today\u2019s list',
@@ -944,7 +943,7 @@ var ONBOARD = false;   /* 首次关闭 briefing 后触发：帮全新用户直�
    渲染：主壳
    ========================================================= */
 function render(){
-  var html = header() + seg() + (S.view==='today' ? echoLine()+viewToday()+whisperCard()+sdCard()+valueLink() : viewStats());
+  var html = header() + seg() + (S.view==='today' ? viewToday()+whisperCard()+sdCard()+valueLink() : viewStats());
   document.getElementById('shell').innerHTML = html;
   bindShell();
   renderOverlay();
@@ -1195,7 +1194,6 @@ function viewToday(){
   if(ph==='late' && typeof COLD_SESSION !== 'undefined' && COLD_SESSION) ph = 'edit';
   var carried = takeCarry();          /* 昨天没推进的，今天空白时自动带过来 */
   var r = peek(k);
-  var early = isMorning(r);
   /* 当日是否有真实内容：决定「封存日」是展示已收好的内容，还是救场补记 */
   var hasContent = r && ((r.tasks && taskList(r).length) || (r.checkin && r.checkin.note));
   var m = nowMin();
@@ -1239,9 +1237,7 @@ function viewToday(){
     return h+'</section>';
   }
 
-  /* 早上想清楚最理想，但全天都能写、能改 —— 想到了就写。点「提交」才算今日规划已记下 */
-  var tag = early ? ' <span class="tag ok">'+esc(t('tag_am'))+'</span>' : '';
-  if(!cold) h += '<p class="h1-sub">'+t('t_sub_exec')+tag+'</p>';
+  /* 副标题已删（David 2026-11-16：首页重复复杂，输入区自己就是主角，不再叠说明文字） */
 
   /* 已提交：展示态 + 编辑入口（18:00 前可改）；否则：草稿态 + 提交入口 */
   var committed = r && r.committed && taskList(r).length;
@@ -1370,12 +1366,12 @@ function whisperCard(){
   var line = ws.length
     ? t('ws_word').replace('{w}', esc(ws[0].w)).replace('{n}', ws[0].n)
     : t('ws_trace').replace('{n}', ks.length);
-  var h = '<section class="card whisper"><div class="ws-mark">'+svgMoon()+'</div>'+
+  var h = '<div class="whisper"><div class="ws-mark">'+svgMoon()+'</div>'+
     '<div class="ws-line">'+line+'</div>';
   if(sdOpen() && nowMin() >= EVE_MIN){
     h += '<div class="ws-go" data-act="sdgo">'+esc(t('ws_to_eve'))+' ›</div>';
   }
-  return h+'</section>';
+  return h+'</div>';
 }
 
 /* 坚持视图：只回答「你是否天天来」—— 用了几天 vs 没用几天 + 推进确认累计。
@@ -1706,7 +1702,7 @@ function bindShell(){
       m += v; if(m<1){ m=12; y--; } else if(m>12){ m=1; y++; }
       S.archMonth = y+'-'+pad(m); render();
     }
-    else if(a==='recday'){ S.archDay = el.getAttribute('data-k'); render(); }
+    else if(a==='recday'){ var dk = el.getAttribute('data-k'); S.archDay = (S.archDay===dk) ? null : dk; render(); }
     else if(a==='hltoggle'){
       var tk = el.getAttribute('data-t');
       S.hlOpen[tk] = !S.hlOpen[tk];
