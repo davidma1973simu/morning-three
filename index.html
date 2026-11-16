@@ -343,6 +343,17 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
   width:36px;height:36px;border:0;border-radius:50%;background:rgba(127,127,127,.14);font-size:22px;line-height:1;color:var(--ink);cursor:pointer}
 #valFrame{flex:1;width:100%;border:0;background:var(--card)}
 .val-link{text-align:center;margin:18px 0 4px}
+/* 日历图例：淡字，只解释点的含义，不抢戏 */
+.cal-legend{font-size:11px;color:var(--ink3);line-height:1.5;margin-top:10px;text-align:center;opacity:.85}
+/* 数据守护：痕迹只在本机的安静提醒，攒够天数且久未导出才出现 */
+.guard{margin:16px 0 4px;padding:14px 16px;border-radius:14px;background:var(--fill3);
+  border:1px solid var(--line);display:flex;flex-direction:column;gap:8px;position:relative}
+.guard-t{font-size:14px;font-weight:600;color:var(--ink);padding-right:24px;line-height:1.5}
+.guard-sub{font-size:12px;color:var(--ink3);line-height:1.5}
+.guard-btn{align-self:flex-start;font:inherit;font-size:13px;font-weight:700;color:#fff;background:var(--brand-txt);
+  border:0;border-radius:10px;padding:9px 16px;cursor:pointer;margin-top:2px}
+.guard-x{position:absolute;top:10px;right:12px;font:inherit;font-size:12px;color:var(--ink3);
+  background:none;border:0;cursor:pointer;padding:4px}
 /* ---------- 归档回顾 ---------- */
 .arch-back{margin:-2px 0 12px}
 .arch-go{text-align:center;margin-top:10px}
@@ -667,7 +678,17 @@ var T = {
     /* 晨间洞察：一句 whisper（不是仪表盘） */
     ws_word:'你反复写下的，是「{w}」—— 它这段时间一直跟着你。',
     ws_trace:'你已经在 {n} 天留下了痕迹。',
-    ws_to_eve:'晚间反思已经敞开，去看看它们长成了什么'
+    ws_first:'今天，你留下了第一笔。它只在这台设备上——过几天，它会长出更多。',
+    ws_two:'两天了。痕迹开始连成线，慢慢你会看见自己的样子。',
+    ws_to_eve:'晚间反思已经敞开，去看看它们长成了什么',
+    /* 日历图例：把高亮标记的入口说清楚，但只是一行淡字，不进日常流 */
+    cal_legend:'绿点＝那天有记录 · 琥珀点＝那天有标记 · 点开任意一天可补标记',
+    /* 数据守护：痕迹只在本机，久未导出时一句安静提醒 */
+    guard_t:'你的 {n} 天痕迹，只留在这台设备。',
+    guard_sub:'换设备或清缓存会丢。花一秒导出留一份。',
+    guard_btn:'导出留一份',
+    guard_done:'已留好一份',
+    guard_close:'知道了'
   },
   en:{
     brand:'Morning Three',
@@ -800,7 +821,17 @@ var T = {
     /* morning insight whisper */
     ws_word:'The word you keep writing is “{w}” — it has followed you the whole time.',
     ws_trace:'You have left a trace on {n} days so far.',
+    ws_first:'You left your first trace today. It lives on this device only — over time, it will grow.',
+    ws_two:'Two days now. Your traces are starting to connect into a line.',
     ws_to_eve:'Evening Reflection is open — go see what your traces have become',
+    /* calendar legend */
+    cal_legend:'Green dot = a day you wrote · Amber dot = a day you marked · Open any day to add a marker',
+    /* data guard */
+    guard_t:'Your {n} days of traces live on this device only.',
+    guard_sub:'Switching devices or clearing cache loses them. Take a second to export a copy.',
+    guard_btn:'Export a copy',
+    guard_done:'A copy is saved',
+    guard_close:'Got it',
     val_link:'Why three things',
     arch_t:'All your records', data_link:'Data · export / import',
     arch_sub:'Every line you wrote stays here · look back anytime',
@@ -945,7 +976,7 @@ var ONBOARD = false;   /* 首次关闭 briefing 后触发：帮全新用户直�
    渲染：主壳
    ========================================================= */
 function render(){
-  var html = header() + seg() + (S.view==='today' ? viewToday()+whisperCard()+sdCard()+valueLink() : viewStats());
+  var html = header() + seg() + (S.view==='today' ? viewToday()+whisperCard()+sdCard()+valueLink()+guardCard() : viewStats()+guardCard());
   document.getElementById('shell').innerHTML = html;
   bindShell();
   renderOverlay();
@@ -1363,11 +1394,20 @@ function eveningRecords(){
    ========================================================= */
 function whisperCard(){
   var ks = Object.keys(DB.days).filter(function(k){ return hasInput(DB.days[k]); });
-  if(ks.length < 3) return '';           /* 痕迹还太薄，沉默比硬说好 */
-  var ws = wordsIn(ks);
-  var line = ws.length
-    ? t('ws_word').replace('{w}', esc(ws[0].w)).replace('{n}', ws[0].n)
-    : t('ws_trace').replace('{n}', ks.length);
+  if(ks.length < 1) return '';           /* 一笔都没有：连第一句都别硬说 */
+  /* 首次回报前置：第 1、2 天就给一句基于真实天数的温柔确认，
+     不让新用户在空白页上熬三天才等到第一句回声（David 2026-11-16 定） */
+  var line;
+  if(ks.length === 1){
+    line = t('ws_first');
+  } else if(ks.length === 2){
+    line = t('ws_two');
+  } else {
+    var ws = wordsIn(ks);
+    line = ws.length
+      ? t('ws_word').replace('{w}', esc(ws[0].w)).replace('{n}', ws[0].n)
+      : t('ws_trace').replace('{n}', ks.length);
+  }
   var h = '<div class="whisper"><div class="ws-mark">'+svgMoon()+'</div>'+
     '<div class="ws-line">'+line+'</div>';
   if(sdOpen() && nowMin() >= EVE_MIN){
@@ -1540,7 +1580,10 @@ function calendarHTML(y,m,recSet,hlSet,today){
          (c.hl?'<span class="cal-hl"></span>':'')+
          (recSet[c.k]?'<span class="cal-dot"></span>':'')+'</span>';
   });
-  h += '</div></div>';
+  h += '</div>';
+  /* 图例行：把"琥珀点=标记、点开可补标"说清楚 —— 一行淡字，不进日常流 */
+  h += '<div class="cal-legend">'+esc(t('cal_legend'))+'</div>';
+  h += '</div>';
   return h;
 }
 
@@ -1609,6 +1652,63 @@ function dayDetail(k){
     h += '</div>';
   }
   return h+'</div>';
+}
+
+/* ---------- 数据守护 ----------
+   痕迹只在本机，换设备/清缓存就没了。攒够 7 天、且久未导出（或从未导出）时，
+   在首页底部给一行安静提醒，一键带走晨间+晚间两库。
+   关闭后记下当时的天数，再多攒 7 天才重新提醒 —— 不反复骚扰。 */
+var GUARD_MIN = 7, GUARD_REGAP = 7;
+function inputDayCount(){
+  return Object.keys(DB.days).filter(function(k){ return hasInput(DB.days[k]); }).length;
+}
+function guardDue(){
+  var n = inputDayCount();
+  if(n < GUARD_MIN) return 0;                       /* 新用户完全看不到，不干扰输入主角 */
+  var last, dis;
+  try{ last = localStorage.getItem('mt.exportAt'); dis = localStorage.getItem('mt.guardDismiss'); }catch(e){}
+  if(last){                                          /* 导出过：14 天后再温柔提一次 */
+    var days = Math.round((Date.now() - new Date(last).getTime())/86400000);
+    if(days < 14) return 0;
+    return n;
+  }
+  if(dis){                                           /* 关过：多攒 GUARD_REGAP 天才再提 */
+    if(n - (+dis) < GUARD_REGAP) return 0;
+    return n;
+  }
+  return n;                                          /* 从未导出、从未关闭 */
+}
+function guardCard(){
+  var n = guardDue();
+  if(!n) return '';
+  return '<div class="guard">'+
+    '<button class="guard-x" data-act="guardclose" aria-label="Close">'+esc(t('guard_close'))+'</button>'+
+    '<div class="guard-t">'+esc(t('guard_t').replace('{n}', n))+'</div>'+
+    '<div class="guard-sub">'+esc(t('guard_sub'))+'</div>'+
+    '<button class="guard-btn" data-act="guardexport">'+esc(t('guard_btn'))+'</button>'+
+  '</div>';
+}
+function exportMyData(){
+  var morning = {};
+  try{ morning = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; }catch(e){ morning = {}; }
+  var evening = {};
+  try{ evening = JSON.parse(localStorage.getItem(SKEY) || '{}') || {}; }catch(e){ evening = {}; }
+  var payload = {
+    app:'morning-three', version:1, exportedAt:new Date().toISOString(),
+    morning: morning,
+    evening: { days: evening.days||{}, unlock: evening.unlock||{} }
+  };
+  try{
+    var blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'morning-three-backup-' + todayKey() + '.json';
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+    try{ localStorage.setItem('mt.exportAt', new Date().toISOString()); }catch(e){}
+    toast(t('guard_done'));
+    render();
+  }catch(e){ toast(t('guard_sub')); }
 }
 
 /* ---------- 价值卡入口（弹窗） ---------- */
@@ -1738,6 +1838,11 @@ function bindShell(){
     else if(a==='closesheet'){ hideInstall(); }
     else if(a==='value'){ openValue(); }
     else if(a==='valclose'){ closeValue(); }
+    else if(a==='guardexport'){ exportMyData(); }
+    else if(a==='guardclose'){
+      try{ localStorage.setItem('mt.guardDismiss', String(inputDayCount())); }catch(e){}
+      render();
+    }
   };
   sh.oninput = function(e){
     var el = e.target;
