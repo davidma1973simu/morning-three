@@ -107,6 +107,14 @@ input,textarea{font-family:inherit;font-size:17px;color:inherit;border:0;backgro
 .lt{font-size:34px;font-weight:700;letter-spacing:-.024em;line-height:1.15;margin:18px 0 0}
 .lt-s{font-size:15px;color:var(--ink2);font-weight:400;letter-spacing:-.01em;margin-top:3px}
 .lt-row{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:18px}
+/* 洞察首屏：一句低声观察，不是仪表盘。克制、留白、逐行落下 */
+.ins-hero{padding:26px 4px 6px}
+.ins-t{font-size:15px;font-weight:600;color:var(--ink3);letter-spacing:.02em;margin-bottom:14px}
+.ins-l{font-size:19px;font-weight:600;line-height:1.62;letter-spacing:-.018em;color:var(--ink);margin:2px 0}
+.ins-l:last-child{color:var(--brand-txt);font-weight:500}
+.ins-archive{display:block;margin:26px auto 6px;padding:9px 18px;border:1px solid var(--sep);
+  border-radius:999px;background:transparent;color:var(--ink2);font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.ins-archive:hover{border-color:var(--brand-txt);color:var(--brand-txt)}
 
 /* iOS grouped list */
 .grp{background:var(--card);border-radius:12px;margin:18px 0;overflow:hidden}
@@ -362,7 +370,7 @@ var EVE_MIN = 18 * 60;           // 18:00 起晚间反思才可写
 function nowMin(){ var d = new Date(); return d.getHours()*60 + d.getMinutes(); }
 
 var LANG = 'zh';
-var S = { view:'today', energy:null, sheetKey:null, bannerOff:false, sheetOpen:false, editK:null };
+var S = { view:'today', energy:null, sheetKey:null, bannerOff:false, sheetOpen:false, editK:null, archiveOpen:false };
 var DB = { days:{}, unlock:{ at:null, defer:0 }, demo:false };
 
 /* ---------- 工具 ---------- */
@@ -521,6 +529,12 @@ var T = {
     save_hint:'空着也能保存 · 空白也是一天',
     ph:['今天做对了什么？','今天做错了什么？','明天要改正什么？'],
     wall_t:'成就墙', wall_sub:'你写下的每一天，都留在这里',
+    /* 洞察主导：一句基于真实数据的话，取代三处重复的「成就墙」 */
+    ins_title:'这段时间的你', ins_none:'再多写几天，你的状态就会慢慢显出来。',
+    ins_days:'你已经留下了 {n} 天。', ins_top:'其中最常出现的，是「{s}」。',
+    ins_low:'疲惫和焦灼在提醒你：减一点。不是你的错，是安排太满。',
+    ins_high:'让你感到充实、顺畅的事，值得再约一次。',
+    ins_open:'看看那些日子', ins_close:'收起相片',
     rd_t:'这段时间的状态', rd_sub:'六种感受的累计占比',
     rd_advice_none:'继续记录，状态会慢慢浮现',
     rd_advice_low:'最近的疲惫 / 焦灼在提醒你：减一点，不是你的错，是安排太满',
@@ -579,6 +593,11 @@ var T = {
     save_hint:'You can save this empty · a blank day is still a day',
     ph:['What went right today?','What went wrong today?','What will you fix tomorrow?'],
     wall_t:'The Wall', wall_sub:'Every day you wrote stays here',
+    ins_title:'You, lately', ins_none:'Keep writing — your pattern will emerge in a few days.',
+    ins_days:'You have left {n} days here.', ins_top:'The most common feeling is “{s}”.',
+    ins_low:'Tiredness and restlessness are a signal: ease off. Not your fault — just too much.',
+    ins_high:'The things that filled you or flowed are worth making time for again.',
+    ins_open:'Look back at those days', ins_close:'Hide the frames',
     rd_t:'How you’ve been', rd_sub:'Six states, cumulative share',
     rd_advice_none:'Keep logging — the picture will emerge',
     rd_advice_low:'The tiredness / restlessness is a signal: ease off a little. Not your fault — just too much.',
@@ -763,6 +782,23 @@ function energyAdvice(dist){
   var top = arr[0];
   if(top.k==='tired' || top.k==='tense') return t('rd_advice_low');
   return t('rd_advice_high');
+}
+/* 洞察句：只用真实字段——记录天数 + 六态分布。不编造词频、不造智能感。
+   返回若干行，逐行渲染成低声的观察，而不是一个仪表盘标题。 */
+function insightLines(dayCount, dist){
+  var lines = [];
+  if(dist.total < 3 || dayCount < 1){
+    lines.push(t('ins_none'));
+    return lines;
+  }
+  lines.push(t('ins_days').replace('{n}', dayCount));
+  var arr = ENERGY.map(function(e){ return { k:e.k, zh:e.zh, en:e.en, n:dist.cnt[e.k]||0 }; })
+                  .sort(function(a,b){ return b.n-a.n; });
+  var top = arr[0];
+  if(top.n > 0) lines.push(t('ins_top').replace('{s}', LANG==='en'? top.en : top.zh));
+  if(LOWK[top.k]) lines.push(t('ins_low'));
+  else lines.push(t('ins_high'));
+  return lines;
 }
 
 /* =========================================================
@@ -1072,8 +1108,12 @@ function viewWall(){
     var r = DB.days[k]; return r && (r.items && r.items.some(function(x){ return x && String(x).trim(); }));
   }).sort().reverse();
 
-  var h = '<div class="lt-row"><div><div class="lt" style="font-size:30px">'+esc(t('wall_t'))+'</div>'+
-          '<div class="lt-s">'+esc(t('wall_sub'))+'</div></div></div>';
+  /* 首屏 = 一句真实洞察。 destructive-free：只读天数 + 六态，不写库 */
+  var dist = energyDist();
+  var lines = insightLines(ks.length, dist);
+  var h = '<div class="ins-hero"><div class="ins-t">'+esc(t('ins_title'))+'</div>';
+  lines.forEach(function(ln){ h += '<div class="ins-l">'+esc(ln)+'</div>'; });
+  h += '</div>';
 
   if(!ks.length){
     h += '<div class="grp"><div class="empty" style="padding:40px 22px">'+
@@ -1082,9 +1122,25 @@ function viewWall(){
     return h;
   }
 
+  /* 六态雷达：洞察的证据，仍要攒够 3 天才出现（和 insightLines 同一门槛） */
+  if(dist.total >= 3){
+    h += '<div class="card radar-card">'+
+      '<div class="sec-t">'+esc(t('rd_t'))+'</div>'+
+      '<div class="sec-t2">'+esc(t('rd_sub'))+'</div>'+
+      radarSVG(dist)+
+      '<div class="rd-advice">'+esc(energyAdvice(dist))+'</div>'+
+    '</div>';
+  }
+
+  /* 相片墙：收为档案，默认不展开；一个入口，点开才看 */
+  h += '<button class="ins-archive" data-act="archtoggle">'+
+         esc(S.archiveOpen ? t('ins_close') : t('ins_open')+' · '+ks.length)+
+       '</button>';
+  if(!S.archiveOpen) return h;
+
   h += '<div class="filmstrip"><div class="perf-s">';
   for(var a=0;a<3;a++) h += '<div class="perf-d"></div>';
-  h += '</div><div class="ig-title">'+esc(t('wall_t'))+'</div><div class="perf-s2">';
+  h += '</div><div class="perf-s2">';
   for(var b=0;b<3;b++) h += '<div class="perf-d"></div>';
   h += '</div></div>';
 
@@ -1104,18 +1160,6 @@ function viewWall(){
     '</button>';
   });
   h += '</div>';
-  if(ks.length > 3) h += '<div class="ig-more">'+ks.length+' '+esc(t('wall_t'))+'</div>';
-
-  /* 六态雷达：状态分析只住在这里（不再进晨间洞察），挣来的数据才看得到 */
-  var dist = energyDist();
-  if(dist.total >= 3){
-    h += '<div class="card radar-card">'+
-      '<div class="sec-t">'+esc(t('rd_t'))+'</div>'+
-      '<div class="sec-t2">'+esc(t('rd_sub'))+'</div>'+
-      radarSVG(dist)+
-      '<div class="rd-advice">'+esc(energyAdvice(dist))+'</div>'+
-    '</div>';
-  }
   return h;
 }
 
@@ -1288,7 +1332,8 @@ function bind(){
     if(!el) return;
     var a = el.getAttribute('data-act');
 
-    if(a==='view'){ S.view = el.getAttribute('data-v'); window.scrollTo(0,0); render(); return; }
+    if(a==='view'){ S.view = el.getAttribute('data-v'); S.archiveOpen = false; window.scrollTo(0,0); render(); return; }
+    if(a==='archtoggle'){ S.archiveOpen = !S.archiveOpen; render(); return; }
     if(a==='lang'){ LANG = (LANG==='zh'? 'en':'zh');
       try{ localStorage.setItem(LKEY, LANG); }catch(err){} render(); return; }
     if(a==='go'){ location.href = 'index.html'; return; }
