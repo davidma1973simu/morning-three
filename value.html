@@ -157,7 +157,11 @@ body{
   }
 
   var pref;
-  try{ pref = localStorage.getItem('value.lang'); }catch(e){}
+  /* 优先级：主页通过 ?lang= 传入 > 本机上次选择 > 浏览器语言。
+     iframe 由主页打开时带 lang，确保中文主页看中文 About、英文主页看英文 About。 */
+  var qm = /[?&]lang=(en|zh)\b/.exec(location.search);
+  if(qm){ pref = qm[1]; }
+  if(!pref){ try{ pref = localStorage.getItem('value.lang'); }catch(e){} }
   if(!pref){
     pref = (navigator.language||'zh').toLowerCase().indexOf('zh')===0 ? 'zh' : 'en';
   }

@@ -1619,7 +1619,8 @@ function openValue(){
   var el = document.getElementById('valRoot');
   el.innerHTML = '<div class="ov-bg" data-act="valclose"></div>'+
     '<div class="val-sheet"><button class="val-x" data-act="valclose" aria-label="Close">×</button>'+
-    '<iframe id="valFrame" src="value.html" frameborder="0"></iframe></div>';
+    /* About 语言跟随主页：URL 参数优先，避免与 value.lang / 浏览器语言跳错 */
+    '<iframe id="valFrame" src="value.html?lang='+(LANG==='en'?'en':'zh')+'" frameborder="0"></iframe></div>';
   el.classList.add('on');
 }
 function closeValue(){
@@ -1902,6 +1903,14 @@ function bindOverlay(){
     if(!el) return;
     if(el.getAttribute('data-act') === 'closesheet') hideInstall();
     else if(el.getAttribute('data-act') === 'nativeinstall') nativeInstall();
+  });
+
+  /* About 弹层在 #shell 之外，关闭键/遮罩必须自己接事件，否则点 × 不动 */
+  var vr = document.getElementById('valRoot');
+  if(vr) vr.addEventListener('click', function(e){
+    var el = e.target.closest('[data-act]');
+    if(el && el.getAttribute('data-act') === 'valclose') closeValue();
+    else if(e.target === vr) closeValue();
   });
 
   /* 提醒 sheet 在 #shell 之外，必须自己接事件，否则点什么都不动 */
