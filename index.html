@@ -315,6 +315,8 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
   background:var(--card);color:var(--ink3);cursor:pointer;margin:4px 6px 0 0;transition:all .15s;line-height:1.2}
 .hl-pill:hover{border-color:var(--brand-txt);color:var(--brand-txt)}
 .hl-pill.on{background:var(--brand-txt);color:#fff;border-color:var(--brand-txt)}
+/* 已存标记：胶囊右侧一个安静的 × —— 点它删除（取消标记），让"可撤销"看得见 */
+.hl-pill.on::after{content:' ×';font-weight:400;opacity:.75;margin-left:4px}
 .hl-inp{width:100%;margin-top:6px;min-height:46px;resize:vertical;border:1px solid var(--line);border-radius:12px;
   padding:8px 10px;font:inherit;font-size:14px;background:var(--card);color:var(--ink);box-sizing:border-box}
 .cal-hl-row{display:flex;gap:8px;align-items:baseline;margin:3px 0}
@@ -1705,7 +1707,16 @@ function bindShell(){
     else if(a==='recday'){ var dk = el.getAttribute('data-k'); S.archDay = (S.archDay===dk) ? null : dk; render(); }
     else if(a==='hltoggle'){
       var tk = el.getAttribute('data-t');
-      S.hlOpen[tk] = !S.hlOpen[tk];
+      var hr = rec(S.archDay || todayKey());
+      /* 已存标记：点它＝删除这个标记（取消选择），让标记可撤销、可重选 */
+      if(hr.hl[tk] && String(hr.hl[tk]).trim()){
+        hr.hl[tk] = '';
+        S.hlOpen[tk] = false;
+        save();
+      } else {
+        /* 未存标记：开/关输入框 */
+        S.hlOpen[tk] = !S.hlOpen[tk];
+      }
       render();
     }
     else if(a==='demo'){ loadDemo(); }
