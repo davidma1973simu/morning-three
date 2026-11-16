@@ -10,7 +10,7 @@ const sw = fs.readFileSync(DIR + 'sw.js', 'utf8');
 let pass = 0, fail = 0;
 function ok(name, cond) { if (cond) { pass++; console.log('  PASS', name); } else { fail++; console.log('  FAIL', name); } }
 
-ok('T0 sw.js bump 到 v42', /morning-three-v42/.test(sw) && !/morning-three-v41/.test(sw));
+ok('T0 sw.js bump 到 v43', /morning-three-v43/.test(sw) && !/morning-three-v42/.test(sw));
 ok('T1 引入 cloud SDK CDN', html.indexOf('workbuddy-cloud-sdk@dev/lib/index.global.js') !== -1);
 ok('T2 publicConfig 三值齐全', html.indexOf('morning-three.app.workbuddy.host') !== -1 &&
    html.indexOf('wbpk_WN1wgF1azCqiD91AtopsMQ') !== -1 &&
@@ -18,7 +18,7 @@ ok('T2 publicConfig 三值齐全', html.indexOf('morning-three.app.workbuddy.hos
 
 const blocks = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]);
 let big = blocks.sort((a, b) => b.length - a.length)[0];
-const expose = '{initCloud,authGate,buildPayload,mergeDayMaps,applyPayload,sendSyncCode,verifySyncCode,syncPull,syncPush,syncNow,signOutSync,openSync,closeSync,renderSync,bindSync,header,render,SYNC,CLOUD_CFG,T,KEY,SKEY,DB,load,save,setCloud:(c)=>{cloud=c;}}';
+const expose = '{initCloud,syncHostOK,authGate,buildPayload,mergeDayMaps,applyPayload,sendSyncCode,verifySyncCode,syncPull,syncPush,syncNow,signOutSync,openSync,closeSync,renderSync,bindSync,header,render,SYNC,CLOUD_CFG,T,KEY,SKEY,DB,load,save,setCloud:(c)=>{cloud=c;}}';
 const i = big.lastIndexOf('})();');
 big = big.slice(0, i) + ';window.__T=' + expose + ';' + big.slice(i);
 
@@ -39,10 +39,10 @@ const store = {};
 const els = {};
 ['shell','toast','syncRoot','syMsg','syEmail','syCode'].forEach(id=>els[id]=makeEl(id));
 const ctx = {
-  console, Date, Math, JSON, RegExp, Promise, parseInt, parseFloat, isNaN, String, Number, Array, Object, Boolean, Error,
+  console, Date, Math, JSON, RegExp, Promise, parseInt, parseFloat, isNaN, String, Number, Array, Object, Boolean, Error, URL,
   Blob: function(){}, URL:{ createObjectURL:()=> 'blob:x', revokeObjectURL(){} },
   setTimeout:(fn)=>{}, setInterval:()=>{}, clearTimeout:()=>{}, clearInterval:()=>{},
-  location:{ href:'', search:'' }, navigator:{},
+  location:{ href:'', search:'', host:'morning-three.app.workbuddy.host', origin:'https://morning-three.app.workbuddy.host' }, navigator:{},
   localStorage:{ getItem:k=>(k in store?store[k]:null), setItem:(k,v)=>{store[k]=String(v);}, removeItem:k=>{delete store[k];} },
   document:{ getElementById:id=>els[id]||(els[id]=makeEl(id)), querySelector:()=>null, querySelectorAll:()=>[], addEventListener(){}, createElement:()=>makeEl('a') },
   window:{}, self:{}
@@ -60,7 +60,17 @@ const T = ctx.__T;
 const syncKeys = ['sync_btn','sync_title','sync_sub','sync_email','sync_code','sync_send','sync_login','sync_ok','sync_err_code','sync_bad','sync_offline'];
 let dictOk = true;
 syncKeys.forEach(k=>{ if(!T.T.zh[k] || !T.T.en[k]) dictOk = false; });
-ok('T3 同步文案 zh/en 齐全', dictOk);
+ok('T3 同步文案 zh/en 齐全', dictOk && !!T.T.zh.sync_host && !!T.T.en.sync_host);
+
+/* ============ 域名检测（CORS Origin 硬约束） ============ */
+ok('T3a 主域识别为可用', T.syncHostOK()===true);
+ctx.location.host = 'davidma1973simu.github.io';
+ok('T3b 镜像站识别为不可用', T.syncHostOK()===false);
+/* 镜像态：renderSync 只渲染跳转提示，不渲染邮箱输入框 */
+T.SYNC.user=null; T.SYNC.step='email'; T.SYNC.pending=null; T.openSync();
+ok('T3c 镜像态渲染跳转提示', els['syncRoot'].innerHTML.indexOf('data-act="syhost"')!==-1);
+ok('T3d 镜像态不渲染邮箱框', els['syncRoot'].innerHTML.indexOf('syEmail')===-1);
+ctx.location.host = 'morning-three.app.workbuddy.host';  /* 复位，后续测正常流程 */
 
 /* ============ buildPayload 打包两库 ============ */
 store[T.KEY] = JSON.stringify({ days:{ '2026-01-01':{tasks:[{text:'A',done:true}], writtenAt:'2026-01-01T07:00:00'} }, demoKeys:['2026-01-01'], carry:{date:'2026-01-02', items:[{text:'carry'}]} });

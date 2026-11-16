@@ -566,6 +566,7 @@ var KEY       = 'morning-three.v1';
    ========================================================= */
 var CLOUD_CFG = {
   endpoint:'https://morning-three.app.workbuddy.host',
+  host:'morning-three.app.workbuddy.host',           /* 云端按 Origin 精确放行的主域 */
   oauthRelayBaseUrl:'https://www.workbuddy.cn/v2/as/genie-baas/oauth',
   publishableKey:'wbpk_WN1wgF1azCqiD91AtopsMQ_DxGc2nvaRDbW9LbaFI3T6CaEIbCgFnrM'
 };
@@ -743,7 +744,9 @@ var T = {
     sync_signed:'已登录', sync_out:'退出', sync_me:'这台设备的记录会自动与云端保持一致',
     sync_now:'立即同步', sync_last:'上次同步',     sync_needlogin:'先登录才能同步',
     sync_offline:'同步暂不可用（网络或浏览器限制）',
-    sync_bad:'请输入有效的邮箱地址'
+    sync_bad:'请输入有效的邮箱地址',
+    sync_host:'云同步需要在应用主入口使用。当前是镜像站点，点下面按钮过去一次即可，记录都还在。',
+    sync_gohost:'前往主入口同步'
   },
   en:{
     brand:'Morning Three',
@@ -901,6 +904,8 @@ var T = {
     sync_now:'Sync now', sync_last:'Last synced', sync_needlogin:'Sign in to sync',
     sync_offline:'Sync unavailable (network or browser restriction)',
     sync_bad:'Please enter a valid email address',
+    sync_host:'Cloud sync works in the main app. You are on a mirror — tap below once, your records are all still here.',
+    sync_gohost:'Open main app to sync',
     val_link:'Why three things',
     arch_t:'All your records', data_link:'Data · export / import',
     arch_sub:'Every line you wrote stays here · look back anytime',
@@ -1787,6 +1792,12 @@ function exportMyData(){
    云同步 —— 邮箱验证码登录 + 按天合并（拉→合并→推，多设备不丢数据）
    纯增强层：CDN 不可用 / 未登录时，本地功能完全不受影响
    ========================================================= */
+/* 云端按 Origin 精确放行：镜像站（GitHub Pages 等）调到主域会被 CORS 拒绝。
+   检测到不在主域时，直接给出跳转入口，不让用户对着失败干等。 */
+function syncHostOK(){
+  try{ return location.host === CLOUD_CFG.host; }
+  catch(e){ return false; }
+}
 function initCloud(){
   if(cloud) return true;
   var W = window.WorkBuddyCloud;
@@ -1954,6 +1965,11 @@ function renderSync(){
   if(!el) return;
   var h = '<div class="sy"><div class="sy-top"><div class="sy-t">'+esc(t('sync_title'))+'</div>'+
     '<button class="sy-x" data-act="syclose" aria-label="Close">×</button></div>';
+  if(!syncHostOK()){
+    h += '<div class="sy-d">'+esc(t('sync_host'))+'</div>'+
+      '<div class="ov-foot"><button class="btn" data-act="syhost">'+esc(t('sync_gohost'))+'</button></div>';
+    el.innerHTML = h; return;
+  }
   if(SYNC.user){
     var mail = SYNC.user.email || t('sync_signed');
     var last = ''; try{ last = localStorage.getItem('mt.syncAt'); }catch(e){}
@@ -1991,6 +2007,7 @@ function bindSync(){
     if(!el) return;
     var a = el.getAttribute('data-act');
     if(a === 'syclose'){ closeSync(); }
+    else if(a === 'syhost'){ location.href = CLOUD_CFG.endpoint; }
     else if(a === 'sysend'){
       var inp = document.getElementById('syEmail');
       sendSyncCode(inp ? inp.value : '');
