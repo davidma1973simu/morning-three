@@ -1492,13 +1492,37 @@ if('serviceWorker' in navigator){
   });
 }
 
+/* 一键验收种子：门后的今日 UX / 洞察句+雷达 / 相片墙档案都需要真实数据才显形。
+   仅在晚间库为空时写入，结构等同真实记录；绝不覆盖用户已有内容。 */
+function seedVerifyDays(){
+  var t3 = [
+    ['把方案初稿写完并发给团队','开会时打断了同事两次','明天先听完再说'],
+    ['中午走到楼下晒了十分钟','又把事情拖到最后一刻','早上一上来先做最难的那件'],
+    ['忍住没有立刻回那条消息','对家人语气太急','晚上把手机放远一点'],
+    ['帮新同事把环境问题解决了','答应的事差点忘记','当天就记进清单'],
+    ['跑步三公里没停','刷手机刷掉半小时','给自己设个停止时间'],
+    ['把桌面和收件箱都清空了','重要邮件拖了两天','每天固定一个时段处理邮件'],
+    ['写完项目复盘','开会没做笔记','开会时随手记三点'],
+    ['早睡了一小时','晚饭又点外卖','周末自己做一顿']
+  ];
+  var es = ['calm','calm','tense','full','tired','flow','full','calm'];
+  var today = new Date();
+  t3.forEach(function(q,i){
+    var k = ymd(addDays(today,-i)), at = k+'T21:'+(i%2? '15':'40')+':00';
+    DB.days[k] = { items:q.slice(), done:'', low:(es[i]==='tense'||es[i]==='tired')?'事情排得太满，先减一件。':'',
+                   energy:es[i], none:false, at:at, note:'今天记得不算多，但都是真的。',
+                   checkin:{ at:at } };
+  });
+}
 load();
 try{ if(location.search.indexOf('view=data') >= 0) S.view = 'data'; }catch(e){}
 /* 个人测试通道：?test=unlock 直接解锁（不碰晨间清单数据，测试完删掉参数即可重锁） */
 try{
   if(location.search.indexOf('test=unlock') >= 0){
     DB.unlock = DB.unlock || { at:null, defer:0 };
-    if(!DB.unlock.at){ DB.unlock.at = todayKey(); save(); }
+    if(!DB.unlock.at) DB.unlock.at = todayKey();
+    if(!Object.keys(DB.days).length) seedVerifyDays();
+    save();
   }
   if(location.search.indexOf('test=reset') >= 0){
     DB.unlock = { at:null, defer:0 }; DB.days = {}; save();
