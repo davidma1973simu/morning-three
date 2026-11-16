@@ -3,3 +3,4 @@ morning-list-dev/
 node_modules/
 smoke-*.js
 *.log
+.playwright-cli/
