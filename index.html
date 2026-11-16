@@ -588,6 +588,7 @@ var T = {
     check_now:'18:00 已过，收个尾',
     sealed_hint:'今天收好了，明天见',
     t_title:'今天想推进什么',
+    t_title_done:'今天推进了',
     t_sub:'想清楚一件就算数 · 18:00 收个尾',
     t_sub_exec:'白天随时可写，18:00 前都能改。',
     lock_hint:'写满一周（至少 4 次，不必连续），解锁「<span class="hl">晚间反思</span>」。',
@@ -759,6 +760,7 @@ var T = {
     check_now:'Past 18:00 — close the day',
     sealed_hint:'Today is closed. See you tomorrow.',
     t_title:'What to move today',
+    t_title_done:'What you moved today',
     t_sub:'One clear thing counts · close at 18:00',
     t_sub_exec:'Write and check anytime — editable until 18:00.',
     lock_hint:'Write across a week (at least 4 days, no streak needed) to unlock <span class="hl">Evening Reflection</span>.',
@@ -1285,12 +1287,10 @@ function sdCard(){
   var open = sdOpen() || (!!p && p.ran >= 7 && (p.inputs >= 4 || p.ran >= 10));
   if(!open && (!p || p.ran < 7)) return '';
 
-  var note = open ? t('sd_ready') : t('sd_seal').replace('{n}', p.inputs);
   var cls = open? 'sdcard' : 'sdcard locked slim';
   return '<section class="card sd-wrap"><div class="'+cls+'" data-act="sdgo">'+
     '<div class="sd-ico">'+sdIcon(open)+'</div>'+
-    '<div class="sd-t"><div class="sd-h">'+esc(t('sd_title'))+'</div>'+
-      '<div class="sd-p">'+esc(t('sd_sub'))+(note? ' · '+esc(note) : '')+'</div></div>'+
+    '<div class="sd-t"><div class="sd-h">'+esc(t('sd_title'))+'</div></div>'+
     '<span class="sd-caret">›</span>'+
   '</div></section>';
 }
@@ -1327,7 +1327,7 @@ function viewToday(){
       '<span class="pname'+(dot===' w'?' w':dot===' g'?' g':'')+'">'+name+'</span>'+
       (hint ? '<span class="phint">'+esc(hint)+'</span>' : '')+
     '</div>'+
-    '<h1 class="h1">'+t('t_title')+'</h1>';
+    '<h1 class="h1">'+(ph==='sealed' ? t('t_title_done') : t('t_title'))+'</h1>';
 
   /* 封存日 —— 同盟者不是审判者：看见意图，再给一条不失尊严的补记路 */
   if(ph==='sealed'){
