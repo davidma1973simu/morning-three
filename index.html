@@ -116,6 +116,10 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .hdr-r{display:flex;align-items:center;gap:8px;padding-top:2px}
 .lang{height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:13px;font-weight:600;color:var(--ink2);letter-spacing:.04em}
 .lang.bell{width:30px;padding:0;display:flex;align-items:center;justify-content:center;color:var(--ink2)}
+.lang.sync{padding:0 13px;display:flex;align-items:center;gap:6px}
+.lang.sync .dot{width:6px;height:6px;border-radius:50%;background:var(--edge2)}
+.lang.sync.online .dot{background:var(--brand-txt)}
+.lang.sync.busy{opacity:.6}
 .lang:hover{border-color:var(--edge)}
 
 /* ---------- segmented ---------- */
@@ -471,6 +475,29 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .ov-foot{margin-top:22px}
 .ov-warn{font-size:13px;color:var(--warn);text-align:center;margin-top:11px;font-weight:600;height:16px}
 
+/* ---------- 云同步弹窗 ---------- */
+#syncRoot{position:fixed;inset:0;z-index:70;display:none}
+#syncRoot.on{display:flex;align-items:center;justify-content:center;padding:18px;
+  background:var(--ov);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.sy{background:var(--card);border-radius:24px;width:100%;max-width:430px;padding:26px 22px 20px;
+  box-shadow:0 24px 60px -12px rgba(0,0,0,.5);margin:auto;animation:brpop .28s cubic-bezier(.2,.9,.3,1)}
+.sy-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.sy-t{font-size:21px;font-weight:700;letter-spacing:-.015em}
+.sy-x{flex:none;width:30px;height:30px;border-radius:50%;background:var(--fill3);color:var(--ink2);font-size:20px;line-height:1}
+.sy-d{font-size:13px;color:var(--ink2);line-height:1.6;margin:6px 0 20px}
+.sy-f{margin-top:14px}
+.sy-f label{display:block;font-size:13px;font-weight:700;color:var(--ink3);letter-spacing:.04em;margin-bottom:7px}
+.sy-inp{width:100%;height:46px;background:var(--fill3);border-radius:12px;padding:0 13px;font-size:15px;
+  border:1.5px solid transparent;color:var(--ink);box-sizing:border-box;font-family:inherit}
+.sy-inp:focus{border-color:var(--brand)}
+.sy-inp::placeholder{color:var(--edge2)}
+.sy-msg{font-size:12.5px;line-height:1.5;margin-top:10px;min-height:16px;color:var(--ink3)}
+.sy-msg.err{color:var(--warn);font-weight:600}
+.sy-link{background:none;border:none;color:var(--brand-txt);font-size:13px;font-weight:700;cursor:pointer;padding:0;text-decoration:underline;margin-top:12px}
+.sy-me{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-top:1px solid var(--line)}
+.sy-who{font-size:14px;font-weight:600;color:var(--ink);word-break:break-all}
+.sy-meta{font-size:12px;color:var(--ink3);margin-top:3px}
+
 /* ---------- 首次 briefing：一眼看全，读完就走 ---------- */
 #briefRoot{position:fixed;inset:0;z-index:86;display:none}
 #briefRoot.on{display:flex;align-items:center;justify-content:center;padding:20px;
@@ -516,8 +543,10 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 <div id="valRoot"></div>
 <div id="rmRoot"></div>
 <div id="celebRoot"></div>
+<div id="syncRoot"></div>
 <div class="toast" id="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@tencent-ai/workbuddy-cloud-sdk@dev/lib/index.global.js"></script>
 <script>
 (function(){
 'use strict';
@@ -531,6 +560,17 @@ var DAY_EDIT_MAX = 18 * 60;  // 晨间清单可编辑到 18:00（与晚间反思
 var CHECK_MIN    = EVE_MIN;  // 兼容旧引用
 var SLOTS     = 3;         // 每日三件要事
 var KEY       = 'morning-three.v1';
+
+/* =========================================================
+   云同步配置（来自 WorkBuddy Cloud publicConfig，前端可公开）
+   ========================================================= */
+var CLOUD_CFG = {
+  endpoint:'https://morning-three.app.workbuddy.host',
+  oauthRelayBaseUrl:'https://www.workbuddy.cn/v2/as/genie-baas/oauth',
+  publishableKey:'wbpk_WN1wgF1azCqiD91AtopsMQ_DxGc2nvaRDbW9LbaFI3T6CaEIbCgFnrM'
+};
+var cloud = null;                 /* 延迟初始化：CDN 加载失败时保持 null，本地功能不受影响 */
+var SYNC = { user:null, pending:null, busy:false, step:'email' };
 
 /* =========================================================
    文案
@@ -688,7 +728,22 @@ var T = {
     guard_sub:'换设备或清缓存会丢。花一秒导出留一份。',
     guard_btn:'导出留一份',
     guard_done:'已留好一份',
-    guard_close:'知道了'
+    guard_close:'知道了',
+    /* 云同步 */
+    sync_btn:'同步', sync_title:'云同步', sync_sub:'用邮箱验证码登录，把你的记录存到云端，换设备也不会丢。',
+    sync_email:'邮箱地址', sync_email_ph:'name@example.com',
+    sync_send:'获取验证码', sync_sending:'发送中…', sync_sent:'验证码已发送，请查收邮件',
+    sync_code:'验证码', sync_code_ph:'6 位数字',
+    sync_login:'登录并同步', sync_logging:'登录中…',
+    sync_resend:'重新发送', sync_back:'换个邮箱',
+    sync_hint:'新邮箱会自动创建账号，无需密码。',
+    sync_ok:'已同步到云端', sync_pulled:'已从云端恢复', sync_nothing:'云端还没有记录，已把这台设备的存上去',
+    sync_in:'正在同步…', sync_off:'已退出登录',
+    sync_err_generic:'同步失败，请稍后重试', sync_err_code:'验证码不对或已过期，请重新获取',
+    sync_signed:'已登录', sync_out:'退出', sync_me:'这台设备的记录会自动与云端保持一致',
+    sync_now:'立即同步', sync_last:'上次同步',     sync_needlogin:'先登录才能同步',
+    sync_offline:'同步暂不可用（网络或浏览器限制）',
+    sync_bad:'请输入有效的邮箱地址'
   },
   en:{
     brand:'Morning Three',
@@ -832,6 +887,20 @@ var T = {
     guard_btn:'Export a copy',
     guard_done:'A copy is saved',
     guard_close:'Got it',
+    sync_btn:'Sync', sync_title:'Cloud sync', sync_sub:'Sign in with an email code. Your records stay in the cloud, safe across devices.',
+    sync_email:'Email address', sync_email_ph:'name@example.com',
+    sync_send:'Send code', sync_sending:'Sending…', sync_sent:'Code sent — check your inbox',
+    sync_code:'Verification code', sync_code_ph:'6-digit code',
+    sync_login:'Sign in & sync', sync_logging:'Signing in…',
+    sync_resend:'Resend code', sync_back:'Use another email',
+    sync_hint:'New emails create an account automatically — no password needed.',
+    sync_ok:'Synced to the cloud', sync_pulled:'Restored from the cloud', sync_nothing:'Nothing in the cloud yet — uploaded this device instead',
+    sync_in:'Syncing…', sync_off:'Signed out',
+    sync_err_generic:'Sync failed — please try again', sync_err_code:'Wrong or expired code — please request a new one',
+    sync_signed:'Signed in', sync_out:'Sign out', sync_me:'This device stays in step with the cloud',
+    sync_now:'Sync now', sync_last:'Last synced', sync_needlogin:'Sign in to sync',
+    sync_offline:'Sync unavailable (network or browser restriction)',
+    sync_bad:'Please enter a valid email address',
     val_link:'Why three things',
     arch_t:'All your records', data_link:'Data · export / import',
     arch_sub:'Every line you wrote stays here · look back anytime',
@@ -989,9 +1058,12 @@ function render(){
 function header(){
   /* 铃铛永远在：装了桌面的人照样需要定时提醒，那是另一件事 */
   var bell = '<button class="lang bell" data-act="remind" title="'+esc(t('rm_title'))+'" aria-label="'+esc(t('rm_title'))+'">'+svgBell()+'</button>';
+  var online = SYNC.user ? ' online' : '';
+  var busy = SYNC.busy ? ' busy' : '';
+  var sync = '<button class="lang sync'+online+busy+'" data-act="sync" title="'+esc(t('sync_title'))+'" aria-label="'+esc(t('sync_title'))+'"><span class="dot"></span>'+esc(t('sync_btn'))+'</button>';
   return '<header class="hdr">'+
     '<div><div class="brand">'+t('brand')+'</div><div class="brand-sub">Morning Three</div></div>'+
-    '<div class="hdr-r">'+bell+'<button class="lang" data-act="lang">'+(LANG==='zh'?'EN':'中文')+'</button></div>'+
+    '<div class="hdr-r">'+sync+bell+'<button class="lang" data-act="lang">'+(LANG==='zh'?'EN':'中文')+'</button></div>'+
   '</header>';
 }
 function seg(){
@@ -1711,6 +1783,234 @@ function exportMyData(){
   }catch(e){ toast(t('guard_sub')); }
 }
 
+/* =========================================================
+   云同步 —— 邮箱验证码登录 + 按天合并（拉→合并→推，多设备不丢数据）
+   纯增强层：CDN 不可用 / 未登录时，本地功能完全不受影响
+   ========================================================= */
+function initCloud(){
+  if(cloud) return true;
+  var W = window.WorkBuddyCloud;
+  if(!W || !W.createWorkBuddyCloud) return false;
+  try{
+    cloud = W.createWorkBuddyCloud({
+      endpoint:CLOUD_CFG.endpoint,
+      oauthRelayBaseUrl:CLOUD_CFG.oauthRelayBaseUrl,
+      publishableKey:CLOUD_CFG.publishableKey
+    });
+    return true;
+  }catch(e){ cloud = null; return false; }
+}
+async function authGate(){
+  if(!initCloud()) return null;
+  try{
+    var r = await cloud.auth.getSession();
+    if(r.error || !r.data || !r.data.session){ SYNC.user = null; return null; }
+    SYNC.user = r.data.session.user || null;
+    return r.data.session;
+  }catch(e){ return null; }
+}
+/* 打包两库：与导出结构一致，云端只存这一份 JSON */
+function buildPayload(){
+  var morning = {}; try{ morning = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; }catch(e){}
+  var evening = {}; try{ evening = JSON.parse(localStorage.getItem(SKEY) || '{}') || {}; }catch(e){}
+  return {
+    app:'morning-three', version:1, syncedAt:new Date().toISOString(),
+    morning:{ days:morning.days||{}, demoKeys:morning.demoKeys||[], carry:morning.carry||null },
+    evening:{ days:evening.days||{}, unlock:evening.unlock||{} }
+  };
+}
+/* 按日期键合并：同一天取 writtenAt 较新者；相等时本地优先（当前设备即权威）。只增不减 */
+function mergeDayMaps(local, remote){
+  var out = {}, k, l, r, lt, rt;
+  for(k in remote){ if(Object.prototype.hasOwnProperty.call(remote,k)) out[k] = remote[k]; }
+  for(k in local){
+    if(!Object.prototype.hasOwnProperty.call(local,k)) continue;
+    l = local[k]; r = out[k];
+    if(!r){ out[k] = l; continue; }
+    lt = Date.parse(l && l.writtenAt) || 0;
+    rt = Date.parse(r && r.writtenAt) || 0;
+    out[k] = (lt >= rt) ? l : r;      /* 相等或更新 → 本地 */
+  }
+  return out;
+}
+function applyPayload(p){
+  if(!p) return 0;
+  var m = {}, e = {}, n = 0;
+  try{ m = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; }catch(err){}
+  try{ e = JSON.parse(localStorage.getItem(SKEY) || '{}') || {}; }catch(err){}
+  var mp = p.morning || {}, ep = p.evening || {};
+  var mergedDays = mergeDayMaps(m.days||{}, mp.days||{});
+  Object.keys(mp.days||{}).forEach(function(k){ if(!(m.days||{})[k]) n++; });  /* 云端带来的新天数 */
+  m.days = mergedDays;
+  if(mp.demoKeys) m.demoKeys = mp.demoKeys;
+  if(mp.carry) m.carry = mp.carry;
+  e.days = mergeDayMaps(e.days||{}, ep.days||{});
+  if(ep.unlock) e.unlock = ep.unlock;
+  try{ localStorage.setItem(KEY, JSON.stringify(m)); }catch(err){}
+  try{ localStorage.setItem(SKEY, JSON.stringify(e)); }catch(err){}
+  load();                              /* 重新载入内存 DB，让界面读到合并结果 */
+  try{ localStorage.setItem('mt.syncAt', p.syncedAt || new Date().toISOString()); }catch(err){}
+  return n;
+}
+/* ---------- 邮箱 OTP ---------- */
+function syncMsg(msg, isErr){
+  var el = document.getElementById('syMsg');
+  if(!el) return;
+  el.textContent = msg || '';
+  el.className = 'sy-msg' + (isErr ? ' err' : '');
+}
+async function sendSyncCode(email){
+  email = String(email||'').trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ syncMsg(t('sync_bad'), true); return; }
+  if(!initCloud()){ syncMsg(t('sync_offline'), true); return; }
+  syncMsg(t('sync_sending'));
+  try{
+    var sent = await cloud.auth.sendOtp({ email:email });
+    if(sent.error){ syncMsg(sent.error.message || t('sync_err_generic'), true); return; }
+    SYNC.pending = { email:email, verificationId:sent.data.verificationId, isExistingUser:sent.data.isExistingUser };
+    SYNC.step = 'code';
+    renderSync();
+    syncMsg(t('sync_sent'));
+  }catch(e){ syncMsg(t('sync_offline'), true); }
+}
+async function verifySyncCode(code){
+  var p = SYNC.pending;
+  if(!p || !initCloud()){ syncMsg(t('sync_err_generic'), true); return; }
+  code = String(code||'').trim();
+  if(!code) return;
+  syncMsg(t('sync_logging'));
+  try{
+    var done = await cloud.auth.verifyOtp({
+      email:p.email, verificationId:p.verificationId, isExistingUser:p.isExistingUser, token:code
+    });
+    if(done.error){ syncMsg(t('sync_err_code'), true); return; }
+    SYNC.user = done.data && done.data.user ? done.data.user : { email:p.email };
+    SYNC.pending = null; SYNC.step = 'email';
+    closeSync(); render();
+    await syncNow(true);
+  }catch(e){ syncMsg(t('sync_err_generic'), true); }
+}
+/* ---------- 拉 / 推 / 一键同步 ---------- */
+async function syncPull(){
+  var s = await authGate();
+  if(!s) return { ok:false, needLogin:true };
+  var r = await cloud.database.from('sync_data').select('id, payload').maybeSingle();
+  if(r.error) return { ok:false, msg:r.error.message || t('sync_err_generic') };
+  var added = (r.data && r.data.payload) ? applyPayload(r.data.payload) : -1;
+  return { ok:true, added:added, rowId:(r.data && r.data.id) || null, hasCloud:!!(r.data && r.data.payload) };
+}
+async function syncPush(rowId){
+  var payload = buildPayload();
+  var q = cloud.database.from('sync_data');
+  var r;
+  if(rowId){
+    r = await q.update({ payload:payload, updated_at:new Date().toISOString() }).eq('id', rowId).select();
+  }else{
+    r = await q.insert({ payload:payload, updated_at:new Date().toISOString() }).select();
+  }
+  if(r.error) return { ok:false, msg:r.error.message || t('sync_err_generic') };
+  var affected = Array.isArray(r.data) ? r.data : [];
+  if(!affected.length) return { ok:false, msg:t('sync_err_generic') };   /* RLS 挡下：无写权限 */
+  try{ localStorage.setItem('mt.syncAt', payload.syncedAt); }catch(e){}
+  return { ok:true, rowId:affected[0].id };
+}
+async function syncNow(silent){
+  var s = await authGate();
+  if(!s){ if(!silent) openSync(); return; }
+  SYNC.busy = true; render();
+  var pull = await syncPull();
+  if(!pull.ok){
+    SYNC.busy = false; render();
+    if(pull.needLogin){ openSync(); return; }
+    toast(pull.msg || t('sync_err_generic')); return;
+  }
+  var push = await syncPush(pull.rowId);
+  SYNC.busy = false; render();
+  if(!push.ok){ toast(push.msg || t('sync_err_generic')); return; }
+  if(!pull.hasCloud) toast(t('sync_nothing'));
+  else if(pull.added > 0) toast(t('sync_pulled'));
+  else toast(t('sync_ok'));
+}
+async function signOutSync(){
+  try{ if(cloud) await cloud.auth.signOut(); }catch(e){}
+  SYNC.user = null; SYNC.pending = null; SYNC.step = 'email';
+  render(); openSync();
+}
+/* ---------- 同步弹窗 ---------- */
+function openSync(){
+  var el = document.getElementById('syncRoot');
+  if(!el) return;
+  el.classList.add('on');
+  renderSync();
+}
+function closeSync(){
+  var el = document.getElementById('syncRoot');
+  if(!el) return;
+  el.classList.remove('on');
+  setTimeout(function(){ if(!el.classList.contains('on')) el.innerHTML=''; }, 200);
+}
+function renderSync(){
+  var el = document.getElementById('syncRoot');
+  if(!el) return;
+  var h = '<div class="sy"><div class="sy-top"><div class="sy-t">'+esc(t('sync_title'))+'</div>'+
+    '<button class="sy-x" data-act="syclose" aria-label="Close">×</button></div>';
+  if(SYNC.user){
+    var mail = SYNC.user.email || t('sync_signed');
+    var last = ''; try{ last = localStorage.getItem('mt.syncAt'); }catch(e){}
+    h += '<div class="sy-d">'+esc(t('sync_me'))+'</div>'+
+      '<div class="sy-me"><div><div class="sy-who">'+esc(mail)+'</div>'+
+      (last ? '<div class="sy-meta">'+esc(t('sync_last'))+' '+esc(String(last).slice(0,10))+'</div>' : '')+
+      '</div></div>'+
+      '<div class="ov-foot"><button class="btn" data-act="synow"'+(SYNC.busy?' disabled':'')+'>'+esc(SYNC.busy?t('sync_in'):t('sync_now'))+'</button>'+
+      '<div class="sy-link" data-act="syout">'+esc(t('sync_out'))+'</div></div>';
+  }else if(SYNC.step === 'code' && SYNC.pending){
+    h += '<div class="sy-d">'+esc(SYNC.pending.email)+'</div>'+
+      '<div class="sy-f"><label>'+esc(t('sync_code'))+'</label>'+
+      '<input id="syCode" class="sy-inp" inputmode="numeric" autocomplete="one-time-code" placeholder="'+esc(t('sync_code_ph'))+'"></div>'+
+      '<div class="sy-msg" id="syMsg"></div>'+
+      '<div class="ov-foot"><button class="btn" data-act="syverify">'+esc(t('sync_login'))+'</button>'+
+      '<div class="sy-link" data-act="syback">'+esc(t('sync_back'))+'</div></div>';
+  }else{
+    h += '<div class="sy-d">'+esc(t('sync_sub'))+'</div>'+
+      '<div class="sy-f"><label>'+esc(t('sync_email'))+'</label>'+
+      '<input id="syEmail" class="sy-inp" type="email" inputmode="email" autocomplete="email" placeholder="'+esc(t('sync_email_ph'))+'"></div>'+
+      '<div class="sy-msg" id="syMsg"></div>'+
+      '<div class="ov-foot"><button class="btn" data-act="sysend">'+esc(t('sync_send'))+'</button>'+
+      '<div class="sy-meta" style="text-align:center;margin-top:12px">'+esc(t('sync_hint'))+'</div></div>';
+  }
+  h += '</div>';
+  el.innerHTML = h;
+}
+function bindSync(){
+  var root = document.getElementById('syncRoot');
+  if(!root || root.__bound) return;
+  root.__bound = true;
+  root.addEventListener('click', function(e){
+    if(e.target === root){ closeSync(); return; }
+    var el = e.target.closest('[data-act]');
+    if(!el) return;
+    var a = el.getAttribute('data-act');
+    if(a === 'syclose'){ closeSync(); }
+    else if(a === 'sysend'){
+      var inp = document.getElementById('syEmail');
+      sendSyncCode(inp ? inp.value : '');
+    }
+    else if(a === 'syverify'){
+      var ci = document.getElementById('syCode');
+      verifySyncCode(ci ? ci.value : '');
+    }
+    else if(a === 'syback'){ SYNC.pending=null; SYNC.step='email'; renderSync(); }
+    else if(a === 'synow'){ syncNow(); }
+    else if(a === 'syout'){ signOutSync(); }
+  });
+  root.addEventListener('keydown', function(e){
+    if(e.key !== 'Enter') return;
+    var id = e.target.id;
+    if(id === 'syEmail'){ var i=document.getElementById('syEmail'); sendSyncCode(i?i.value:''); }
+    else if(id === 'syCode'){ var c=document.getElementById('syCode'); verifySyncCode(c?c.value:''); }
+  });
+}
+
 /* ---------- 价值卡入口（弹窗） ---------- */
 function valueLink(){
   return '<div class="val-link"><button class="linkbtn" data-act="value">'+esc(t('val_link'))+' ›</button></div>';
@@ -1788,6 +2088,10 @@ function bindShell(){
     if(!el) return;
     var a = el.getAttribute('data-act');
     if(a==='view'){ S.view = el.getAttribute('data-v'); render(); }
+    else if(a==='sync'){
+      if(SYNC.user) syncNow();
+      else openSync();
+    }
     else if(a==='lang'){ LANG = LANG==='zh'?'en':'zh'; try{localStorage.setItem('mt.lang',LANG);}catch(err){} render(); }
     else if(a==='submitday'){
       var sr = rec(todayKey());
@@ -2029,6 +2333,9 @@ function bindOverlay(){
     else if(a==='rmtab'){ rmTab = el.getAttribute('data-v'); showRemind(); }
   });
 
+  /* 云同步弹层在 #shell 之外，自己接事件 */
+  bindSync();
+
   root.onclick = function(e){
     var el = e.target.closest('[data-act]');
     if(!el) return;
@@ -2220,6 +2527,16 @@ var COLD_SESSION = (nowMin() >= EVE_MIN && !isChecked(todayKey()) && !taskList(p
 try{ var lg = localStorage.getItem('mt.lang'); if(lg==='en'||lg==='zh') LANG = lg; }catch(e){}
 bindOverlay();
 render();
+/* 云同步：异步恢复会话，成功则点亮顶栏同步点；不阻塞首屏、不影响本地功能 */
+if(initCloud()){
+  cloud.auth.getSession().then(function(r){
+    if(r && !r.error && r.data && r.data.session && r.data.session.user){
+      SYNC.user = r.data.session.user;
+      var hdr = document.querySelector('.lang.sync');
+      if(hdr) hdr.classList.add('online');
+    }
+  }).catch(function(){});
+}
 lastPhase = phaseOf(todayKey());
 setInterval(tick, 15000);
 document.addEventListener('visibilitychange', function(){ if(!document.hidden) render(); });
