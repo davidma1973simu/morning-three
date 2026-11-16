@@ -1322,7 +1322,9 @@ function viewToday(){
   }
 
   /* 空白封存日：不重复叠一句"明天来写"，把位置留给补记通道 */
-  var h = '<section class="card">'+ ((cold || (ph==='sealed' && !hasContent)) ? '' : nightLine(r)) +
+  /* 已收尾且有内容时，phase 的「已收尾」+ 时间已说清状态 —— 夜间道别句就别再重复一遍 */
+  var showNight = !cold && !(ph==='sealed' && hasContent);
+  var h = '<section class="card">'+ (showNight ? nightLine(r) : '') +
     '<div class="phase"><span class="pdot'+dot+'"></span>'+
       '<span class="pname'+(dot===' w'?' w':dot===' g'?' g':'')+'">'+name+'</span>'+
       (hint ? '<span class="phint">'+esc(hint)+'</span>' : '')+
@@ -1485,12 +1487,9 @@ function whisperCard(){
       ? t('ws_word').replace('{w}', esc(ws[0].w)).replace('{n}', ws[0].n)
       : t('ws_trace').replace('{n}', ks.length);
   }
-  var h = '<div class="whisper"><div class="ws-mark">'+svgMoon()+'</div>'+
-    '<div class="ws-line">'+line+'</div>';
-  if(sdOpen() && nowMin() >= EVE_MIN){
-    h += '<div class="ws-go" data-act="sdgo">'+esc(t('ws_to_eve'))+' ›</div>';
-  }
-  return h+'</div>';
+  /* 晚间反思已有独立卡片入口 —— whisper 只做一句低声洞察，不再并排塞引导，避免两句话抢注意力 */
+  return '<div class="whisper"><div class="ws-mark">'+svgMoon()+'</div>'+
+    '<div class="ws-line">'+line+'</div></div>';
 }
 
 /* 坚持视图：只回答「你是否天天来」—— 用了几天 vs 没用几天 + 推进确认累计。
