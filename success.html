@@ -116,6 +116,36 @@ input,textarea{font-family:inherit;font-size:17px;color:inherit;border:0;backgro
   border-radius:999px;background:transparent;color:var(--ink2);font:inherit;font-size:13px;font-weight:600;cursor:pointer}
 .ins-archive:hover{border-color:var(--brand-txt);color:var(--brand-txt)}
 
+/* 时间折叠：回看 / 阶段 —— 安静陈列，不比较 */
+.fl-card{margin:30px 0 8px;padding-top:22px;border-top:1px solid var(--sep2)}
+.fl-sub{font-size:13px;color:var(--ink3);margin-top:-6px;margin-bottom:16px}
+.fl-seg{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
+.fl-b{padding:8px 15px;border:1px solid var(--sep);border-radius:999px;background:transparent;
+  color:var(--ink2);font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.fl-b.on{background:var(--brand-soft);border-color:var(--brand-txt);color:var(--brand-txt)}
+.fl-mode{display:inline-flex;gap:0;border:1px solid var(--sep2);border-radius:9px;overflow:hidden;margin-bottom:16px}
+.fl-m{padding:6px 14px;border:0;background:transparent;color:var(--ink3);font:inherit;font-size:13px;cursor:pointer}
+.fl-m.on{background:var(--fill2);color:var(--ink);font-weight:600}
+.fl-count{font-size:15px;color:var(--ink);line-height:1.6;letter-spacing:-.01em}
+.fl-count.sub{font-size:13px;color:var(--ink3);margin-top:2px}
+.fl-empty{font-size:14px;color:var(--ink3);line-height:1.6;padding:14px 0}
+.fl-entries{margin-top:14px}
+.fl-entry{display:flex;gap:12px;padding:10px 2px;border-bottom:.5px solid var(--sep2);font-size:14px;line-height:1.45}
+.fl-d{color:var(--ink3);font-variant-numeric:tabular-nums;flex:none;font-weight:600}
+.fl-line{color:var(--ink);word-break:break-word}
+.fl-change-t{font-size:13px;color:var(--ink3);margin:22px 0 10px;letter-spacing:.02em}
+.fl-pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fl-side{background:var(--card);border:1px solid var(--sep2);border-radius:12px;padding:14px}
+.fl-lab{font-size:12px;color:var(--ink3);margin-bottom:8px;font-weight:600}
+.fl-txt{font-size:14px;line-height:1.5;color:var(--ink);word-break:break-word}
+.fl-write{margin-top:22px}
+.fl-write textarea{width:100%;box-sizing:border-box;min-height:72px;resize:vertical;border:1px solid var(--sep);
+  border-radius:12px;background:var(--card);color:var(--ink);font:inherit;font-size:14px;line-height:1.5;padding:12px 14px}
+.fl-write .btn-i{margin-top:10px}
+.fl-note{background:var(--brand-soft);border:1px solid var(--sep2);border-radius:12px;padding:13px 14px;
+  font-size:14px;line-height:1.5;color:var(--ink)}
+.fl-write .none-btn{margin-top:8px}
+
 /* iOS grouped list */
 .grp{background:var(--card);border-radius:12px;margin:18px 0;overflow:hidden}
 .grp-h{font-size:13px;color:var(--ink2);font-weight:400;padding:0 2px 7px;letter-spacing:0}
@@ -370,7 +400,14 @@ var EVE_MIN = 18 * 60;           // 18:00 起晚间反思才可写
 function nowMin(){ var d = new Date(); return d.getHours()*60 + d.getMinutes(); }
 
 var LANG = 'zh';
-var S = { view:'today', energy:null, sheetKey:null, bannerOff:false, sheetOpen:false, editK:null, archiveOpen:false };
+var S = { view:'today', energy:null, sheetKey:null, bannerOff:false, sheetOpen:false, editK:null, archiveOpen:false,
+          flMode:'recent', flArg:7, flNoteEdit:false };
+/* 「现在的我」独立存储：按窗口键存一段可选文字，不污染当日三问、不写新库结构 */
+var FK = 'morning-three.foldnote.v1';
+function foldNotes(){ try{ return JSON.parse(localStorage.getItem(FK)||'{}')||{}; }catch(e){ return {}; } }
+function foldNoteGet(id){ return foldNotes()[id]||''; }
+function foldNoteSet(id, txt){ var o=foldNotes(); if(txt&&String(txt).trim()) o[id]=String(txt); else delete o[id];
+  try{ localStorage.setItem(FK, JSON.stringify(o)); }catch(e){} }
 var DB = { days:{}, unlock:{ at:null, defer:0 }, demo:false };
 
 /* ---------- 工具 ---------- */
@@ -546,6 +583,15 @@ var T = {
     data_link:'数据 · 导出 / 导入',
     d_export:'导出为 JSON', d_import:'导入 JSON', d_clear:'清空全部记录',
     d_note:'导出包含晨间清单与晚间反思的全部记录。数据只在这台设备，换设备或清缓存会丢，建议定期导出。',
+    /* 时间折叠：回看件 + 阶段反思 */
+    fl_recent:'回看', fl_stage:'阶段', fl_sub:'不比较，只是把过去的日子摆到面前',
+    fl_7:'近 7 天', fl_30:'近 30 天', fl_90:'近 90 天',
+    fl_1m:'一个月前', fl_3m:'三个月前', fl_6m:'半年前', fl_12m:'一年前',
+    fl_days:'这 {n} 天里，你留下了 {w} 笔。', fl_blank:'其中 {b} 天留了白——也算数。',
+    fl_empty:'这段时间还没有记录。等日子攒起来，这里会慢慢显出样子。',
+    fl_change:'变化', fl_change_sub:'只并排，不评判', fl_then:'那时', fl_now:'现在',
+    fl_write:'写一段现在的我（可选）', fl_write_ph:'此刻想对自己说的，留在这里……', fl_saved:'已留下',
+    fl_none:'两端都还没有可并排的字。先写下去，日子会给你答案。',
     s_days:'记录天数', s_total:'累计成就', s_open:'已解锁',
     unit:'天', pcs:'件',
     /* 门禁 */
@@ -609,6 +655,15 @@ var T = {
     data_link:'Data · export / import',
     d_export:'Export JSON', d_import:'Import JSON', d_clear:'Delete all records',
     d_note:'The export contains both your morning lists and evening reflections. Everything lives in this browser only, so export regularly if you switch devices.',
+    /* Time fold: look-back + stage review */
+    fl_recent:'Look back', fl_stage:'Seasons', fl_sub:'No comparison — just the past days, laid out',
+    fl_7:'Last 7 days', fl_30:'Last 30 days', fl_90:'Last 90 days',
+    fl_1m:'A month ago', fl_3m:'Three months ago', fl_6m:'Half a year ago', fl_12m:'A year ago',
+    fl_days:'Over these {n} days, you left {w} lines.', fl_blank:'{b} of them were left blank — those count too.',
+    fl_empty:'Nothing here yet. As the days gather, a shape will appear.',
+    fl_change:'Change', fl_change_sub:'Side by side, no judgment', fl_then:'Then', fl_now:'Now',
+    fl_write:'A note to my present self (optional)', fl_write_ph:'What you want to leave for yourself, right now…', fl_saved:'Saved',
+    fl_none:'No lines to place side by side yet. Keep writing — the days will answer.',
     s_days:'Days', s_total:'Total wins', s_open:'Unlocked',
     unit:'days', pcs:'wins',
     g_lt:'Evening Reflection', g_sub:'It opens only after Morning Three runs steady.',
@@ -799,6 +854,127 @@ function insightLines(dayCount, dist){
   if(LOWK[top.k]) lines.push(t('ins_low'));
   else lines.push(t('ins_high'));
   return lines;
+}
+
+/* =========================================================
+   时间折叠（单一地基）—— 回看件与阶段反思共用
+   ---------------------------------------------------------
+   foldWindow(mode, arg, now) 纯读，不写库、不写 localStorage。
+   mode='recent' arg=N      : 近 N 个自然日（含今天）
+   mode='stage'  arg=N月    : 距今 N 月的那一个月窗口（30 天）
+   返回 { keys, entries, dist, words, blanks, then, now }
+     entries: [{k, lines[], energy, blank}]  每天一项，空白日照实记为 blank
+     dist   : 该窗口内六态分布 {cnt,total}（复用 energyDist 口径）
+     words  : 窗口内有字的行数
+     then/now: 窗口内最早 / 最近一条有字的记录，只陈列不评判
+   传入 now 便于测试固定日期；默认当前。
+   ========================================================= */
+function foldWindow(mode, arg, now){
+  var base = now || new Date(), today = todayKey(), out = { keys:[], entries:[], words:0, blanks:0, then:null, now:null };
+  var cnt = {}; ENERGY.forEach(function(e){ cnt[e.k]=0; });
+  var keys = [];
+  if(mode === 'recent'){
+    for(var i=(arg-1); i>=0; i--) keys.push(ymd(addDays(base, -i)));
+  } else {
+    var mid = addDays(base, -arg*30);              /* 阶段中点：距今 N 月 */
+    var st = addDays(mid, -15), en = addDays(mid, 15);
+    for(var d=new Date(st.getTime()); d<=en; d=addDays(d,1)){
+      var k = ymd(d); if(k<=today) keys.push(k);   /* 不收未来 */
+    }
+  }
+  out.keys = keys;
+  keys.forEach(function(k){
+    var r = DB.days[k] || {};
+    var lines = (r.items || []).filter(function(x){ return x && String(x).trim(); });
+    var blank = lines.length === 0;
+    if(blank) out.blanks++; else out.words += lines.length;
+    var e = { k:k, lines:lines, energy:(r.energy && cnt[r.energy]!==undefined)? r.energy : '', blank:blank };
+    out.entries.push(e);
+    if(e.energy){ cnt[e.energy]++; }
+    if(!blank){
+      var item = { k:k, text:lines[0] };
+      if(!out.then) out.then = item;
+      out.now = item;                              /* 遍历升序，最后一条即最近 */
+    }
+  });
+  var total = 0; for(var q in cnt) total += cnt[q];
+  out.dist = { cnt:cnt, total:total };
+  return out;
+}
+
+/* 变化并排：两端都有字才出；只陈列原文，不加任何评判词 */
+function changePairHTML(pair){
+  if(!pair || !pair.then || !pair.now || pair.then.k===pair.now.k) return '';
+  return '<div class="fl-pair">'+
+    '<div class="fl-side"><div class="fl-lab">'+esc(t('fl_then'))+' · '+esc(fmtDate(pair.then.k))+'</div>'+
+      '<div class="fl-txt">'+esc(pair.then.text)+'</div></div>'+
+    '<div class="fl-side"><div class="fl-lab">'+esc(t('fl_now'))+' · '+esc(fmtDate(pair.now.k))+'</div>'+
+      '<div class="fl-txt">'+esc(pair.now.text)+'</div></div>'+
+  '</div>';
+}
+
+/* 回看 / 阶段共用的卡片：档位切换 + 真实摘录 + 变化并排 + 常驻输入
+   只陈列原文，空白日照实计入，不评判、不评分、不推送。 */
+var FL_RECENT = [7,30,90], FL_STAGE = [1,3,6,12];
+function flLabel(mode, arg){
+  if(mode==='recent') return t('fl_'+arg);
+  return t('fl_'+arg+'m');
+}
+function foldCardHTML(){
+  var mode = S.flMode, arg = S.flArg;
+  var f = foldWindow(mode, arg);
+  var h = '<div class="fl-card">';
+  h += '<div class="ins-t">'+esc(mode==='recent'? t('fl_recent') : t('fl_stage'))+'</div>';
+  h += '<div class="fl-sub">'+esc(t('fl_sub'))+'</div>';
+
+  /* 档位切换：回看 7/30/90 · 阶段 1/3/6/12 月 */
+  var gears = mode==='recent'? FL_RECENT : FL_STAGE;
+  h += '<div class="fl-seg">';
+  gears.forEach(function(a){
+    h += '<button class="fl-b'+(a===arg?' on':'')+'" data-act="flarg" data-v="'+a+'">'+esc(flLabel(mode,a))+'</button>';
+  });
+  h += '</div>';
+
+  /* 模式切换：回看 ↔ 阶段 */
+  h += '<div class="fl-mode">'+
+    '<button class="fl-m'+(mode==='recent'?' on':'')+'" data-act="flmode" data-v="recent">'+esc(t('fl_recent'))+'</button>'+
+    '<button class="fl-m'+(mode==='stage'?' on':'')+'" data-act="flmode" data-v="stage">'+esc(t('fl_stage'))+'</button>'+
+  '</div>';
+
+  if(f.words===0){
+    h += '<div class="fl-empty">'+esc(t('fl_empty'))+'</div>';
+  } else {
+    h += '<div class="fl-count">'+esc(t('fl_days').replace('{n}', f.entries.length).replace('{w}', f.words))+'</div>';
+    if(f.blanks) h += '<div class="fl-count sub">'+esc(t('fl_blank').replace('{b}',f.blanks))+'</div>';
+    /* 真实摘录：有字的日子，最多列 12 条，避免长窗口刷屏 */
+    var shown = f.entries.filter(function(e){ return !e.blank; }).slice(-12);
+    h += '<div class="fl-entries">';
+    shown.forEach(function(e){
+      h += '<div class="fl-entry"><span class="fl-d">'+esc(fmtDate(e.k))+'</span>'+
+           '<span class="fl-line">'+esc(e.lines[0])+'</span></div>';
+    });
+    h += '</div>';
+
+    /* 变化并排：只陈列，不评判 */
+    var pair = changePairHTML(f);
+    if(pair){
+      h += '<div class="fl-change-t">'+esc(t('fl_change'))+' · '+esc(t('fl_change_sub'))+'</div>'+pair;
+    }
+  }
+
+  /* 常驻输入：看见变化后，3 秒内落一处。可选，不催促。 */
+  var id = mode+'-'+arg, saved = foldNoteGet(id);
+  h += '<div class="fl-write">';
+  if(S.flNoteEdit || !saved){
+    h += '<textarea data-f="foldnote" maxlength="200" placeholder="'+esc(t('fl_write_ph'))+'">'+esc(saved)+'</textarea>'+
+         '<button class="btn-i" data-act="flnotesave" data-id="'+id+'">'+esc(t('save'))+'</button>';
+  } else {
+    h += '<div class="fl-note">'+esc(saved)+'</div>'+
+         '<button class="none-btn" data-act="flnoteedit">'+esc(t('fl_write'))+'</button>';
+  }
+  h += '</div>';
+  h += '</div>';
+  return h;
 }
 
 /* =========================================================
@@ -1132,6 +1308,9 @@ function viewWall(){
     '</div>';
   }
 
+  /* 时间折叠：回看 / 阶段 —— 洞察页内一节，按需调取，不推送 */
+  h += foldCardHTML();
+
   /* 相片墙：收为档案，默认不展开；一个入口，点开才看 */
   h += '<button class="ins-archive" data-act="archtoggle">'+
          esc(S.archiveOpen ? t('ins_close') : t('ins_open')+' · '+ks.length)+
@@ -1332,8 +1511,17 @@ function bind(){
     if(!el) return;
     var a = el.getAttribute('data-act');
 
-    if(a==='view'){ S.view = el.getAttribute('data-v'); S.archiveOpen = false; window.scrollTo(0,0); render(); return; }
+    if(a==='view'){ S.view = el.getAttribute('data-v'); S.archiveOpen = false; S.flNoteEdit=false; window.scrollTo(0,0); render(); return; }
     if(a==='archtoggle'){ S.archiveOpen = !S.archiveOpen; render(); return; }
+    if(a==='flmode'){ S.flMode = el.getAttribute('data-v'); S.flArg = (S.flMode==='recent'? 7:1); S.flNoteEdit=false; render(); return; }
+    if(a==='flarg'){ S.flArg = parseInt(el.getAttribute('data-v'),10); S.flNoteEdit=false; render(); return; }
+    if(a==='flnoteedit'){ S.flNoteEdit = true; render(); return; }
+    if(a==='flnotesave'){
+      var ta = document.querySelector('textarea[data-f="foldnote"]');
+      var id = el.getAttribute('data-id');
+      foldNoteSet(id, ta? ta.value : '');
+      S.flNoteEdit = false; toast(t('fl_saved')); render(); return;
+    }
     if(a==='lang'){ LANG = (LANG==='zh'? 'en':'zh');
       try{ localStorage.setItem(LKEY, LANG); }catch(err){} render(); return; }
     if(a==='go'){ location.href = 'index.html'; return; }
