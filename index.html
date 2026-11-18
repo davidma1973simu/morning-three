@@ -121,6 +121,10 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .lang.sync.online .dot{background:var(--brand-txt)}
 .lang.sync.busy{opacity:.6}
 .lang:hover{border-color:var(--edge)}
+/* 每日福田顶部小入口：印章 LOGO + 名字，低调，不抢主任务 */
+.lang.ft-mini{display:flex;align-items:center;gap:5px;padding:0 10px 0 7px;color:var(--gold);border-color:var(--gold-soft);text-decoration:none}
+.lang.ft-mini:hover{border-color:var(--gold);background:var(--gold-soft)}
+.ft-mini-seal{height:18px;min-width:20px;padding:0 2px;flex:none;border:1.5px solid var(--gold);border-radius:4px;font-family:var(--serif,"Songti SC");font-size:9px;font-weight:700;letter-spacing:-1px;display:flex;align-items:center;justify-content:center;transform:rotate(-4deg);line-height:1}
 
 /* ---------- segmented ---------- */
 .seg{display:flex;gap:4px;background:var(--brand-soft);border-radius:13px;padding:4px;margin-bottom:18px}
@@ -347,13 +351,6 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
   width:36px;height:36px;border:0;border-radius:50%;background:rgba(127,127,127,.14);font-size:22px;line-height:1;color:var(--ink);cursor:pointer}
 #valFrame{flex:1;width:100%;border:0;background:var(--card)}
 .val-link{text-align:center;margin:18px 0 4px}
-.ft-link{display:flex;align-items:center;gap:11px;text-decoration:none;margin:14px 0 4px;padding:12px 14px;border:1px solid var(--gold-soft);border-radius:12px;background:var(--gold-soft);opacity:.9}
-.ft-link:active{opacity:.7}
-.ft-seal{width:28px;height:28px;flex:none;border:1.5px solid var(--gold);border-radius:5px;color:var(--gold);font-family:var(--serif,"Songti SC");font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;transform:rotate(-3deg)}
-.ft-tx{flex:1;min-width:0}
-.ft-h{font-size:13px;font-weight:600;color:var(--ink)}
-.ft-s{font-size:11px;color:var(--ink3);margin-top:2px;line-height:1.4}
-.ft-caret{color:var(--gold);font-size:18px;line-height:1}
 /* 日历图例：淡字，只解释点的含义，不抢戏 */
 .cal-legend{font-size:11px;color:var(--ink3);line-height:1.5;margin-top:10px;text-align:center;opacity:.85}
 /* 数据守护：痕迹只在本机的安静提醒，攒够天数且久未导出才出现 */
@@ -1061,7 +1058,7 @@ var ONBOARD = false;   /* 首次关闭 briefing 后触发：帮全新用户直�
    渲染：主壳
    ========================================================= */
 function render(){
-  var html = header() + seg() + (S.view==='today' ? viewToday()+whisperCard()+sdCard()+futianLink()+valueLink()+guardCard() : viewStats()+guardCard());
+  var html = header() + seg() + (S.view==='today' ? viewToday()+whisperCard()+sdCard()+valueLink()+guardCard() : viewStats()+guardCard());
   document.getElementById('shell').innerHTML = html;
   bindShell();
   renderOverlay();
@@ -1077,9 +1074,11 @@ function header(){
   var online = SYNC.user ? ' online' : '';
   var busy = SYNC.busy ? ' busy' : '';
   var sync = '<button class="lang sync'+online+busy+'" data-act="sync" title="'+esc(t('sync_title'))+'" aria-label="'+esc(t('sync_title'))+'"><span class="dot"></span>'+esc(t('sync_btn'))+'</button>';
+  /* 每日福田：低调放在同步按钮旁——只一个印章 LOGO + 名字，不占正文位置 */
+  var ft = '<a class="lang ft-mini" href="futian.html" title="'+esc(t('ft_link'))+'" aria-label="'+esc(t('ft_link'))+'"><span class="ft-mini-seal">福田</span>'+esc(t('ft_link'))+'</a>';
   return '<header class="hdr">'+
     '<div><div class="brand">'+t('brand')+'</div><div class="brand-sub">Morning Three</div></div>'+
-    '<div class="hdr-r">'+sync+bell+'<button class="lang" data-act="lang">'+(LANG==='zh'?'EN':'中文')+'</button></div>'+
+    '<div class="hdr-r">'+sync+ft+bell+'<button class="lang" data-act="lang">'+(LANG==='zh'?'EN':'中文')+'</button></div>'+
   '</header>';
 }
 function seg(){
@@ -2039,14 +2038,6 @@ function bindSync(){
 /* ---------- 价值卡入口（弹窗） ---------- */
 function valueLink(){
   return '<div class="val-link"><button class="linkbtn" data-act="value">'+esc(t('val_link'))+' ›</button></div>';
-}
-/* 每日福田入口：独立页面，完全不同的 UI/UX；同产品家族但不抢主任务焦点。
-   用 <a> 直接跳转，不进 data-act 事件链，不增加任何状态。 */
-function futianLink(){
-  return '<a class="ft-link" href="futian.html">'+
-    '<span class="ft-seal">福田</span>'+
-    '<span class="ft-tx"><span class="ft-h">'+esc(t('ft_link'))+'</span><span class="ft-s">'+esc(t('ft_sub'))+'</span></span>'+
-    '<span class="ft-caret">›</span></a>';
 }
 function openValue(){
   var el = document.getElementById('valRoot');

@@ -34,7 +34,10 @@ body{padding-bottom:40px;background-image:radial-gradient(circle at 12% 8%,rgba(
 .brand{font-family:var(--serif);font-size:23px;font-weight:700;letter-spacing:2px;color:var(--ink);display:flex;align-items:center;gap:9px}
 .seal{width:30px;height:30px;flex:none;border:2px solid var(--cinnabar);border-radius:5px;color:var(--cinnabar);font-family:var(--serif);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1;transform:rotate(-3deg)}
 .brand-sub{font-family:var(--serif);font-size:11px;color:var(--ink3);letter-spacing:3px;margin-top:2px}
-.lang{border:1px solid var(--line2);background:var(--paper2);color:var(--ink2);border-radius:18px;padding:6px 13px;font-size:12px;cursor:pointer;font-family:var(--sans)}
+.hdr-r{display:flex;align-items:center;gap:8px}
+.lang{border:1px solid var(--line2);background:var(--paper2);color:var(--ink2);border-radius:18px;padding:6px 13px;font-size:12px;cursor:pointer;font-family:var(--sans);text-decoration:none;display:inline-flex;align-items:center}
+.lang.back-home{color:var(--gold-d);border-color:var(--gold-soft);white-space:nowrap}
+.lang.back-home:hover{border-color:var(--gold);background:var(--paper2)}
 .lang:active{transform:scale(.96)}
 
 /* Tab */
@@ -432,8 +435,9 @@ function render(){
     '<button class="tab'+(S.view==='today'?' on':'')+'" data-act="tab" data-v="today">'+t('t_today')+'</button>'+
     '<button class="tab'+(S.view==='field'?' on':'')+'" data-act="tab" data-v="field">'+t('t_field')+'</button>'+
     '<button class="tab'+(S.view==='back'?' on':'')+'" data-act="tab" data-v="back">'+t('t_back')+'</button></div>';
+  var back='<a class="lang back-home" href="index.html" title="'+t('backHome')+'" aria-label="'+t('backHome')+'">‹ '+t('backHome')+'</a>';
   var hdr='<header class="hdr"><div><div class="brand"><span class="seal">'+t('seal')+'</span>'+t('brand')+'</div><div class="brand-sub">'+t('sub')+'</div></div>'+
-    '<button class="lang" data-act="lang">'+(LANG==='zh'?'EN':'中文')+'</button></header>';
+    '<div class="hdr-r">'+back+'<button class="lang" data-act="lang">'+(LANG==='zh'?'EN':'中文')+'</button></div></header>';
   var body=S.view==='today'?viewToday():(S.view==='field'?viewField():viewBack());
   document.getElementById('app').innerHTML=hdr+tabs+body;
 }
