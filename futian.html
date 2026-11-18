@@ -191,8 +191,8 @@ var T = {
     ph:['写一句，哪怕很小…','写一句，哪怕很小…','写一句，哪怕很小…','做了一件什么小事…'],
     seed:'已种下 · +1 功德',
     dharmaTitle:'今日法语', dharmaFrom:'—— 祖师开示',
-    dedTitle:'回向', dedSub:'把这日的功德，回向给你惦念的人或事。',
-    dedPh:'愿此功德，回向给……', dedSaved:'已回向',
+    dedTitle:'想把今天这点好，送给谁', dedSub:'回向，把自己修来的福德，不给自己，转送给别人或某个愿望。',
+    dedPh:'比如：愿妈妈明天检查顺利 / 愿老张早点缓过来', dedSaved:'已回向', dedSave:'记下',
     save:'种下今日福田', saved:'今日福田已种下',
     dharmaDone:'今日日课圆满，功德 +',
     poster:'生成功德海报', posterTitle:'今日福田', posterSave:'长按图片保存',
@@ -232,8 +232,8 @@ var T = {
     ph:['A line, however small…','A line, however small…','A line, however small…','One small thing I did…'],
     seed:'Planted · +1 merit',
     dharmaTitle:'Today\'s teaching', dharmaFrom:'— An ancient saying',
-    dedTitle:'Dedication', dedSub:'Dedicate today\'s merit to someone or something you care about.',
-    dedPh:'May this merit go to…', dedSaved:'Dedicated',
+    dedTitle:'Who is today\'s good for', dedSub:'Hui Xiang: merit isn\'t kept for yourself — it\'s turned toward someone or a wish.',
+    dedPh:'e.g. may Mom\'s check-up go well / may Lao Zhang feel better soon', dedSaved:'Dedicated', dedSave:'Write it down',
     save:'Plant today\'s field', saved:'Today\'s field is planted',
     dharmaDone:'Today complete, merit +',
     poster:'Make merit card', posterTitle:'Daily field', posterSave:'Long-press to save',
@@ -413,7 +413,7 @@ function viewToday(){
   h+='<section class="card"><div class="card-t">'+t('dedTitle')+'</div><div class="card-sub">'+t('dedSub')+'</div>';
   if(S.editDed||!ded){
     h+='<textarea class="q-input" id="dedInput" rows="2" placeholder="'+t('dedPh')+'">'+esc(ded)+'</textarea>'+
-       '<button class="btn sm ghost" data-act="dedsave" style="margin-top:10px">'+(ded?t('save'):t('dedTitle'))+'</button>';
+       '<button class="btn sm ghost" data-act="dedsave" style="margin-top:10px">'+t('dedSave')+'</button>';
   }else{
     h+='<div class="ded-text">'+esc(ded)+'</div><button class="ded-edit" data-act="dededit">'+t('dedEdit')+' ›</button>';
   }
