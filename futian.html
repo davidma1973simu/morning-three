@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F7EFE0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="每日福田">
+<meta name="application-name" content="每日福田">
+<meta name="description" content="每天四问，耕种自己的福田。善根、因果、智慧、知行——俗人也能日日修行。">
+<title>每日福田</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23F7EFE0'/><path d='M16 6c-4 4-6 7-6 11a6 6 0 0 0 12 0c0-4-2-7-6-11z' fill='%236B8E5A'/><circle cx='16' cy='17' r='2' fill='%23B8860B'/></svg>">
+<style>
+:root{
+  --paper:#F7EFE0; --paper2:#FFFBF2; --card:#FFFDF7;
+  --ink:#3A2E1F; --ink2:#6B5B45; --ink3:#93816A;
+  --gold:#B8860B; --gold-d:#8A6508; --gold-soft:#F5E7C4;
+  --cinnabar:#B93A26; --cinnabar-soft:#F8E3DC;
+  --field:#6B8E5A; --field-soft:#E7EFDC;
+  --line:#E6D9BE; --line2:#D8C7A4;
+  --shadow:0 2px 14px rgba(90,66,30,.06);
+  --serif:"Songti SC","STSong","Noto Serif SC","SimSun",Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:var(--sans)}
+body{padding-bottom:40px;background-image:radial-gradient(circle at 12% 8%,rgba(184,134,11,.05),transparent 40%),radial-gradient(circle at 88% 92%,rgba(107,142,90,.05),transparent 40%)}
+.wrap{max-width:520px;margin:0 auto;padding:0 16px}
+
+/* 顶部 */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:20px 0 14px}
+.brand{font-family:var(--serif);font-size:23px;font-weight:700;letter-spacing:2px;color:var(--ink);display:flex;align-items:center;gap:9px}
+.seal{width:30px;height:30px;flex:none;border:2px solid var(--cinnabar);border-radius:5px;color:var(--cinnabar);font-family:var(--serif);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1;transform:rotate(-3deg)}
+.brand-sub{font-family:var(--serif);font-size:11px;color:var(--ink3);letter-spacing:3px;margin-top:2px}
+.lang{border:1px solid var(--line2);background:var(--paper2);color:var(--ink2);border-radius:18px;padding:6px 13px;font-size:12px;cursor:pointer;font-family:var(--sans)}
+.lang:active{transform:scale(.96)}
+
+/* Tab */
+.tabs{display:flex;gap:4px;background:var(--gold-soft);border-radius:12px;padding:4px;margin-bottom:16px}
+.tab{flex:1;text-align:center;padding:9px 0;border:0;background:none;border-radius:9px;font-size:13px;color:var(--gold-d);cursor:pointer;font-family:var(--sans)}
+.tab.on{background:var(--card);color:var(--ink);font-weight:600;box-shadow:var(--shadow)}
+
+/* 卡 */
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow)}
+.card-t{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.card-sub{font-size:12px;color:var(--ink3);line-height:1.6;margin-bottom:14px}
+
+/* 功德概览 */
+.overview{background:linear-gradient(150deg,#FFF9EA,#F3E3C0);border:1px solid var(--line2)}
+.ov-top{display:flex;justify-content:space-between;align-items:flex-start}
+.merit-num{font-family:var(--serif);font-size:44px;font-weight:700;color:var(--gold-d);line-height:1}
+.merit-lab{font-size:12px;color:var(--ink2);margin-top:4px}
+.rank{text-align:right}
+.rank-name{font-family:var(--serif);font-size:17px;font-weight:700;color:var(--cinnabar)}
+.rank-lab{font-size:11px;color:var(--ink3);margin-top:3px}
+.ov-stats{display:flex;gap:0;margin-top:18px;padding-top:16px;border-top:1px dashed var(--line2)}
+.ov-stat{flex:1;text-align:center;position:relative}
+.ov-stat+.ov-stat:before{content:"";position:absolute;left:0;top:4px;bottom:4px;width:1px;background:var(--line)}
+.ov-v{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--ink)}
+.ov-k{font-size:11px;color:var(--ink3);margin-top:3px}
+
+/* 福田可视化 */
+.field-vis{margin-top:16px;background:var(--field-soft);border-radius:12px;padding:14px}
+.field-stage{display:flex;align-items:center;gap:12px}
+.field-emoji{width:52px;height:52px;flex:none;display:flex;align-items:center;justify-content:center}
+.field-info{flex:1}
+.field-name{font-family:var(--serif);font-size:15px;font-weight:700;color:var(--field)}
+.field-desc{font-size:11px;color:var(--ink2);margin-top:3px;line-height:1.5}
+.field-bar{height:7px;background:rgba(107,142,90,.15);border-radius:5px;margin-top:11px;overflow:hidden}
+.field-bar>i{display:block;height:100%;background:var(--field);border-radius:5px;transition:width .5s}
+
+/* 四问 */
+.q{background:var(--paper2);border:1px solid var(--line);border-radius:12px;padding:13px 14px;margin-bottom:10px}
+.q.done{border-color:var(--field);background:var(--field-soft)}
+.q-head{display:flex;align-items:center;gap:10px}
+.q-badge{width:30px;height:30px;flex:none;border-radius:50%;background:var(--gold-soft);color:var(--gold-d);font-family:var(--serif);font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.q.done .q-badge{background:var(--field);color:#fff}
+.q-name{font-family:var(--serif);font-size:13px;color:var(--cinnabar);font-weight:700}
+.q-q{font-size:14px;color:var(--ink);margin-top:8px;line-height:1.5;font-weight:600}
+.q-hint{font-size:11px;color:var(--ink3);margin-top:3px;line-height:1.5}
+.q-input{width:100%;margin-top:10px;border:0;border-bottom:1px dashed var(--line2);background:transparent;font-family:var(--serif);font-size:14px;color:var(--ink);padding:6px 0;outline:none;resize:none;line-height:1.5}
+.q-input:focus{border-bottom-color:var(--gold)}
+.q-input::placeholder{color:var(--ink3);font-family:var(--sans);font-size:12px}
+.q-merit{font-size:11px;color:var(--gold-d);margin-top:6px;display:none}
+.q.done .q-merit{display:block}
+
+/* 法语 */
+.dharma{background:linear-gradient(160deg,#FBF3E2,#F6E9CC);border-left:3px solid var(--gold)}
+.dharma-q{font-family:var(--serif);font-size:17px;line-height:1.8;color:var(--gold-d);text-align:center;padding:6px 4px}
+.dharma-from{text-align:center;font-size:11px;color:var(--ink3);margin-top:8px}
+
+/* 回向 */
+.ded-text{font-family:var(--serif);font-size:14px;color:var(--ink);line-height:1.7;min-height:22px}
+.ded-empty{color:var(--ink3);font-family:var(--sans);font-size:12px}
+
+/* 按钮 */
+.btn{width:100%;border:0;border-radius:12px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--sans);background:var(--gold);color:#fff;letter-spacing:1px}
+.btn:active{transform:scale(.99)}
+.btn.red{background:var(--cinnabar)}
+.btn.ghost{background:var(--paper2);color:var(--ink2);border:1px solid var(--line2);font-weight:500}
+.btn.sm{padding:10px;font-size:13px}
+.btn-row{display:flex;gap:10px}
+.btn-row .btn{flex:1}
+
+/* 回看 */
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:6px}
+.cal-d{aspect-ratio:1;border-radius:8px;background:var(--paper2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--ink3);position:relative}
+.cal-d.has{background:var(--field-soft);border-color:var(--field);color:var(--field);font-weight:700}
+.cal-d.has:after{content:"";position:absolute;bottom:4px;width:4px;height:4px;border-radius:50%;background:var(--gold)}
+.cal-head{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:10px 0 4px}
+.cal-head span{text-align:center;font-size:10px;color:var(--ink3)}
+.month-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.month-nav b{font-family:var(--serif);font-size:15px}
+.month-nav button{border:0;background:var(--gold-soft);color:var(--gold-d);border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:16px}
+
+/* 海报弹层 */
+.mask{position:fixed;inset:0;background:rgba(40,30,15,.5);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}
+.mask.on{display:flex}
+.modal{background:var(--paper2);border-radius:16px;padding:18px;max-width:360px;width:100%;text-align:center}
+.modal img{width:100%;border-radius:10px;margin:12px 0}
+.modal-x{float:right;border:0;background:none;font-size:20px;color:var(--ink3);cursor:pointer;line-height:1}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--paper2);padding:10px 20px;border-radius:22px;font-size:13px;opacity:0;transition:.25s;pointer-events:none;z-index:99;white-space:nowrap}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.foot{text-align:center;font-size:11px;color:var(--ink3);margin-top:24px;line-height:1.8}
+.foot a{color:var(--gold-d);text-decoration:none}
+@media(min-width:560px){body{max-width:520px;margin:0 auto;box-shadow:0 0 60px rgba(90,66,30,.08)}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<div class="toast" id="toast"></div>
+<div class="mask" id="posterMask"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ===================== 词典 ===================== */
+var T = {
+  zh:{
+    brand:'每日福田', seal:'福田', sub:'耕种自己的福田',
+    t_today:'今日日课', t_field:'我的福田', t_back:'回看',
+    merit:'功德', meritLab:'累计功德', rank:'当前阶位',
+    days:'日课天数', streak:'连续', totalQ:'四问次数',
+    fieldTitle:'福田长势', fieldName:['荒地','发芽','幼苗','开花','结果'],
+    fieldDesc:['心地未耕，今日种下第一颗种子','善根初发，小小的一点绿意','根基渐稳，已经看得见生长','四层俱足，花开见佛','福报圆满，日日皆是福田'],
+    fieldNext:function(n){return '再积 '+n+' 功德，'+'长成下一阶段';},
+    qTitle:'今日四问', qSub:'如实写下，空白也算数。每一问，种一颗种子。',
+    qName:['地藏 · 善根','观音 · 因果','文殊 · 智慧','普贤 · 行愿'],
+    qText:['我今天对身边人厚道了吗？','我今天的好心分辨清楚了吗？','我今天有没有被某个念头劫持？','我想通的那件事，今天做了吗？'],
+    qHint:['孝、感恩、不忍——把根扎稳','清醒的心软，不做烂好人','看穿表象、叙事、执念，不慌','把想通的，落成今天的一个动作'],
+    ph:['写一句，哪怕很小…','写一句，哪怕很小…','写一句，哪怕很小…','做了一件什么小事…'],
+    seed:'已种下 · +1 功德', complete:'四问圆满 · 额外 +2 功德',
+    dharmaTitle:'今日法语', dharmaFrom:'—— 祖师开示',
+    dedTitle:'回向', dedSub:'把这日的功德，回向给你惦念的人或事。',
+    dedPh:'愿此功德，回向给……', dedSaved:'已回向',
+    save:'种下今日福田', saved:'今日福田已种下',
+    dharmaDone:'今日日课圆满，功德 +',
+    poster:'生成功德海报', posterTitle:'今日福田', posterSave:'长按图片保存',
+    backTitle:'日课回看', backSub:'每一格，都是你如实活过的一天。',
+    introTitle:'俗人，也能修行',
+    intro:'不必出家，不必读经。每天问自己四个问题，看看这一日如何走过。善根、因果、智慧、知行——像种菜一样，慢慢耕种自己的福田。',
+    begin:'开始今日日课',
+    rankName:['善根初发','慈悲初照','智慧渐开','知行合一'],
+    rankNeed:function(n){return '再积 '+n+' 功德升至下一阶';},
+    maxRank:'已至圆满阶位',
+    noRecord:'还没有日课记录，从今天开始吧。',
+    backHome:'返回晨间清单', noJudge:'不排名 · 断签不罚 · 只与自己对照',
+    dharmas:[
+      '应无所住而生其心。','诸恶莫作，众善奉行。','大地能藏，厚德载物。',
+      '慈悲而不滥情，清醒地心软。','看穿三层皮：表象、叙事、执念。',
+      '知行合一，方是真修行。','福田不离方寸，功德只在日用。',
+      '不怕念起，只怕觉迟。','一念善心，福田即生。','修行不在庙里，在你今天的动作里。'
+    ],
+    dharmaFroms:['金刚经','法句经','周易 · 坤','法华经','文殊心要','王阳明','六祖坛经','禅门语录','佛说','慧云和尚']
+  },
+  en:{
+    brand:'Daily Merit Field', seal:'FIELD', sub:'Tend your own field',
+    t_today:'Today', t_field:'My field', t_back:'Review',
+    merit:'Merit', meritLab:'Total merit', rank:'Current stage',
+    days:'Days practiced', streak:'Streak', totalQ:'Questions answered',
+    fieldTitle:'Field growth', fieldName:['Fallow','Sprout','Seedling','Blooming','Fruitful'],
+    fieldDesc:['The ground is untilled. Plant your first seed today.','A tiny green shoot — kindness taking root.','Roots holding; growth you can see.','All four stages present — the flower opens.','Merit complete; every day is a field.'],
+    fieldNext:function(n){return n+' more merit to the next stage';},
+    qTitle:'Four questions', qSub:'Write honestly. Blank days count too. Each answer plants a seed.',
+    qName:['Kṣitigarbha · Roots','Avalokiteśvara · Cause','Mañjuśrī · Wisdom','Samantabhadra · Action'],
+    qText:['Was I kind to those around me today?','Was my kindness clear-eyed today?','Was I hijacked by a thought today?','Did I do the thing I understood today?'],
+    qHint:['Filial care, gratitude, tenderness — root it deep.','Clear-eyed kindness; not a pushover.','See through appearance, story, fixation — stay calm.','Turn what you understood into one small act.'],
+    ph:['A line, however small…','A line, however small…','A line, however small…','One small thing I did…'],
+    seed:'Planted · +1 merit', complete:'All four complete · +2 bonus merit',
+    dharmaTitle:'Today\'s teaching', dharmaFrom:'— An ancient saying',
+    dedTitle:'Dedication', dedSub:'Dedicate today\'s merit to someone or something you care about.',
+    dedPh:'May this merit go to…', dedSaved:'Dedicated',
+    save:'Plant today\'s field', saved:'Today\'s field is planted',
+    dharmaDone:'Today complete, merit +',
+    poster:'Make merit card', posterTitle:'Daily field', posterSave:'Long-press to save',
+    backTitle:'Practice review', backSub:'Each square is a day you honestly lived.',
+    introTitle:'Ordinary people can practice too',
+    intro:'No need to renounce the world or study sutras. Ask yourself four questions each day and see how it went. Roots, cause, wisdom, action — tend your field like a garden.',
+    begin:'Start today\'s practice',
+    rankName:['Roots emerging','Compassion dawning','Wisdom unfolding','Knowledge and action one'],
+    rankNeed:function(n){return n+' more merit to the next stage';},
+    maxRank:'Highest stage reached',
+    noRecord:'No practice yet. Start today.',
+    backHome:'Back to Morning Three', noJudge:'No rankings · No streak penalty · Only your own path',
+    dharmas:[
+      'Give rise to the mind without dwelling anywhere.','Avoid all evil, practice all good.','The earth holds all; virtue carries all.',
+      'Compassion without sentimentality; clear-eyed kindness.','See through three veils: appearance, story, fixation.',
+      'Knowing and doing as one — that is real practice.','The field is in the mind; merit is in daily use.',
+      'Do not fear thoughts arising; fear being unaware.','One kind thought, and a field is born.','Practice is not in the temple — it is in today\'s action.'
+    ],
+    dharmaFroms:['Diamond Sutra','Dhammapada','I Ching · Kun','Lotus Sutra','Mañjuśrī','Wang Yangming','Platform Sutra','Zen sayings','Buddhist text','Master Huiyun']
+  }
+};
+var LANG='zh';
+function t(k){var d=T[LANG];return d[k]!==undefined?d[k]:(T.zh[k]!==undefined?T.zh[k]:k);}
+
+/* ===================== 工具 ===================== */
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function pad(n){return n<10?'0'+n:''+n;}
+function ymd(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function todayKey(){return ymd(new Date());}
+function addDays(d,n){var x=new Date(d.getTime());x.setDate(x.getDate()+n);return x;}
+function dayDiff(a,b){return Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/86400000);}
+function fmtDate(k){var p=k.split('-');return LANG==='zh'?(parseInt(p[1])+'月'+parseInt(p[2])+'日'):(p[1]+'/'+p[2]);}
+
+/* ===================== 数据 ===================== */
+var KEY='futian.v1';
+var S={ view:'today', month:null, editDed:false, justPlanted:false };
+var DB;
+function blank(){return {days:{},dedications:{},lang:''};}
+function load(){
+  try{DB=JSON.parse(localStorage.getItem(KEY)||'null')||blank();}
+  catch(e){DB=blank();}
+  if(!DB.days)DB.days={};
+  if(!DB.dedications)DB.dedications={};
+  try{var lg=localStorage.getItem('ft.lang');if(lg==='en'||lg==='zh')LANG=lg;}catch(e){}
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){}}
+
+/* 一天的回答：[四问文本] */
+function dayAnswers(k){var d=DB.days[k];return (d&&d.answers)||['','','',''];}
+function answerCount(k){var a=dayAnswers(k),n=0;for(var i=0;i<4;i++)if(a[i]&&a[i].trim())n++;return n;}
+function dayMerit(k){var n=answerCount(k);return n+(n===4?2:0);}
+function totalMerit(){var m=0;for(var k in DB.days)if(DB.days.hasOwnProperty(k))m+=dayMerit(k);return m;}
+function totalQ(){var n=0;for(var k in DB.days)if(DB.days.hasOwnProperty(k))n+=answerCount(k);return n;}
+/* 连续日课：从今天（或昨天）往前数有输入的连续天数；断了就重新起算，不惩罚 */
+function streak(){
+  var today=new Date(),start=answerCount(ymd(today))>0?0:1,n=0;
+  for(var i=start;i<400;i++){var k=ymd(addDays(today,-i));if(answerCount(k)>0)n++;else break;}
+  return n;
+}
+function practiceDays(){var n=0;for(var k in DB.days)if(DB.days.hasOwnProperty(k)&&answerCount(k)>0)n++;return n;}
+/* 阶位：累计功德门槛 */
+var RANK_NEED=[0,30,100,250];
+function rankOf(m){var r=0;for(var i=0;i<RANK_NEED.length;i++)if(m>=RANK_NEED[i])r=i;return r;}
+/* 福田长势：累计功德门槛 */
+var FIELD_NEED=[0,20,60,150,300];
+function fieldOf(m){var f=0;for(var i=0;i<FIELD_NEED.length;i++)if(m>=FIELD_NEED[i])f=i;return f;}
+
+/* 每日法语：按日期确定性取，不清高、不占卜 */
+function dharmaIdx(k){var n=0;for(var i=0;i<k.length;i++)n=(n*31+k.charCodeAt(i))%997;return n%T.zh.dharmas.length;}
+function dharmaToday(){var i=dharmaIdx(todayKey());return {q:T[LANG].dharmas[i],from:T[LANG].dharmaFroms[i]};}
+
+/* 福田 SVG（纯 CSS/SVG 画，不用 emoji） */
+function fieldSVG(stage){
+  var c='#6B8E5A',g='#B8860B';
+  if(stage===0)return '<svg width="52" height="52" viewBox="0 0 52 52"><path d="M6 40h40" stroke="'+g+'" stroke-width="2"/><path d="M8 40l6-4m12 4l6-4m8 4l6-4" stroke="'+g+'" stroke-width="1" opacity=".5"/></svg>';
+  if(stage===1)return '<svg width="52" height="52" viewBox="0 0 52 52"><path d="M26 42V26" stroke="'+c+'" stroke-width="2"/><path d="M26 32c-6 0-9-4-9-9 6 0 9 3 9 9z" fill="'+c+'"/><path d="M26 36c6 0 9-3 9-8-6 0-9 3-9 8z" fill="'+c+'" opacity=".7"/><path d="M8 44h36" stroke="'+g+'" stroke-width="1.5"/></svg>';
+  if(stage===2)return '<svg width="52" height="52" viewBox="0 0 52 52"><path d="M26 44V20M26 30c-8 0-12-5-12-12 8 0 12 5 12 12zM26 34c8 0 12-4 12-11-8 0-12 4-12 11z" fill="'+c+'"/><path d="M26 44V20" stroke="'+c+'" stroke-width="2"/><path d="M8 46h36" stroke="'+g+'" stroke-width="1.5"/></svg>';
+  if(stage===3)return '<svg width="52" height="52" viewBox="0 0 52 52"><path d="M26 44V22M26 32c-8 0-12-5-12-12 8 0 12 5 12 12zM26 36c8 0 12-4 12-11-8 0-12 4-12 11z" fill="'+c+'"/><path d="M26 44V22" stroke="'+c+'" stroke-width="2"/><circle cx="26" cy="14" r="6" fill="'+g+'"/><circle cx="26" cy="14" r="2.5" fill="#FFFBF2"/><path d="M8 46h36" stroke="'+g+'" stroke-width="1.5"/></svg>';
+  return '<svg width="52" height="52" viewBox="0 0 52 52"><path d="M26 44V24M26 34c-8 0-12-5-12-12 8 0 12 5 12 12zM26 38c8 0 12-4 12-11-8 0-12 4-12 11z" fill="'+c+'"/><path d="M26 44V24" stroke="'+c+'" stroke-width="2"/><circle cx="26" cy="15" r="7" fill="'+g+'"/><path d="M20 15h12M26 9v12" stroke="#FFFBF2" stroke-width="1.2"/><path d="M8 46h36" stroke="'+g+'" stroke-width="1.5"/></svg>';
+}
+
+/* ===================== 渲染 ===================== */
+function viewToday(){
+  var m=totalMerit(),rank=rankOf(m),field=fieldOf(m);
+  var h='';
+  /* 概览 */
+  h+='<section class="card overview"><div class="ov-top">'+
+     '<div><div class="merit-num">'+m+'</div><div class="merit-lab">'+t('meritLab')+'</div></div>'+
+     '<div class="rank"><div class="rank-name">'+t('rankName')[rank]+'</div><div class="rank-lab">'+(rank>=3?t('maxRank'):t('rankNeed')(RANK_NEED[rank+1]-m))+'</div></div></div>'+
+     '<div class="ov-stats">'+
+       '<div class="ov-stat"><div class="ov-v">'+practiceDays()+'</div><div class="ov-k">'+t('days')+'</div></div>'+
+       '<div class="ov-stat"><div class="ov-v">'+streak()+'</div><div class="ov-k">'+t('streak')+'</div></div>'+
+       '<div class="ov-stat"><div class="ov-v">'+totalQ()+'</div><div class="ov-k">'+t('totalQ')+'</div></div>'+
+     '</div>'+
+     '<div class="field-vis"><div class="field-stage"><div class="field-emoji">'+fieldSVG(field)+'</div>'+
+       '<div class="field-info"><div class="field-name">'+t('fieldTitle')+' · '+t('fieldName')[field]+'</div><div class="field-desc">'+t('fieldDesc')[field]+'</div></div></div>'+
+       '<div class="field-bar"><i style="width:'+(field>=4?100:Math.round((m-FIELD_NEED[field])/(FIELD_NEED[field+1]-FIELD_NEED[field])*100))+'%"></i></div>'+
+       (field<4?'<div class="field-desc" style="margin-top:6px">'+t('fieldNext')(FIELD_NEED[field+1]-m)+'</div>':'')+
+     '</div></section>';
+
+  /* 四问 */
+  var a=dayAnswers(todayKey());
+  h+='<section class="card"><div class="card-t">'+t('qTitle')+'</div><div class="card-sub">'+t('qSub')+'</div>';
+  for(var i=0;i<4;i++){
+    var done=a[i]&&a[i].trim();
+    h+='<div class="q'+(done?' done':'')+'" data-q="'+i+'">'+
+       '<div class="q-head"><div class="q-badge">'+(i+1)+'</div><div class="q-name">'+t('qName')[i]+'</div></div>'+
+       '<div class="q-q">'+t('qText')[i]+'</div><div class="q-hint">'+t('qHint')[i]+'</div>'+
+       '<textarea class="q-input" rows="1" data-i="'+i+'" placeholder="'+t('ph')[i]+'">'+esc(a[i])+'</textarea>'+
+       '<div class="q-merit">'+t('seed')+'</div></div>';
+  }
+  h+='<button class="btn" data-act="plant" style="margin-top:6px">'+t('save')+'</button></section>';
+
+  /* 法语 */
+  var dh=dharmaToday();
+  h+='<section class="card dharma"><div class="card-t">'+t('dharmaTitle')+'</div>'+
+     '<div class="dharma-q">'+esc(dh.q)+'</div><div class="dharma-from">'+esc(dh.from)+'</div></section>';
+
+  /* 回向 */
+  var k=todayKey(),ded=DB.dedications[k]||'';
+  h+='<section class="card"><div class="card-t">'+t('dedTitle')+'</div><div class="card-sub">'+t('dedSub')+'</div>';
+  if(S.editDed||!ded){
+    h+='<textarea class="q-input" id="dedInput" rows="2" placeholder="'+t('dedPh')+'">'+esc(ded)+'</textarea>'+
+       '<button class="btn sm ghost" data-act="dedsave" style="margin-top:10px">'+(ded?t('save'):t('dedTitle'))+'</button>';
+  }else{
+    h+='<div class="ded-text">'+esc(ded)+'</div><button class="btn sm ghost" data-act="dededit" style="margin-top:10px">✎</button>';
+  }
+  h+='</section>';
+
+  /* 海报 + 边界说明 */
+  h+='<div class="btn-row"><button class="btn ghost" data-act="poster">'+t('poster')+'</button></div>'+
+     '<div class="foot">'+t('noJudge')+'<br><a href="index.html">'+t('backHome')+'</a></div>';
+  return h;
+}
+
+function viewField(){
+  var m=totalMerit(),rank=rankOf(m),field=fieldOf(m);
+  var h='<section class="card overview"><div class="ov-top">'+
+     '<div><div class="merit-num">'+m+'</div><div class="merit-lab">'+t('meritLab')+'</div></div>'+
+     '<div class="rank"><div class="rank-name">'+t('rankName')[rank]+'</div><div class="rank-lab">'+(rank>=3?t('maxRank'):t('rankNeed')(RANK_NEED[rank+1]-m))+'</div></div></div></section>';
+  /* 四阶位 */
+  h+='<section class="card"><div class="card-t">'+t('rank')+'</div>';
+  for(var i=0;i<4;i++){
+    var unlocked=m>=RANK_NEED[i],cur=i===rank;
+    h+='<div class="q'+(unlocked?' done':'')+'" style="'+(unlocked?'':'opacity:.5')+'">'+
+       '<div class="q-head"><div class="q-badge">'+t('qName')[i].split(' ')[0].charAt(0)+'</div>'+
+       '<div class="q-name">'+t('qName')[i]+'</div>'+(cur?'<span style="margin-left:auto;font-size:11px;color:var(--cinnabar)">当前</span>':'')+'</div>'+
+       '<div class="q-hint">'+t('qHint')[i]+(unlocked?'':' · '+t('rankNeed')(RANK_NEED[i]-m))+'</div></div>';
+  }
+  h+='</section>';
+  h+='<section class="card"><div class="field-vis" style="margin-top:0"><div class="field-stage">'+
+     '<div class="field-emoji">'+fieldSVG(field)+'</div><div class="field-info"><div class="field-name">'+t('fieldName')[field]+'</div>'+
+     '<div class="field-desc">'+t('fieldDesc')[field]+'</div></div></div></div></section>';
+  h+='<div class="foot"><a href="index.html">'+t('backHome')+'</a></div>';
+  return h;
+}
+
+function viewBack(){
+  if(!S.month)S.month=todayKey().slice(0,7);
+  var p=S.month.split('-'),y=+p[0],mo=+p[1];
+  var first=new Date(y,mo-1,1),days=new Date(y,mo,0).getDate();
+  var h='<section class="card"><div class="card-t">'+t('backTitle')+'</div><div class="card-sub">'+t('backSub')+'</div>'+
+    '<div class="month-nav"><button data-act="mprev">‹</button><b>'+y+' · '+pad(mo)+'</b><button data-act="mnext">›</button></div>'+
+    '<div class="cal-head"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div><div class="cal">';
+  var lead=(first.getDay()+6)%7;
+  for(var i=0;i<lead;i++)h+='<div class="cal-d" style="visibility:hidden"></div>';
+  for(var d=1;d<=days;d++){
+    var k=y+'-'+pad(mo)+'-'+pad(d),has=answerCount(k)>0;
+    h+='<div class="cal-d'+(has?' has':'')+'" '+(has?'data-act="day" data-k="'+k+'"':'')+'>'+d+'</div>';
+  }
+  h+='</div></section>';
+  /* 某日详情 */
+  if(S.day){
+    var a=dayAnswers(S.day);
+    h+='<section class="card"><div class="card-t">'+fmtDate(S.day)+' · +'+dayMerit(S.day)+'</div>';
+    for(var j=0;j<4;j++)if(a[j]&&a[j].trim())h+='<div class="q-hint" style="margin:8px 0;color:var(--ink)"><b style="color:var(--cinnabar)">'+t('qName')[j]+'</b><br>'+esc(a[j])+'</div>';
+    if(DB.dedications[S.day])h+='<div class="ded-text" style="margin-top:10px;border-top:1px dashed var(--line);padding-top:10px">'+esc(DB.dedications[S.day])+'</div>';
+    h+='</section>';
+  }
+  h+='<div class="foot"><a href="index.html">'+t('backHome')+'</a></div>';
+  return h;
+}
+
+function render(){
+  var tabs='<div class="tabs">'+
+    '<button class="tab'+(S.view==='today'?' on':'')+'" data-act="tab" data-v="today">'+t('t_today')+'</button>'+
+    '<button class="tab'+(S.view==='field'?' on':'')+'" data-act="tab" data-v="field">'+t('t_field')+'</button>'+
+    '<button class="tab'+(S.view==='back'?' on':'')+'" data-act="tab" data-v="back">'+t('t_back')+'</button></div>';
+  var hdr='<header class="hdr"><div><div class="brand"><span class="seal">'+t('seal')+'</span>'+t('brand')+'</div><div class="brand-sub">'+t('sub')+'</div></div>'+
+    '<button class="lang" data-act="lang">'+(LANG==='zh'?'EN':'中文')+'</button></header>';
+  var body=S.view==='today'?viewToday():(S.view==='field'?viewField():viewBack());
+  document.getElementById('app').innerHTML=hdr+tabs+body;
+}
+
+/* ===================== 交互 ===================== */
+var toastTimer=null;
+function toast(msg){var e=document.getElementById('toast');e.textContent=msg;e.classList.add('on');clearTimeout(toastTimer);toastTimer=setTimeout(function(){e.classList.remove('on');},1900);}
+function readAnswers(){var out=[];var els=document.querySelectorAll('.q-input[data-i]');for(var i=0;i<4;i++)out[i]='';for(var j=0;j<els.length;j++)out[+els[j].getAttribute('data-i')]=els[j].value;return out;}
+function plant(){
+  var k=todayKey(),before=dayMerit(k),ans=readAnswers();
+  if(!ans.some(function(x){return x&&x.trim();})){toast(t('qSub'));return;}
+  DB.days[k]={answers:ans};save();
+  var after=dayMerit(k),gain=after-before;
+  toast(t('dharmaDone')+gain);
+  render();
+}
+document.addEventListener('click',function(e){
+  var el=e.target.closest('[data-act]');if(!el)return;
+  var a=el.getAttribute('data-act');
+  if(a==='lang'){LANG=LANG==='zh'?'en':'zh';try{localStorage.setItem('ft.lang',LANG);}catch(e){}render();return;}
+  if(a==='tab'){S.view=el.getAttribute('data-v');S.day='';window.scrollTo(0,0);render();return;}
+  if(a==='plant'){plant();return;}
+  if(a==='dededit'){S.editDed=true;render();return;}
+  if(a==='dedsave'){var inp=document.getElementById('dedInput');var v=inp?inp.value.trim():'';if(v){DB.dedications[todayKey()]=v;save();S.editDed=false;toast(t('dedSaved'));render();}return;}
+  if(a==='poster'){showPoster();return;}
+  if(a==='mprev'||a==='mnext'){var p=S.month.split('-'),d=new Date(+p[0],+p[1]-1+(a==='mnext'?1:-1),1);S.month=d.getFullYear()+'-'+pad(d.getMonth()+1);S.day='';render();return;}
+  if(a==='day'){S.day=el.getAttribute('data-k');render();return;}
+  if(a==='posterclose'){document.getElementById('posterMask').classList.remove('on');return;}
+});
+document.addEventListener('input',function(e){
+  if(e.target.classList&&e.target.classList.contains('q-input')&&e.target.getAttribute('data-i')!==null){
+    var box=e.target.closest('.q');if(box)box.classList.toggle('done',!!e.target.value.trim());
+    e.target.style.height='auto';e.target.style.height=Math.min(e.target.scrollHeight,120)+'px';
+  }
+});
+
+/* 功德海报：canvas 生成一张安静的图，用户自己决定发不发，不显示任何互动数据 */
+function showPoster(){
+  var m=totalMerit(),rank=rankOf(m),field=fieldOf(m),dh=dharmaToday();
+  var c=document.createElement('canvas');c.width=600;c.height=800;var x=c.getContext('2d');
+  x.fillStyle='#F7EFE0';x.fillRect(0,0,600,800);
+  x.strokeStyle='#D8C7A4';x.lineWidth=2;x.strokeRect(24,24,552,752);
+  x.fillStyle='#B8860B';x.font='bold 30px "Songti SC",serif';x.textAlign='center';
+  x.fillText(LANG==='zh'?'每日福田':'DAILY MERIT FIELD',300,100);
+  x.fillStyle='#93816A';x.font='16px "PingFang SC",sans-serif';
+  x.fillText(t('sub'),300,132);
+  x.fillStyle='#8A6508';x.font='bold 120px "Songti SC",serif';x.fillText(''+m,300,290);
+  x.fillStyle='#6B5B45';x.font='16px "PingFang SC",sans-serif';x.fillText(t('meritLab'),300,326);
+  x.fillStyle='#B93A26';x.font='bold 24px "Songti SC",serif';x.fillText(t('rankName')[rank],300,390);
+  x.strokeStyle='#E6D9BE';x.beginPath();x.moveTo(90,420);x.lineTo(510,420);x.stroke();
+  x.fillStyle='#6B5B45';x.font='17px "Songti SC",serif';
+  var q=dh.q;if(q.length>18){x.fillText(q.slice(0,18),300,470);x.fillText(q.slice(18),300,500);}else x.fillText(q,300,480);
+  x.fillStyle='#93816A';x.font='13px "PingFang SC",sans-serif';x.fillText(dh.from,300,530);
+  x.fillStyle='#6B8E5A';x.font='15px "PingFang SC",sans-serif';x.fillText(t('fieldName')[field],300,650);
+  x.fillStyle='#93816A';x.font='12px "PingFang SC",sans-serif';x.fillText(fmtDate(todayKey()),300,730);
+  var img=c.toDataURL('image/png');
+  var mask=document.getElementById('posterMask');
+  mask.innerHTML='<div class="modal"><button class="modal-x" data-act="posterclose">×</button><div class="card-t" style="justify-content:center">'+t('posterTitle')+'</div><img src="'+img+'" alt="poster"><div class="card-sub" style="margin:0">'+t('posterSave')+'</div></div>';
+  mask.classList.add('on');
+}
+
+/* PWA */
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
+
+/* 启动 */
+load();
+render();
+
+/* 测试钩子 */
+window.__T={
+  T:T,t:t,DB:DB,KEY:KEY,load:load,save:save,
+  dayAnswers:dayAnswers,answerCount:answerCount,dayMerit:dayMerit,
+  totalMerit:totalMerit,totalQ:totalQ,streak:streak,practiceDays:practiceDays,
+  rankOf:rankOf,fieldOf:fieldOf,RANK_NEED:RANK_NEED,FIELD_NEED:FIELD_NEED,
+  dharmaIdx:dharmaIdx,dharmaToday:dharmaToday,ymd:ymd,addDays:addDays,
+  getDB:function(){return DB;},setDB:function(o){DB=o;},render:render,
+  viewToday:viewToday,viewField:viewField,viewBack:viewBack,
+  getS:function(){return S;},setLang:function(l){LANG=l;}
+};
+})();
+</script>
+</body>
+</html>

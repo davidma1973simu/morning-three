@@ -1,11 +1,12 @@
 /* Service Worker —— 离线可用 + 桌面图标 App 的必要条件
    策略：应用外壳和静态资源「stale-while-revalidate」，其余请求直接放行。
    发布更新时改 CACHE 版本号即可让旧缓存失效。                       */
-var CACHE = "morning-three-v48";
+var CACHE = "morning-three-v49";
 var ASSETS = [
   './',
   './index.html',
   './success.html',
+  './futian.html',
   './manifest.webmanifest',
   './icon-192.png',
   './icon-512.png',

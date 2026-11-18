@@ -347,6 +347,13 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
   width:36px;height:36px;border:0;border-radius:50%;background:rgba(127,127,127,.14);font-size:22px;line-height:1;color:var(--ink);cursor:pointer}
 #valFrame{flex:1;width:100%;border:0;background:var(--card)}
 .val-link{text-align:center;margin:18px 0 4px}
+.ft-link{display:flex;align-items:center;gap:11px;text-decoration:none;margin:14px 0 4px;padding:12px 14px;border:1px solid var(--gold-soft);border-radius:12px;background:var(--gold-soft);opacity:.9}
+.ft-link:active{opacity:.7}
+.ft-seal{width:28px;height:28px;flex:none;border:1.5px solid var(--gold);border-radius:5px;color:var(--gold);font-family:var(--serif,"Songti SC");font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;transform:rotate(-3deg)}
+.ft-tx{flex:1;min-width:0}
+.ft-h{font-size:13px;font-weight:600;color:var(--ink)}
+.ft-s{font-size:11px;color:var(--ink3);margin-top:2px;line-height:1.4}
+.ft-caret{color:var(--gold);font-size:18px;line-height:1}
 /* 日历图例：淡字，只解释点的含义，不抢戏 */
 .cal-legend{font-size:11px;color:var(--ink3);line-height:1.5;margin-top:10px;text-align:center;opacity:.85}
 /* 数据守护：痕迹只在本机的安静提醒，攒够天数且久未导出才出现 */
@@ -652,6 +659,7 @@ var T = {
     toast_demo_off:'示例数据已清除',
     tasks:'件',
     val_link:'价值主张 · 为什么是三件事',
+    ft_link:'每日福田', ft_sub:'每天四问，耕种自己的福田',
     arch_t:'回顾全部记录', data_link:'数据 · 导出 / 导入',
     arch_sub:'你写下的每一笔都在这里 · 随时回看',
     arch_empty:'还没有记录可回看',
@@ -909,6 +917,7 @@ var T = {
     sync_host:'Cloud sync works in the main app. You are on a mirror — tap below once, your records are all still here.',
     sync_gohost:'Open main app to sync',
     val_link:'Why three things',
+    ft_link:'Daily Merit Field', ft_sub:'Four questions a day, tend your own field',
     arch_t:'All your records', data_link:'Data · export / import',
     arch_sub:'Every line you wrote stays here · look back anytime',
     arch_empty:'No records to look back on yet',
@@ -1052,7 +1061,7 @@ var ONBOARD = false;   /* 首次关闭 briefing 后触发：帮全新用户直�
    渲染：主壳
    ========================================================= */
 function render(){
-  var html = header() + seg() + (S.view==='today' ? viewToday()+whisperCard()+sdCard()+valueLink()+guardCard() : viewStats()+guardCard());
+  var html = header() + seg() + (S.view==='today' ? viewToday()+whisperCard()+sdCard()+futianLink()+valueLink()+guardCard() : viewStats()+guardCard());
   document.getElementById('shell').innerHTML = html;
   bindShell();
   renderOverlay();
@@ -2030,6 +2039,14 @@ function bindSync(){
 /* ---------- 价值卡入口（弹窗） ---------- */
 function valueLink(){
   return '<div class="val-link"><button class="linkbtn" data-act="value">'+esc(t('val_link'))+' ›</button></div>';
+}
+/* 每日福田入口：独立页面，完全不同的 UI/UX；同产品家族但不抢主任务焦点。
+   用 <a> 直接跳转，不进 data-act 事件链，不增加任何状态。 */
+function futianLink(){
+  return '<a class="ft-link" href="futian.html">'+
+    '<span class="ft-seal">福田</span>'+
+    '<span class="ft-tx"><span class="ft-h">'+esc(t('ft_link'))+'</span><span class="ft-s">'+esc(t('ft_sub'))+'</span></span>'+
+    '<span class="ft-caret">›</span></a>';
 }
 function openValue(){
   var el = document.getElementById('valRoot');
