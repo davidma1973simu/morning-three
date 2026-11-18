@@ -75,8 +75,16 @@ body{padding-bottom:40px;background-image:radial-gradient(circle at 12% 8%,rgba(
 .q{background:var(--paper2);border:1px solid var(--line);border-radius:12px;padding:13px 14px;margin-bottom:10px}
 .q.done{border-color:var(--field);background:var(--field-soft)}
 .q-head{display:flex;align-items:center;gap:10px}
-.q-badge{width:30px;height:30px;flex:none;border-radius:50%;background:var(--gold-soft);color:var(--gold-d);font-family:var(--serif);font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center}
-.q.done .q-badge{background:var(--field);color:#fff}
+.q-badge{width:38px;height:38px;flex:none;border-radius:50%;background:var(--gold-soft);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.q.done .q-badge{background:var(--field-soft)}
+/* 四圣像次第：画像 + 名号，未到的淡出 */
+.rank-path{display:flex;margin-top:16px;padding-top:14px;border-top:1px dashed var(--line2)}
+.rp{flex:1;text-align:center;opacity:.32;transition:opacity .3s}
+.rp.on{opacity:1}
+.rp-ic{height:44px;display:flex;align-items:center;justify-content:center}
+.rp-n{font-family:var(--serif);font-size:13px;font-weight:700;color:var(--gold-d);margin-top:2px}
+.rp.on .rp-n{color:var(--cinnabar)}
+.rp-s{font-size:10px;color:var(--ink3);margin-top:1px}
 .q-name{font-family:var(--serif);font-size:13px;color:var(--cinnabar);font-weight:700}
 .q-q{font-size:14px;color:var(--ink);margin-top:8px;line-height:1.5;font-weight:600}
 .q-hint{font-size:11px;color:var(--ink3);margin-top:3px;line-height:1.5}
@@ -151,9 +159,12 @@ var T = {
     fieldDesc:['心地未耕，今日种下第一颗种子','善根初发，小小的一点绿意','根基渐稳，已经看得见生长','四层俱足，花开见佛','福报圆满，日日皆是福田'],
     fieldNext:function(n){return '再积 '+n+' 功德，'+'长成下一阶段';},
     qTitle:'今日四问', qSub:'如实写下，空白也算数。每一问，种一颗种子。',
-    qName:['地藏 · 善根','观音 · 因果','文殊 · 智慧','普贤 · 行愿'],
-    qText:['我今天对身边人厚道了吗？','我今天的好心分辨清楚了吗？','我今天有没有被某个念头劫持？','我想通的那件事，今天做了吗？'],
-    qHint:['孝、感恩、不忍——把根扎稳','清醒的心软，不做烂好人','看穿表象、叙事、执念，不慌','把想通的，落成今天的一个动作'],
+    qName:['地藏 · 厚道','观音 · 分辨','文殊 · 清醒','普贤 · 做到'],
+    qText:['今天，我有没有好好对待身边的人？','今天，我帮人帮到点子上了吗？','今天，我有没有被一个想法牵着走？','今天，我想明白的那件事，动手了吗？'],
+    qHint:['家人打来电话、同事犯了小错、路人挡了道——那一刻我给出去的是耐心，还是脾气？',
+           '有人开口求助，我停下来想过吗：这是他该自己走的路，还是我伸手扶一把？帮完他更有力量了吗？',
+           '刷朋友圈越看越焦虑、一件事反复琢磨放不下——我认出那只是脑子里的念头，还是把它当成了真的？',
+           '想起一件事、想通一个理——今天我做了哪怕最小的一个动作吗？哪怕只是发出那条消息。'],
     ph:['写一句，哪怕很小…','写一句，哪怕很小…','写一句，哪怕很小…','做了一件什么小事…'],
     seed:'已种下 · +1 功德', complete:'四问圆满 · 额外 +2 功德',
     dharmaTitle:'今日法语', dharmaFrom:'—— 祖师开示',
@@ -168,7 +179,7 @@ var T = {
     begin:'开始今日日课',
     rankName:['善根初发','慈悲初照','智慧渐开','知行合一'],
     rankNeed:function(n){return '再积 '+n+' 功德升至下一阶';},
-    maxRank:'已至圆满阶位',
+    maxRank:'已至圆满阶位', rankCurrent:'当前', rankPath:'修行次第',
     noRecord:'还没有日课记录，从今天开始吧。',
     backHome:'返回晨间清单', noJudge:'不排名 · 断签不罚 · 只与自己对照',
     dharmas:[
@@ -188,9 +199,12 @@ var T = {
     fieldDesc:['The ground is untilled. Plant your first seed today.','A tiny green shoot — kindness taking root.','Roots holding; growth you can see.','All four stages present — the flower opens.','Merit complete; every day is a field.'],
     fieldNext:function(n){return n+' more merit to the next stage';},
     qTitle:'Four questions', qSub:'Write honestly. Blank days count too. Each answer plants a seed.',
-    qName:['Kṣitigarbha · Roots','Avalokiteśvara · Cause','Mañjuśrī · Wisdom','Samantabhadra · Action'],
-    qText:['Was I kind to those around me today?','Was my kindness clear-eyed today?','Was I hijacked by a thought today?','Did I do the thing I understood today?'],
-    qHint:['Filial care, gratitude, tenderness — root it deep.','Clear-eyed kindness; not a pushover.','See through appearance, story, fixation — stay calm.','Turn what you understood into one small act.'],
+    qName:['Kṣitigarbha · Kindness','Avalokiteśvara · Discernment','Mañjuśrī · Clarity','Samantabhadra · Doing'],
+    qText:['Did I treat the people around me well today?','Did my help actually land where it was needed?','Did a single thought drag me around today?','Did I take a step on the thing I figured out?'],
+    qHint:['A family call, a small mistake by a colleague, someone blocking my way — did I offer patience, or short temper?',
+           'Someone asked for help. Did I pause: is this their road to walk, or mine to steady? Did they stand taller after?',
+           'Scrolling left me anxious, one thing replayed in my head — did I see it was just a thought, or did I believe it was real?',
+           'I remembered something, saw it clearly — did I make even the smallest move today? Even sending that one message.'],
     ph:['A line, however small…','A line, however small…','A line, however small…','One small thing I did…'],
     seed:'Planted · +1 merit', complete:'All four complete · +2 bonus merit',
     dharmaTitle:'Today\'s teaching', dharmaFrom:'— An ancient saying',
@@ -205,7 +219,7 @@ var T = {
     begin:'Start today\'s practice',
     rankName:['Roots emerging','Compassion dawning','Wisdom unfolding','Knowledge and action one'],
     rankNeed:function(n){return n+' more merit to the next stage';},
-    maxRank:'Highest stage reached',
+    maxRank:'Highest stage reached', rankCurrent:'Here', rankPath:'The path',
     noRecord:'No practice yet. Start today.',
     backHome:'Back to Morning Three', noJudge:'No rankings · No streak penalty · Only your own path',
     dharmas:[
@@ -267,6 +281,34 @@ function fieldOf(m){var f=0;for(var i=0;i<FIELD_NEED.length;i++)if(m>=FIELD_NEED
 function dharmaIdx(k){var n=0;for(var i=0;i<k.length;i++)n=(n*31+k.charCodeAt(i))%997;return n%T.zh.dharmas.length;}
 function dharmaToday(){var i=dharmaIdx(todayKey());return {q:T[LANG].dharmas[i],from:T[LANG].dharmaFroms[i]};}
 
+/* 四菩萨圣像：纯 SVG 线描（不用 emoji），四尊各有法器辨识
+   0 地藏：锡杖+宝珠（示现沙门） 1 观音：净瓶+柳枝 2 文殊：智慧剑+经卷 3 普贤：六牙白象 */
+function bodhiSVG(i,size){
+  var s=size||38, g='#8A6508', soft='#C9A227';
+  var face='<circle cx="20" cy="15" r="7.5" fill="none" stroke="'+g+'" stroke-width="1.4"/>'+
+           '<path d="M12 13c0-6 4-9 8-9s8 3 8 9c0 1-1 2-2 2-1-4-3-6-6-6s-5 2-6 6c-1 0-2-1-2-2z" fill="none" stroke="'+g+'" stroke-width="1.2"/>'+
+           '<path d="M17.5 16.5h.02M22.5 16.5h.02" stroke="'+g+'" stroke-width="2" stroke-linecap="round"/>'+
+           '<path d="M18.5 19.5c1 1 2.5 1 3.5 0" fill="none" stroke="'+g+'" stroke-width="1"/>';
+  var halo='<circle cx="20" cy="17" r="15.5" fill="none" stroke="'+soft+'" stroke-width=".8" opacity=".55"/>';
+  var body='<path d="M9 40c0-8 5-13 11-13s11 5 11 13" fill="none" stroke="'+g+'" stroke-width="1.4"/>';
+  var item='';
+  if(i===0){ /* 地藏：锡杖（带环）+ 宝珠 */
+    item='<path d="M33 6v30" stroke="'+g+'" stroke-width="1.6"/><circle cx="33" cy="6" r="2.4" fill="none" stroke="'+g+'" stroke-width="1.2"/>'+
+         '<circle cx="33" cy="10" r="1.6" fill="none" stroke="'+g+'" stroke-width="1"/><circle cx="28" cy="34" r="3" fill="none" stroke="'+soft+'" stroke-width="1.2"/>';
+  }else if(i===1){ /* 观音：净瓶 + 柳枝 */
+    item='<path d="M7 40c-3-4-3-9 1-11l2 3 2-3c4 2 4 7 1 11z" fill="none" stroke="'+g+'" stroke-width="1.3"/>'+
+         '<path d="M10 26c0-5 2-8 5-10M11 22c3-1 5-3 6-6" fill="none" stroke="'+g+'" stroke-width="1.2"/>';
+  }else if(i===2){ /* 文殊：智慧剑 + 经卷 */
+    item='<path d="M31 34L40 12l-3 1-8 20z" fill="none" stroke="'+g+'" stroke-width="1.4"/>'+
+         '<path d="M28 33l6 3" stroke="'+g+'" stroke-width="2"/><path d="M40 12l1-4-3 2" fill="'+soft+'" stroke="'+g+'" stroke-width="1"/>';
+  }else{ /* 普贤：白象（侧影） */
+    item='<path d="M6 40c0-5 3-8 8-8h9c4 0 7 3 7 8" fill="none" stroke="'+g+'" stroke-width="1.3"/>'+
+         '<path d="M25 32c3-2 6-1 7 2 1 3-1 6-4 6" fill="none" stroke="'+g+'" stroke-width="1.2"/>'+
+         '<path d="M28 40v-3M31 40v-3" stroke="'+g+'" stroke-width="1.2"/><circle cx="30" cy="33" r="1" fill="'+g+'"/>';
+  }
+  return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 46 46" fill="none">'+halo+face+body+item+'</svg>';
+}
+
 /* 福田 SVG（纯 CSS/SVG 画，不用 emoji） */
 function fieldSVG(stage){
   var c='#6B8E5A',g='#B8860B';
@@ -294,7 +336,13 @@ function viewToday(){
        '<div class="field-info"><div class="field-name">'+t('fieldTitle')+' · '+t('fieldName')[field]+'</div><div class="field-desc">'+t('fieldDesc')[field]+'</div></div></div>'+
        '<div class="field-bar"><i style="width:'+(field>=4?100:Math.round((m-FIELD_NEED[field])/(FIELD_NEED[field+1]-FIELD_NEED[field])*100))+'%"></i></div>'+
        (field<4?'<div class="field-desc" style="margin-top:6px">'+t('fieldNext')(FIELD_NEED[field+1]-m)+'</div>':'')+
-     '</div></section>';
+     '</div>'+
+     /* 四圣像次第：让画像和阶位一眼可见，未到的淡出，不评判只显示走到哪 */
+     '<div class="rank-path">'+[0,1,2,3].map(function(j){
+       return '<div class="rp'+(j<=rank?' on':'')+'"><div class="rp-ic">'+bodhiSVG(j,42)+'</div>'+
+              '<div class="rp-n">'+t('qName')[j].split(' ')[0]+'</div><div class="rp-s">'+t('rankName')[j]+'</div></div>';
+     }).join('')+'</div>'+
+     '</section>';
 
   /* 四问 */
   var a=dayAnswers(todayKey());
@@ -302,7 +350,7 @@ function viewToday(){
   for(var i=0;i<4;i++){
     var done=a[i]&&a[i].trim();
     h+='<div class="q'+(done?' done':'')+'" data-q="'+i+'">'+
-       '<div class="q-head"><div class="q-badge">'+(i+1)+'</div><div class="q-name">'+t('qName')[i]+'</div></div>'+
+       '<div class="q-head"><div class="q-badge">'+bodhiSVG(i,38)+'</div><div class="q-name">'+t('qName')[i]+'</div></div>'+
        '<div class="q-q">'+t('qText')[i]+'</div><div class="q-hint">'+t('qHint')[i]+'</div>'+
        '<textarea class="q-input" rows="1" data-i="'+i+'" placeholder="'+t('ph')[i]+'">'+esc(a[i])+'</textarea>'+
        '<div class="q-merit">'+t('seed')+'</div></div>';
@@ -341,8 +389,8 @@ function viewField(){
   for(var i=0;i<4;i++){
     var unlocked=m>=RANK_NEED[i],cur=i===rank;
     h+='<div class="q'+(unlocked?' done':'')+'" style="'+(unlocked?'':'opacity:.5')+'">'+
-       '<div class="q-head"><div class="q-badge">'+t('qName')[i].split(' ')[0].charAt(0)+'</div>'+
-       '<div class="q-name">'+t('qName')[i]+'</div>'+(cur?'<span style="margin-left:auto;font-size:11px;color:var(--cinnabar)">当前</span>':'')+'</div>'+
+       '<div class="q-head"><div class="q-badge">'+bodhiSVG(i,38)+'</div>'+
+       '<div class="q-name">'+t('qName')[i]+'</div>'+(cur?'<span style="margin-left:auto;font-size:11px;color:var(--cinnabar)">'+t('rankCurrent')+'</span>':'')+'</div>'+
        '<div class="q-hint">'+t('qHint')[i]+(unlocked?'':' · '+t('rankNeed')(RANK_NEED[i]-m))+'</div></div>';
   }
   h+='</section>';
@@ -460,7 +508,7 @@ window.__T={
   dayAnswers:dayAnswers,answerCount:answerCount,dayMerit:dayMerit,
   totalMerit:totalMerit,totalQ:totalQ,streak:streak,practiceDays:practiceDays,
   rankOf:rankOf,fieldOf:fieldOf,RANK_NEED:RANK_NEED,FIELD_NEED:FIELD_NEED,
-  dharmaIdx:dharmaIdx,dharmaToday:dharmaToday,ymd:ymd,addDays:addDays,
+  dharmaIdx:dharmaIdx,dharmaToday:dharmaToday,ymd:ymd,addDays:addDays,bodhiSVG:bodhiSVG,
   getDB:function(){return DB;},setDB:function(o){DB=o;},render:render,
   viewToday:viewToday,viewField:viewField,viewBack:viewBack,
   getS:function(){return S;},setLang:function(l){LANG=l;}

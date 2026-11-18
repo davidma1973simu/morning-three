@@ -102,6 +102,16 @@ ok('E1 同日法语一致',i1===i2);
 ok('E2 法语索引在范围内',i1>=0&&i1<10,'got '+i1);
 ok('E3 不同日法语不同(大概率)',i1!==i3,i1+' vs '+i3);
 
+console.log('\n=== E2. 四菩萨画像（SVG 线描，非 emoji）===');
+for(var bi=0;bi<4;bi++){
+  var svg=T.bodhiSVG(bi,38);
+  ok('E2-'+bi+' 画像是SVG线描',svg.indexOf('<svg')>=0&&svg.indexOf('viewBox')>=0&&svg.length>150);
+}
+ok('E2-0 地藏持锡杖',T.bodhiSVG(0).indexOf('33 6')>=0);
+ok('E2-1 观音持净瓶柳枝',T.bodhiSVG(1).indexOf('M11 22')>=0);
+ok('E2-2 文殊持剑',T.bodhiSVG(2).indexOf('M31 34')>=0);
+ok('E2-3 普贤白象',T.bodhiSVG(3).indexOf('M6 40')>=0);
+
 console.log('\n=== F. 三视图渲染 ===');
 T.setDB({days:{
   '2026-11-18':{answers:['今天对老人有耐心','帮了同事但没越界','没被焦虑牵走','把复盘发了团队'],}
@@ -110,6 +120,9 @@ const today=T.viewToday(),field=T.viewField();
 T.getS().day='2026-11-18';
 const back=T.viewBack();
 ok('F1 今日页四问名全在',['地藏','观音','文殊','普贤'].every(x=>today.indexOf(x)>=0));
+ok('F1b 首屏有功德值',today.indexOf('merit-num')>=0);
+ok('F1c 首屏有四圣像次第',today.indexOf('rank-path')>=0);
+ok('F1d 首屏有阶位名',today.indexOf('善根')>=0||today.indexOf('rankName')>=0);
 ok('F2 今日页有功德概览',today.indexOf('merit-num')>=0);
 ok('F3 今日页有福田可视化',today.indexOf('field-vis')>=0);
 ok('F4 今日页有法语',today.indexOf('dharma-q')>=0);
