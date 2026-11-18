@@ -38,7 +38,7 @@ const NOW = new Date(2026, 10, 17); // 2026-11-17 固定，便于断言
 console.log('--- v48 时间折叠地基 ---');
 {
   const sw = fs.readFileSync('sw.js','utf8');
-  ok('T0 sw bump 到 v48', /morning-three-v48/.test(sw) && !/morning-three-v47/.test(sw));
+  ok('T0 sw 版本不低于 v48', (()=>{ const m = sw.match(/morning-three-v(\d+)/); return !!m && +m[1] >= 48; })());
 }
 {
   const { ctx } = build(EXPOSE); const T = ctx.__T;

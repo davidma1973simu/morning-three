@@ -115,7 +115,6 @@ input,textarea{font-family:inherit;font-size:inherit;color:inherit;border:0;back
 .brand-sub{font-size:13px;font-weight:600;letter-spacing:.16em;color:var(--ink3);text-transform:uppercase;margin-top:2px}
 .hdr-r{display:flex;align-items:center;gap:8px;padding-top:2px}
 .lang{height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:13px;font-weight:600;color:var(--ink2);letter-spacing:.04em}
-.lang.bell{width:30px;padding:0;display:flex;align-items:center;justify-content:center;color:var(--ink2)}
 .lang.sync{padding:0 13px;display:flex;align-items:center;gap:6px}
 .lang.sync .dot{width:6px;height:6px;border-radius:50%;background:var(--edge2)}
 .lang.sync.online .dot{background:var(--brand-txt)}
@@ -736,6 +735,10 @@ var T = {
     guard_btn:'导出留一份',
     guard_done:'已留好一份',
     guard_close:'知道了',
+    /* 提醒入口：只在断掉的时候出现，不占顶栏 */
+    rmcard_t:'这七天，有 {n} 天没留下字。',
+    rmcard_sub:'不是催你。想让它每天叫你一次，就不用靠记性。',
+    rmcard_btn:'每天提醒一次',
     /* 云同步 */
     sync_btn:'同步', sync_title:'云同步', sync_sub:'用邮箱验证码登录，把你的记录存到云端，换设备也不会丢。',
     sync_email:'邮箱地址', sync_email_ph:'name@example.com',
@@ -897,6 +900,10 @@ var T = {
     guard_btn:'Export a copy',
     guard_done:'A copy is saved',
     guard_close:'Got it',
+    /* 提醒入口：只在断掉的时候出现，不占顶栏 */
+    rmcard_t:'{n} of the last seven days were left blank.',
+    rmcard_sub:'Not to push you. If you want, it can call you once a day.',
+    rmcard_btn:'Remind me once a day',
     sync_btn:'Sync', sync_title:'Cloud sync', sync_sub:'Sign in with an email code. Your records stay in the cloud, safe across devices.',
     sync_email:'Email address', sync_email_ph:'name@example.com',
     sync_send:'Send code', sync_sending:'Sending…', sync_sent:'Code sent — check your inbox',
@@ -1058,7 +1065,7 @@ var ONBOARD = false;   /* 首次关闭 briefing 后触发：帮全新用户直�
    渲染：主壳
    ========================================================= */
 function render(){
-  var html = header() + seg() + (S.view==='today' ? viewToday()+whisperCard()+sdCard()+valueLink()+guardCard() : viewStats()+guardCard());
+  var html = header() + seg() + (S.view==='today' ? viewToday()+whisperCard()+sdCard()+valueLink()+guardCard()+remindCard() : viewStats()+guardCard()+remindCard());
   document.getElementById('shell').innerHTML = html;
   bindShell();
   renderOverlay();
@@ -1069,16 +1076,15 @@ function render(){
 }
 
 function header(){
-  /* 铃铛永远在：装了桌面的人照样需要定时提醒，那是另一件事 */
-  var bell = '<button class="lang bell" data-act="remind" title="'+esc(t('rm_title'))+'" aria-label="'+esc(t('rm_title'))+'">'+svgBell()+'</button>';
   var online = SYNC.user ? ' online' : '';
   var busy = SYNC.busy ? ' busy' : '';
   var sync = '<button class="lang sync'+online+busy+'" data-act="sync" title="'+esc(t('sync_title'))+'" aria-label="'+esc(t('sync_title'))+'"><span class="dot"></span>'+esc(t('sync_btn'))+'</button>';
   /* 每日福田：低调放在同步按钮旁——只一个印章 LOGO + 名字，不占正文位置 */
   var ft = '<a class="lang ft-mini" href="futian.html" title="'+esc(t('ft_link'))+'" aria-label="'+esc(t('ft_link'))+'"><span class="ft-mini-seal">福田</span>'+esc(t('ft_link'))+'</a>';
+  /* 提醒不再挂顶栏：一次性设置不该天天占黄金位，改在「断了几次」时以卡片出现 */
   return '<header class="hdr">'+
     '<div><div class="brand">'+t('brand')+'</div><div class="brand-sub">Morning Three</div></div>'+
-    '<div class="hdr-r">'+sync+ft+bell+'<button class="lang" data-act="lang">'+(LANG==='zh'?'EN':'中文')+'</button></div>'+
+    '<div class="hdr-r">'+sync+ft+'<button class="lang" data-act="lang">'+(LANG==='zh'?'EN':'中文')+'</button></div>'+
   '</header>';
 }
 function seg(){
@@ -1114,10 +1120,8 @@ function sdIcon(open){
 /* =========================================================
    提醒 · 只保留一条路：装到桌面
    （日历导出会刷爆 Google 日历，网页通知后台响不了 —— 都砍掉）
+   入口不常驻：顶栏铃铛已撤，改由 remindCard() 在断掉时出现
    ========================================================= */
-function svgBell(){
-  return '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 8a6 6 0 1 0-12 0c0 5-2 6-2 6h16s-2-1-2-6"/><path d="M10.3 20a2 2 0 0 0 3.4 0"/></svg>';
-}
 function svgPhone(){
   return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 18.5h3"/></svg>';
 }
@@ -1772,6 +1776,41 @@ function guardCard(){
     '<button class="guard-btn" data-act="guardexport">'+esc(t('guard_btn'))+'</button>'+
   '</div>';
 }
+/* =========================================================
+   提醒入口 —— 不挂顶栏，只在"这几天断了几次"时出现一次
+   理由：铃铛是一次性设置，却占用每天都要看的黄金位；
+        真正需要提醒的时刻，恰恰是用户发现自己断了的时刻。
+   ========================================================= */
+function remindGap(){
+  var miss = 0, seen = 0;
+  for(var i=0;i<7;i++){
+    var d = new Date(); d.setDate(d.getDate()-i);
+    if(hasInput(DB.days[ymd(d)])) seen++; else miss++;
+  }
+  return { miss:miss, seen:seen };
+}
+function remindDue(){
+  if(inputDayCount() < 5) return 0;       /* 新用户不催：还没形成习惯，催也没用 */
+  var g = remindGap();
+  if(g.seen === 0) return 0;              /* 这周一天都没来：不是"断"，是已经走了，不该由卡片来追 */
+  if(g.miss < 2) return 0;                /* 断续但没断：不打扰 */
+  var dis;
+  try{ dis = localStorage.getItem('mt.rmDismiss'); }catch(e){}
+  if(dis){                                 /* 关过：30 天内不再出现 */
+    if((Date.now() - new Date(dis).getTime())/86400000 < 30) return 0;
+  }
+  return g.miss;
+}
+function remindCard(){
+  var n = remindDue();
+  if(!n) return '';
+  return '<div class="guard">'+
+    '<button class="guard-x" data-act="rmcardclose" aria-label="Close">&times;</button>'+
+    '<div class="guard-t">'+esc(t('rmcard_t').replace('{n}', n))+'</div>'+
+    '<div class="guard-sub">'+esc(t('rmcard_sub'))+'</div>'+
+    '<button class="linkbtn" data-act="remind" style="align-self:flex-start">'+esc(t('rmcard_btn'))+' ›</button>'+
+  '</div>';
+}
 function exportMyData(){
   var morning = {};
   try{ morning = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; }catch(e){ morning = {}; }
@@ -2169,6 +2208,10 @@ function bindShell(){
     else if(a==='guardexport'){ exportMyData(); }
     else if(a==='guardclose'){
       try{ localStorage.setItem('mt.guardDismiss', String(inputDayCount())); }catch(e){}
+      render();
+    }
+    else if(a==='rmcardclose'){
+      try{ localStorage.setItem('mt.rmDismiss', new Date().toISOString()); }catch(e){}
       render();
     }
   };

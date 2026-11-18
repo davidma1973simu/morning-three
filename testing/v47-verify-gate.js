@@ -46,7 +46,7 @@ const EXPOSE = '{insightLines,energyDist,viewWall,viewToday,unlock,DB,S,t,save,s
 console.log('--- v47 一键验收通道 ---');
 {
   const sw = fs.readFileSync('sw.js','utf8');
-  ok('T0 sw bump 到 v47', /morning-three-v47/.test(sw) && !/morning-three-v46/.test(sw));
+  ok('T0 sw 版本不低于 v47', (()=>{ const m = sw.match(/morning-three-v(\d+)/); return !!m && +m[1] >= 47; })());
 }
 {
   // ?test=unlock：加载即解锁 + 种子晚间数据
