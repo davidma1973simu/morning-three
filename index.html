@@ -1811,15 +1811,48 @@ function remindCard(){
     '<button class="linkbtn" data-act="remind" style="align-self:flex-start">'+esc(t('rmcard_btn'))+' ›</button>'+
   '</div>';
 }
+/* =========================================================
+   本地使用计数（v59）
+   只写本机，不联网、不上报。两个用途：
+   ① 导出数据时带上真实痕迹，第 14 天验证留存才有依据
+   ② 排查问题时能分清「没打开」和「打开了但没写」——两者含义完全不同
+   注意：这是留给分析的原始数据，不在界面上做成计数器。
+        一个每天提醒你「只用了几次」的产品，会变成审判。
+   ========================================================= */
+var UKEY = 'mt.usage';
+function usageRead(){
+  var u = null;
+  try{ u = JSON.parse(localStorage.getItem(UKEY) || 'null'); }catch(e){ u = null; }
+  if(!u || typeof u !== 'object') u = {};
+  if(!u.first) u.first = '';
+  if(!u.opens || typeof u.opens !== 'object') u.opens = {};
+  return u;
+}
+function usageTouch(){
+  var u = usageRead(), k = todayKey();
+  if(!u.first) u.first = k;               /* 首次打开：留存计算的起点 */
+  u.opens[k] = (u.opens[k] || 0) + 1;     /* 打开但没落笔，也是信号 */
+  try{ localStorage.setItem(UKEY, JSON.stringify(u)); }catch(e){}
+}
 function exportMyData(){
   var morning = {};
   try{ morning = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; }catch(e){ morning = {}; }
   var evening = {};
   try{ evening = JSON.parse(localStorage.getItem(SKEY) || '{}') || {}; }catch(e){ evening = {}; }
+  /* 留存三件套：首开日、打开过的日子、真正写下的日子 */
+  var u = usageRead(), days = morning.days || {};
+  var wrote = Object.keys(days).filter(function(k){ return hasInput(days[k]); }).sort();
   var payload = {
-    app:'morning-three', version:1, exportedAt:new Date().toISOString(),
+    app:'morning-three', version:2, exportedAt:new Date().toISOString(),
     morning: morning,
-    evening: { days: evening.days||{}, unlock: evening.unlock||{} }
+    evening: { days: evening.days||{}, unlock: evening.unlock||{} },
+    usage: {
+      first: u.first,
+      openDays: Object.keys(u.opens).sort(),
+      opens: u.opens,
+      wroteDays: wrote,
+      wroteCount: wrote.length
+    }
   };
   try{
     var blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
@@ -2588,6 +2621,7 @@ if('serviceWorker' in navigator){
 }
 
 load();
+usageTouch();   /* 本机计数：只在启动时记一次，不随 render 重复累加 */
 /* 晚间冷启动判定：已过 18:00 + 今天还没写下一笔 + 未收尾。
    会话级，写完不反转 —— 避免刚落笔就被收尾浮层接管。 */
 var COLD_SESSION = (nowMin() >= EVE_MIN && !isChecked(todayKey()) && !taskList(peek(todayKey())).length);
